@@ -24,6 +24,10 @@ public class PlayerMovement : MonoBehaviour
     {
         _moveDirection = move.action.ReadValue<Vector2>();
 
+        // Normalize so diagonals aren't faster (0,0 stays (0,0))
+        if (_moveDirection.sqrMagnitude > 0)
+            _moveDirection = _moveDirection.normalized;
+
         float xInput = _moveDirection.x;
         float yInput = _moveDirection.y;
 
