@@ -17,6 +17,8 @@ public class EquipmentInventory : MonoBehaviour
     public GameObject pickupPrefab;
 
     public event Action OnChanged;
+    public bool MoveActiveTo(EquipmentSlotType to) => MoveOrSwap(activeHand, to);
+    public bool MoveToActiveFrom(EquipmentSlotType from) => MoveOrSwap(from, activeHand);
 
     private void Awake()
     {

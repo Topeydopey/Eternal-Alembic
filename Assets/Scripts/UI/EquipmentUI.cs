@@ -1,28 +1,28 @@
+// EquipmentUI.cs
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class EquipmentUI : MonoBehaviour
 {
-    public EquipmentInventory equipment; // auto-found if null
-    [Header("Slots")]
+    public EquipmentInventory equipment; // auto-find if null
+
+    [Header("Slots (assign in Inspector)")]
     public SlotUI leftHandUI;
     public SlotUI rightHandUI;
     public SlotUI pocketLUI;
     public SlotUI pocketRUI;
 
-    // click-to-move state
-    private EquipmentSlotType? _selectedSource = null;
-
     private void OnEnable()
     {
         if (!equipment) equipment = FindFirstObjectByType<EquipmentInventory>();
         BindSlots();
-        if (equipment) equipment.OnChanged += Refresh;
+        if (equipment != null) equipment.OnChanged += Refresh;
         Refresh();
     }
 
     private void OnDisable()
     {
-        if (equipment) equipment.OnChanged -= Refresh;
+        if (equipment != null) equipment.OnChanged -= Refresh;
     }
 
     private void BindSlots()
@@ -37,62 +37,60 @@ public class EquipmentUI : MonoBehaviour
     {
         if (!equipment) return;
 
-        // icons
+        // Update icons
         leftHandUI?.SetSprite(equipment.leftHand.IsEmpty ? null : equipment.leftHand.item.icon);
         rightHandUI?.SetSprite(equipment.rightHand.IsEmpty ? null : equipment.rightHand.item.icon);
         pocketLUI?.SetSprite(equipment.pocketL.IsEmpty ? null : equipment.pocketL.item.icon);
         pocketRUI?.SetSprite(equipment.pocketR.IsEmpty ? null : equipment.pocketR.item.icon);
 
-        // highlights
-        bool isSel(EquipmentSlotType t) => _selectedSource.HasValue && _selectedSource.Value == t;
-        bool isActive(EquipmentSlotType t) => equipment.activeHand == t;
-
-        leftHandUI?.SetBackdrop(isActive(EquipmentSlotType.LeftHand), isSel(EquipmentSlotType.LeftHand));
-        rightHandUI?.SetBackdrop(isActive(EquipmentSlotType.RightHand), isSel(EquipmentSlotType.RightHand));
-        pocketLUI?.SetBackdrop(false, isSel(EquipmentSlotType.PocketL));
-        pocketRUI?.SetBackdrop(false, isSel(EquipmentSlotType.PocketR));
+        // Highlight ONLY the active hand
+        leftHandUI?.SetActive(equipment.activeHand == EquipmentSlotType.LeftHand);
+        rightHandUI?.SetActive(equipment.activeHand == EquipmentSlotType.RightHand);
+        pocketLUI?.SetActive(false);
+        pocketRUI?.SetActive(false);
     }
 
-    // Called by SlotUI when clicked
-    public void OnSlotClicked(SlotUI clicked)
+    /// <summary>
+    /// Single-click behavior:
+    /// - Clicking a hand: set active hand.
+    /// - Clicking a pocket:
+    ///     If active hand has an item -> move/swap active→pocket.
+    ///     If active hand empty and pocket has an item -> move/swap pocket→active.
+    /// </summary>
+    public void OnSlotClicked(SlotUI clicked, PointerEventData.InputButton button)
     {
-        if (!equipment) return;
+        if (!equipment || button != PointerEventData.InputButton.Left) return;
 
-        var type = clicked.slotType;
+        var clickedType = clicked.slotType;
 
-        // If nothing selected yet:
-        if (_selectedSource == null)
+        // Clicking a hand: set active hand and refresh
+        if (clickedType == EquipmentSlotType.LeftHand || clickedType == EquipmentSlotType.RightHand)
         {
-            // Click a HAND slot → just set active hand highlight
-            if (type == EquipmentSlotType.LeftHand || type == EquipmentSlotType.RightHand)
-            {
-                equipment.SetActiveHand(type);
-                // If that hand has an item, also mark it as source so next click moves it
-                if (!equipment.Get(type).IsEmpty) _selectedSource = type;
-            }
-            else
-            {
-                // Clicking a pocket with an item selects it as source; empty pocket does nothing
-                if (!equipment.Get(type).IsEmpty) _selectedSource = type;
-            }
+            equipment.SetActiveHand(clickedType);
             Refresh();
             return;
         }
 
-        // Second click: attempt move/swap selected → clicked
-        var from = _selectedSource.Value;
-        if (equipment.MoveOrSwap(from, type))
+        // Otherwise (e.g., pocket): push/pull relative to active hand
+        var active = equipment.activeHand;
+        var activeSlot = equipment.Get(active);
+        var targetSlot = equipment.Get(clickedType);
+
+        bool activeHasItem = activeSlot != null && !activeSlot.IsEmpty;
+        bool targetHasItem = targetSlot != null && !targetSlot.IsEmpty;
+
+        if (activeHasItem)
         {
-            _selectedSource = null;
-            Refresh();
-            return;
+            // Move/swap from active hand → clicked slot
+            if (equipment.MoveActiveTo(clickedType))
+                Refresh();
         }
-
-        // If move failed and user clicked same slot, deselect
-        if (from == type) { _selectedSource = null; Refresh(); return; }
-
-        // Else: switch source to the clicked slot if it holds an item
-        if (!equipment.Get(type).IsEmpty) _selectedSource = type;
-        Refresh();
+        else if (targetHasItem)
+        {
+            // Pull from clicked slot → active hand
+            if (equipment.MoveToActiveFrom(clickedType))
+                Refresh();
+        }
+        // else: both empty, do nothing
     }
 }

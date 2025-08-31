@@ -7,13 +7,12 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler
 {
     public EquipmentSlotType slotType;
     public Image icon;
-    public TMP_Text label;         // optional label like "L", "R", "PL", "PR"
-    public Image backdrop;         // background Image for highlight
+    public TMP_Text label;   // optional
+    public Image backdrop;   // background for highlight
 
     [Header("Colors")]
     public Color normalColor = new Color(1, 1, 1, 0.15f);
     public Color activeHandColor = new Color(1, 1, 0.3f, 0.35f);
-    public Color selectedColor = new Color(0.3f, 0.7f, 1f, 0.35f);
 
     private EquipmentUI _ui;
 
@@ -28,16 +27,13 @@ public class SlotUI : MonoBehaviour, IPointerClickHandler
         }
     }
 
-    public void SetBackdrop(bool isActiveHand, bool isSelectedSource)
+    public void SetActive(bool isActiveHand)
     {
-        if (!backdrop) return;
-        backdrop.color = isSelectedSource ? selectedColor :
-                         isActiveHand ? activeHandColor :
-                                           normalColor;
+        if (backdrop) backdrop.color = isActiveHand ? activeHandColor : normalColor;
     }
 
-    public void OnPointerClick(PointerEventData eventData)
+    public void OnPointerClick(PointerEventData e)
     {
-        _ui?.OnSlotClicked(this);
+        _ui?.OnSlotClicked(this, e.button);
     }
 }

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -12,11 +13,17 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnEnable()
     {
+        move.action.actionMap?.Enable();
         move.action.Enable();
+        SceneManager.activeSceneChanged += (_, __) =>
+        {
+            move.action.actionMap?.Enable();
+            move.action.Enable();
+        };
     }
-
     private void OnDisable()
     {
+        SceneManager.activeSceneChanged -= (_, __) => { };
         move.action.Disable();
     }
 

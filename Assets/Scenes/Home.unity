@@ -176,7 +176,6 @@ MonoBehaviour:
   backdrop: {fileID: 925300871}
   normalColor: {r: 1, g: 1, b: 1, a: 0.15}
   activeHandColor: {r: 1, g: 1, b: 0.3, a: 0.35}
-  selectedColor: {r: 0.3, g: 0.7, b: 1, a: 0.35}
 --- !u!1 &131367283
 GameObject:
   m_ObjectHideFlags: 0
@@ -327,6 +326,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 143590444}
   m_CullTransparentMesh: 1
+--- !u!1 &167544013
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 167544015}
+  - component: {fileID: 167544014}
+  m_Layer: 0
+  m_Name: UIRoot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &167544014
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 167544013}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8881c56842dd7db4f99c69bb2c463c9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIRootPersist
+--- !u!4 &167544015
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 167544013}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 552.68195, y: 206.57335, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1463716765}
+  - {fileID: 809000916}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &176734466
 GameObject:
   m_ObjectHideFlags: 0
@@ -1333,7 +1378,6 @@ MonoBehaviour:
   backdrop: {fileID: 1815370279}
   normalColor: {r: 1, g: 1, b: 1, a: 0.15}
   activeHandColor: {r: 1, g: 1, b: 0.3, a: 0.35}
-  selectedColor: {r: 0.3, g: 0.7, b: 1, a: 0.35}
 --- !u!1 &786380282
 GameObject:
   m_ObjectHideFlags: 0
@@ -1391,7 +1435,6 @@ MonoBehaviour:
   backdrop: {fileID: 1558610368}
   normalColor: {r: 1, g: 1, b: 1, a: 0.15}
   activeHandColor: {r: 1, g: 1, b: 0.3, a: 0.35}
-  selectedColor: {r: 0.3, g: 0.7, b: 1, a: 0.35}
 --- !u!1 &809000911
 GameObject:
   m_ObjectHideFlags: 0
@@ -1488,7 +1531,7 @@ RectTransform:
   m_Children:
   - {fileID: 1633282711}
   - {fileID: 1403167713}
-  m_Father: {fileID: 1494772015}
+  m_Father: {fileID: 167544015}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -2021,7 +2064,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1213780059}
-  - component: {fileID: 1213780058}
   - component: {fileID: 1213780060}
   m_Layer: 0
   m_Name: PlayerInventory
@@ -2030,24 +2072,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1213780058
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1213780057}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 58d17866956f78444a189a3fb9fff838, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerInventory
-  startingSlots: 16
-  saveKey: player_inventory_v1
-  database: {fileID: 11400000, guid: 8858a49fb4294ca4c87471c947cf2ece, type: 2}
-  inv:
-    slotCount: 16
-    slots: []
 --- !u!4 &1213780059
 Transform:
   m_ObjectHideFlags: 0
@@ -2221,7 +2245,6 @@ MonoBehaviour:
   backdrop: {fileID: 1671068713}
   normalColor: {r: 1, g: 1, b: 1, a: 0.15}
   activeHandColor: {r: 1, g: 1, b: 0.3, a: 0.35}
-  selectedColor: {r: 0.3, g: 0.7, b: 1, a: 0.35}
 --- !u!1 &1403167712
 GameObject:
   m_ObjectHideFlags: 0
@@ -2430,12 +2453,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1463716762}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -552.68195, y: -206.07335, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 167544015}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1494772013
 GameObject:
@@ -2453,6 +2476,7 @@ GameObject:
   - component: {fileID: 1494772016}
   - component: {fileID: 1494772020}
   - component: {fileID: 1494772021}
+  - component: {fileID: 1494772022}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -2532,7 +2556,6 @@ Transform:
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1213780059}
-  - {fileID: 809000916}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1494772016
@@ -2657,6 +2680,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentHotkeys
   toggleHand: {fileID: -8178617645907524623, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   dropActive: {fileID: 1713715113423835039, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
+--- !u!114 &1494772022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1494772013}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94f9cdc0335acb34580d7e57c8fd095b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MovementProbe
+  rb: {fileID: 1494772018}
+  move: {fileID: -1680190386980627800, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
 --- !u!1 &1558610366
 GameObject:
   m_ObjectHideFlags: 0
@@ -4021,4 +4058,4 @@ SceneRoots:
   - {fileID: 1040181924}
   - {fileID: 1926678873}
   - {fileID: 1094852765}
-  - {fileID: 1463716765}
+  - {fileID: 167544015}
