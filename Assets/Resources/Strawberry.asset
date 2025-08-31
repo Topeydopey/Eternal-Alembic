@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c6183beffb7e3154e9fbcd32c72d0820, type: 3}
-  m_Name: Berry
+  m_Name: Strawberry
   m_EditorClassIdentifier: Assembly-CSharp::ItemSO
-  id: berry
-  displayName: Berry
-  icon: {fileID: 9180255068734726929, guid: 3b4a62f8ec5469742a9776ddd773456f, type: 3}
+  id: strawberry
+  displayName: Strawberry
+  icon: {fileID: 2025188583065429729, guid: a1573af831092434db8c0be8861f4133, type: 3}
   maxStack: 20
   size: 0
