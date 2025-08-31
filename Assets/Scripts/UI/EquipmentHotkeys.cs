@@ -1,24 +1,20 @@
-// EquipmentHotkeys.cs
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class EquipmentHotkeys : MonoBehaviour
 {
-    public InputActionReference swapHands;  // bind to Q
-    public InputActionReference unequipLeft;  // bind to 1
-    public InputActionReference unequipRight; // bind to 2
+    public InputActionReference toggleHand; // bind to Q
+    public InputActionReference dropActive; // bind to G
 
     private void OnEnable()
     {
-        if (swapHands) swapHands.action.Enable();
-        if (unequipLeft) unequipLeft.action.Enable();
-        if (unequipRight) unequipRight.action.Enable();
+        if (toggleHand) toggleHand.action.Enable();
+        if (dropActive) dropActive.action.Enable();
     }
     private void OnDisable()
     {
-        if (swapHands) swapHands.action.Disable();
-        if (unequipLeft) unequipLeft.action.Disable();
-        if (unequipRight) unequipRight.action.Disable();
+        if (toggleHand) toggleHand.action.Disable();
+        if (dropActive) dropActive.action.Disable();
     }
 
     private void Update()
@@ -26,21 +22,18 @@ public class EquipmentHotkeys : MonoBehaviour
         var eq = EquipmentInventory.Instance;
         if (!eq) return;
 
-        if (swapHands && swapHands.action.WasPressedThisFrame())
-            eq.SwapHands();
+        if (toggleHand && toggleHand.action.WasPressedThisFrame())
+            eq.ToggleActiveHand();
 
-        if (unequipLeft && unequipLeft.action.WasPressedThisFrame())
+        if (dropActive && dropActive.action.WasPressedThisFrame())
         {
-            var item = eq.Unequip(EquipmentSlotType.LeftHand);
-            if (item && PlayerInventory.Instance)
-                PlayerInventory.Instance.inv.Add(item, 1);
-        }
-
-        if (unequipRight && unequipRight.action.WasPressedThisFrame())
-        {
-            var item = eq.Unequip(EquipmentSlotType.RightHand);
-            if (item && PlayerInventory.Instance)
-                PlayerInventory.Instance.inv.Add(item, 1);
+            var player = GameObject.FindGameObjectWithTag("Player");
+            if (player)
+            {
+                // Drop slightly in front of the player (optional offset)
+                Vector3 pos = player.transform.position + Vector3.up * 0.1f;
+                eq.DropActive(pos);
+            }
         }
     }
 }
