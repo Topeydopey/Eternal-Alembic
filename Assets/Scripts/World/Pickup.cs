@@ -1,34 +1,17 @@
-// Pickup.cs (equipment-only version)
+// Pickup.cs
 using UnityEngine;
 
-public class Pickup : MonoBehaviour, IInteractable
+public class Pickup : MonoBehaviour
 {
     public ItemSO item;
     [Min(1)] public int amount = 1;
 
-    public void Interact(GameObject interactor)
+    /// <summary>Removes 1 from this pickup. Destroys GO when empty. Returns true if one was taken.</summary>
+    public bool ConsumeOne()
     {
-        if (!item || amount <= 0) return;
-
-        var eq = EquipmentInventory.Instance;
-        if (!eq) return;
-
-        bool equipped = false;
-        // Equip as many single items as we can (usually your items are 1 anyway)
-        while (amount > 0 && eq.TryEquipToFirstAvailable(item))
-        {
-            amount--;
-            equipped = true;
-        }
-
-        if (equipped && amount <= 0)
-        {
-            Destroy(gameObject);
-        }
-        else
-        {
-            // Could not equip (no suitable slot). Keep the pickup in the world.
-            // TODO: show "Hands/Pockets full" feedback
-        }
+        if (!item || amount <= 0) return false;
+        amount -= 1;
+        if (amount <= 0) Destroy(gameObject);
+        return true;
     }
 }

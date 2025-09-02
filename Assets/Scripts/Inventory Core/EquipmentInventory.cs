@@ -72,6 +72,7 @@ public class EquipmentInventory : MonoBehaviour
     {
         var slot = Get(slotType);
         if (slot == null || !slot.Accepts(item)) return false;
+        if (!slot.IsEmpty) return false;  // active hand must be empty for pick-up
         slot.item = item;
         OnChanged?.Invoke();
         return true;
