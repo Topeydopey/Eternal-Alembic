@@ -1,125 +1,132 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerClickInteractor : MonoBehaviour
 {
     [Header("Input")]
-    public InputActionReference click; // bind to <Mouse>/leftButton
+    public InputActionReference click; // <Mouse>/leftButton
 
-    [Header("Raycast")]
-    public LayerMask pickupMask;       // include your "Pickup" layer here
+    [Header("Raycast Masks")]
+    public LayerMask tableMask;   // set to your "Table" layer
+    public LayerMask pickupMask;  // set to your "Pickup" layer
+
+    [Header("Options")]
     public bool blockWhenPointerOverUI = true;
 
     private Camera _cam;
 
     private void Awake()
     {
-        _cam = Camera.main;
-        if (!_cam) _cam = FindFirstObjectByType<Camera>();
+        _cam = Camera.main ?? FindFirstObjectByType<Camera>();
     }
 
     private void OnEnable()
     {
         if (click) click.action.Enable();
+        SceneManager.activeSceneChanged += OnSceneChanged;
     }
 
     private void OnDisable()
     {
+        SceneManager.activeSceneChanged -= OnSceneChanged;
         if (click) click.action.Disable();
+    }
+
+    private void OnSceneChanged(Scene prev, Scene next)
+    {
+        _cam = null; // force re-acquire next Update
     }
 
     private void Update()
     {
-        if (_cam == null)
-        {
-            _cam = Camera.main;
-            if (_cam == null) _cam = FindFirstObjectByType<Camera>();
-            if (_cam == null) return; // still no camera, skip this frame
-        }
-        if (click == null || !click.action.WasPressedThisFrame())
-            return;
+        if (click == null || !click.action.WasPressedThisFrame()) return;
 
-        if (blockWhenPointerOverUI && EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
-        {
-            // Comment this out if you want clicks to pass through UI
-            // Debug.Log("[ClickInteractor] Pointer over UI, ignoring world click.");
+        if (blockWhenPointerOverUI && EventSystem.current && EventSystem.current.IsPointerOverGameObject())
             return;
-        }
 
         if (_cam == null)
         {
-            Debug.LogWarning("[ClickInteractor] No camera found.");
-            return;
+            _cam = Camera.main ?? FindFirstObjectByType<Camera>();
+            if (_cam == null) return;
         }
 
         Vector2 screen = Mouse.current.position.ReadValue();
-        Vector3 world = _cam.ScreenToWorldPoint(screen);
-        world.z = 0f; // 2D world at z=0
-        Vector2 p = world;
+        Vector3 world3 = _cam.ScreenToWorldPoint(screen);
+        world3.z = 0f;
+        Vector2 world = world3;
 
-        // Hit all colliders under the cursor on the pickupMask
-        var hits = Physics2D.OverlapPointAll(p, pickupMask);
-        if (hits == null || hits.Length == 0)
-        {
-            // Debug.Log($"[ClickInteractor] Nothing at {p} on mask {pickupMask.value}.");
-            return;
-        }
-
-        // Find a Pickup on the collider or its parent/children
-        Pickup target = null;
-        foreach (var h in hits)
-        {
-            if (!h) continue;
-            target = h.GetComponent<Pickup>()
-                  ?? h.GetComponentInParent<Pickup>()
-                  ?? h.GetComponentInChildren<Pickup>();
-            if (target) break;
-        }
-        if (!target)
-        {
-            // Debug.Log("[ClickInteractor] Colliders found, but no Pickup component there.");
-            return;
-        }
-
-        // Try to put it into the active hand if empty & accepts the item
         var eq = EquipmentInventory.Instance;
         if (!eq) return;
+        var activeSlot = eq.Get(eq.activeHand);
+        if (activeSlot == null) return;
 
-        var handSlot = eq.Get(eq.activeHand);
-        if (handSlot == null)
+        // -------- 1) Take FROM table (hand empty) --------
+        if (activeSlot.IsEmpty)
         {
-            Debug.LogWarning("[ClickInteractor] Active hand slot missing.");
-            return;
+            var tableHit = Physics2D.OverlapPoint(world, tableMask);
+            if (tableHit)
+            {
+                var surface = tableHit.GetComponent<TableSurface>() ?? tableHit.GetComponentInParent<TableSurface>();
+                if (surface != null)
+                {
+                    var placed = surface.ItemAt(world);
+                    if (placed && activeSlot.Accepts(placed.item))
+                    {
+                        surface.Remove(placed);
+                        eq.TryEquip(eq.activeHand, placed.item);
+                        return;
+                    }
+                }
+            }
         }
 
-        if (!handSlot.IsEmpty)
+        // -------- 2) Place ONTO table (hand has item) --------
+        if (!activeSlot.IsEmpty)
         {
-            // Debug.Log("[ClickInteractor] Active hand occupied.");
-            return;
-        }
-        if (!handSlot.Accepts(target.item))
-        {
-            // Debug.Log("[ClickInteractor] Item doesn't fit in active hand.");
-            return;
+            var tableHit = Physics2D.OverlapPoint(world, tableMask);
+            if (tableHit)
+            {
+                var surface = tableHit.GetComponent<TableSurface>() ?? tableHit.GetComponentInParent<TableSurface>();
+                if (surface != null && surface.TryPlace(activeSlot.item, world, out _))
+                {
+                    eq.Unequip(eq.activeHand);
+                    return;
+                }
+            }
         }
 
-        // Consume one from the world stack, then equip in hand
-        if (target.ConsumeOne())
+        // -------- 3) Fallback: ground pickups (hand empty) --------
+        if (activeSlot.IsEmpty)
         {
-            eq.TryEquip(eq.activeHand, target.item);
-            // Debug.Log($"[ClickInteractor] Picked {target.item.displayName} into {eq.activeHand}.");
+            var hits = Physics2D.OverlapPointAll(world, pickupMask);
+            if (hits != null && hits.Length > 0)
+            {
+                Pickup target = null;
+                foreach (var h in hits)
+                {
+                    if (!h) continue;
+                    target = h.GetComponent<Pickup>() ?? h.GetComponentInParent<Pickup>() ?? h.GetComponentInChildren<Pickup>();
+                    if (target) break;
+                }
+
+                if (target && activeSlot.Accepts(target.item) && target.ConsumeOne())
+                {
+                    eq.TryEquip(eq.activeHand, target.item);
+                    return;
+                }
+            }
         }
     }
 
     private void OnDrawGizmosSelected()
     {
-        // Optional: draw a small gizmo at mouse for sanity
-        if (_cam == null) return;
-        var screen = Mouse.current?.position.ReadValue() ?? Vector2.zero;
+        if (_cam == null || Mouse.current == null) return;
+        var screen = Mouse.current.position.ReadValue();
         var world = _cam.ScreenToWorldPoint(screen);
         world.z = 0f;
         Gizmos.color = Color.magenta;
-        Gizmos.DrawWireSphere(world, 0.1f);
+        Gizmos.DrawWireSphere(world, 0.08f);
     }
 }
