@@ -8,9 +8,10 @@ public class PlayerClickInteractor : MonoBehaviour
     [Header("Input")]
     public InputActionReference click; // <Mouse>/leftButton
 
-    [Header("Raycast Masks")]
-    public LayerMask tableMask;   // set to your "Table" layer
-    public LayerMask pickupMask;  // set to your "Pickup" layer
+    [Header("Masks")]
+    public LayerMask interactableMask; // ProducerNode / Cauldron / BedSleep
+    public LayerMask tableMask;        // Table
+    public LayerMask pickupMask;       // Ground pickups
 
     [Header("Options")]
     public bool blockWhenPointerOverUI = true;
@@ -36,15 +37,13 @@ public class PlayerClickInteractor : MonoBehaviour
 
     private void OnSceneChanged(Scene prev, Scene next)
     {
-        _cam = null; // force re-acquire next Update
+        _cam = null; // re-acquire next frame
     }
 
     private void Update()
     {
         if (click == null || !click.action.WasPressedThisFrame()) return;
-
-        if (blockWhenPointerOverUI && EventSystem.current && EventSystem.current.IsPointerOverGameObject())
-            return;
+        if (blockWhenPointerOverUI && EventSystem.current && EventSystem.current.IsPointerOverGameObject()) return;
 
         if (_cam == null)
         {
@@ -53,54 +52,18 @@ public class PlayerClickInteractor : MonoBehaviour
         }
 
         Vector2 screen = Mouse.current.position.ReadValue();
-        Vector3 world3 = _cam.ScreenToWorldPoint(screen);
-        world3.z = 0f;
-        Vector2 world = world3;
+        Vector3 w3 = _cam.ScreenToWorldPoint(screen);
+        w3.z = 0f;
+        Vector2 w = w3;
 
         var eq = EquipmentInventory.Instance;
-        if (!eq) return;
-        var activeSlot = eq.Get(eq.activeHand);
-        if (activeSlot == null) return;
+        var activeSlot = eq ? eq.Get(eq.activeHand) : null;
+        if (!eq || activeSlot == null) return;
 
-        // -------- 1) Take FROM table (hand empty) --------
+        // -------- 0) If hand empty, try ground pickups FIRST --------
         if (activeSlot.IsEmpty)
         {
-            var tableHit = Physics2D.OverlapPoint(world, tableMask);
-            if (tableHit)
-            {
-                var surface = tableHit.GetComponent<TableSurface>() ?? tableHit.GetComponentInParent<TableSurface>();
-                if (surface != null)
-                {
-                    var placed = surface.ItemAt(world);
-                    if (placed && activeSlot.Accepts(placed.item))
-                    {
-                        surface.Remove(placed);
-                        eq.TryEquip(eq.activeHand, placed.item);
-                        return;
-                    }
-                }
-            }
-        }
-
-        // -------- 2) Place ONTO table (hand has item) --------
-        if (!activeSlot.IsEmpty)
-        {
-            var tableHit = Physics2D.OverlapPoint(world, tableMask);
-            if (tableHit)
-            {
-                var surface = tableHit.GetComponent<TableSurface>() ?? tableHit.GetComponentInParent<TableSurface>();
-                if (surface != null && surface.TryPlace(activeSlot.item, world, out _))
-                {
-                    eq.Unequip(eq.activeHand);
-                    return;
-                }
-            }
-        }
-
-        // -------- 3) Fallback: ground pickups (hand empty) --------
-        if (activeSlot.IsEmpty)
-        {
-            var hits = Physics2D.OverlapPointAll(world, pickupMask);
+            var hits = Physics2D.OverlapPointAll(w, pickupMask);
             if (hits != null && hits.Length > 0)
             {
                 Pickup target = null;
@@ -117,6 +80,55 @@ public class PlayerClickInteractor : MonoBehaviour
                     return;
                 }
             }
+        }
+
+        // -------- 1) Table: take (empty hand) --------
+        if (activeSlot.IsEmpty)
+        {
+            var tHit = Physics2D.OverlapPoint(w, tableMask);
+            if (tHit)
+            {
+                var ts = tHit.GetComponent<TableSurface>() ?? tHit.GetComponentInParent<TableSurface>();
+                if (ts != null)
+                {
+                    var pi = ts.ItemAt(w);
+                    if (pi && activeSlot.Accepts(pi.item))
+                    {
+                        ts.Remove(pi);
+                        eq.TryEquip(eq.activeHand, pi.item);
+                        return;
+                    }
+                }
+            }
+        }
+
+        // -------- 2) Table: place (holding) --------
+        if (!activeSlot.IsEmpty)
+        {
+            var tHit = Physics2D.OverlapPoint(w, tableMask);
+            if (tHit)
+            {
+                var ts = tHit.GetComponent<TableSurface>() ?? tHit.GetComponentInParent<TableSurface>();
+                if (ts && ts.TryPlace(activeSlot.item, w, out _))
+                {
+                    eq.Unequip(eq.activeHand);
+                    return;
+                }
+            }
+        }
+
+        // -------- 3) World interactables LAST --------
+        var iHit = Physics2D.OverlapPoint(w, interactableMask);
+        if (iHit)
+        {
+            var prod = iHit.GetComponentInParent<ProducerNode>() ?? iHit.GetComponent<ProducerNode>();
+            if (prod) { prod.ProduceOne(); return; }
+
+            var cauld = iHit.GetComponentInParent<Cauldron>() ?? iHit.GetComponent<Cauldron>();
+            if (cauld) { cauld.TryDepositFromActiveHand(); return; }
+
+            var bed = iHit.GetComponentInParent<BedSleep>() ?? iHit.GetComponent<BedSleep>();
+            if (bed) { bed.TrySleep(); return; }
         }
     }
 
