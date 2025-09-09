@@ -9,7 +9,7 @@ public class PlayerClickInteractor : MonoBehaviour
     public InputActionReference click; // <Mouse>/leftButton
 
     [Header("Masks")]
-    public LayerMask interactableMask; // ProducerNode / Cauldron / BedSleep
+    public LayerMask interactableMask; // ProducerNode / Cauldron / BedSleep / PotController
     public LayerMask tableMask;        // Table
     public LayerMask pickupMask;       // Ground pickups
 
@@ -52,9 +52,8 @@ public class PlayerClickInteractor : MonoBehaviour
         }
 
         Vector2 screen = Mouse.current.position.ReadValue();
-        Vector3 w3 = _cam.ScreenToWorldPoint(screen);
-        w3.z = 0f;
-        Vector2 w = w3;
+        Vector3 w3 = _cam.ScreenToWorldPoint(screen); w3.z = 0f;
+        Vector2 w = (Vector2)w3;
 
         var eq = EquipmentInventory.Instance;
         var activeSlot = eq ? eq.Get(eq.activeHand) : null;
@@ -117,16 +116,31 @@ public class PlayerClickInteractor : MonoBehaviour
             }
         }
 
-        // -------- 3) World interactables LAST --------
+        // -------- 3) World interactables LAST (includes Pot) --------
         var iHit = Physics2D.OverlapPoint(w, interactableMask);
         if (iHit)
         {
+            // Pot: try insert seed / add potion if holding item
+            var pot = iHit.GetComponentInParent<PotController>() ?? iHit.GetComponent<PotController>();
+            if (pot && !activeSlot.IsEmpty)
+            {
+                var item = activeSlot.item;
+                if (pot.TryInsertSeed(item) || pot.TryAddPotion(item))
+                {
+                    eq.Unequip(eq.activeHand); // consume the item on success
+                    return;
+                }
+            }
+
+            // Producer node
             var prod = iHit.GetComponentInParent<ProducerNode>() ?? iHit.GetComponent<ProducerNode>();
             if (prod) { prod.ProduceOne(); return; }
 
+            // Cauldron
             var cauld = iHit.GetComponentInParent<Cauldron>() ?? iHit.GetComponent<Cauldron>();
             if (cauld) { cauld.TryDepositFromActiveHand(); return; }
 
+            // Bed
             var bed = iHit.GetComponentInParent<BedSleep>() ?? iHit.GetComponent<BedSleep>();
             if (bed) { bed.TrySleep(); return; }
         }
