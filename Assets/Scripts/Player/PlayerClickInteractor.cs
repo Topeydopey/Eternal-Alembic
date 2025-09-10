@@ -132,6 +132,27 @@ public class PlayerClickInteractor : MonoBehaviour
                 }
             }
 
+            var pestle = iHit.GetComponentInParent<PestleController>() ?? iHit.GetComponent<PestleController>();
+            if (pestle)
+            {
+                // If holding something, try with item
+                if (!activeSlot.IsEmpty)
+                {
+                    var item = activeSlot.item;
+                    if (pestle.TryInsertDeadPlant(item) || pestle.TryAddMortar(item))
+                    {
+                        eq.Unequip(eq.activeHand); // consume used item
+                        return;
+                    }
+                }
+                else
+                {
+                    // Empty hand: allow second click to start grind
+                    if (pestle.TryGrindNoTool())
+                        return;
+                }
+            }
+
             // Producer node
             var prod = iHit.GetComponentInParent<ProducerNode>() ?? iHit.GetComponent<ProducerNode>();
             if (prod) { prod.ProduceOne(); return; }
