@@ -2530,7 +2530,7 @@ MonoBehaviour:
   loadedSprite: {fileID: -7056618491153410319, guid: ec6eb6d61e6f43e499a2329329ca113b, type: 3}
   grindTime: 1
   plantRemnantsPickupPrefab: {fileID: 6573212671949083094, guid: 8dd0d79e551554e499f12dc91bb41aa5, type: 3}
-  seedPickupPrefab: {fileID: 2570127111938726563, guid: ee0ca486587a22b44a33c472f5e37c15, type: 3}
+  seedPickupPrefab: {fileID: 0}
   spawnPoint: {fileID: 850363760}
   deadPlantId: dead_plant
   mortarId: mortar
@@ -2637,7 +2637,7 @@ Transform:
   m_GameObject: {fileID: 850363756}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.523, y: 1.391, z: 0}
+  m_LocalPosition: {x: 4.59, y: -0.22, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3270,6 +3270,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SpawnPoint
   spawnId: FromBogPath
+  placeWhenNoRouter: 0
   defaultSpawn: 0
 --- !u!1 &1213780057
 GameObject:

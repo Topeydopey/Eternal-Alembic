@@ -2,8 +2,12 @@ using UnityEngine;
 
 public class SpawnPoint : MonoBehaviour
 {
-    public string spawnId;      // must match a portal's destinationSpawnId
-    public bool defaultSpawn;   // used when no NextSpawnId was set
+    [Header("Identity")]
+    public string spawnId;        // must match a portal's destinationSpawnId
+
+    [Header("When there is NO NextSpawnId...")]
+    public bool placeWhenNoRouter = false; // <-- default OFF; set true only in scenes where you still want an auto-spawn
+    public bool defaultSpawn = false;      // used only if placeWhenNoRouter is true
 
     private void Start()
     {
@@ -11,26 +15,32 @@ public class SpawnPoint : MonoBehaviour
         if (FindFirstObjectByType<SpawnPoint>() != this) return;
 
         var player = GameObject.FindGameObjectWithTag("Player");
-        if (player == null) return;
+        if (!player) return;
 
-        // choose spawn: match id or use default
-        SpawnPoint chosen = null;
-
+        // 1) If coming from a portal, honor NextSpawnId
         if (!string.IsNullOrEmpty(SpawnRouter.NextSpawnId))
         {
+            SpawnPoint chosen = null;
             foreach (var sp in FindObjectsByType<SpawnPoint>(FindObjectsSortMode.None))
                 if (sp.spawnId == SpawnRouter.NextSpawnId) { chosen = sp; break; }
-        }
-        if (chosen == null)
-        {
-            foreach (var sp in FindObjectsByType<SpawnPoint>(FindObjectsSortMode.None))
-                if (sp.defaultSpawn) { chosen = sp; break; }
-        }
-        if (chosen == null) chosen = this; // fallback
 
-        player.transform.position = chosen.transform.position;
+            if (chosen) player.transform.position = chosen.transform.position;
 
-        // clear router so future loads can use defaults
-        SpawnRouter.NextSpawnId = null;
+            // consume once
+            SpawnRouter.NextSpawnId = null;
+            return;
+        }
+
+        // 2) If NOT coming from a portal:
+        //    Only move the player if you explicitly want that in this scene
+        if (!placeWhenNoRouter) return; // <-- pressing Play will keep the player where you put them in the editor
+
+        // optional default behavior (legacy)
+        SpawnPoint fallback = null;
+        foreach (var sp in FindObjectsByType<SpawnPoint>(FindObjectsSortMode.None))
+            if (sp.defaultSpawn) { fallback = sp; break; }
+
+        if (!fallback) fallback = this;
+        player.transform.position = fallback.transform.position;
     }
 }
