@@ -72,7 +72,6 @@ public class PlayerClickInteractor : MonoBehaviour
                     target = h.GetComponent<Pickup>() ?? h.GetComponentInParent<Pickup>() ?? h.GetComponentInChildren<Pickup>();
                     if (target) break;
                 }
-
                 if (target && activeSlot.Accepts(target.item) && target.ConsumeOne())
                 {
                     eq.TryEquip(eq.activeHand, target.item);
@@ -81,7 +80,55 @@ public class PlayerClickInteractor : MonoBehaviour
             }
         }
 
-        // -------- 1) Table: take (empty hand) --------
+        // -------- 1) INTERACTABLES (Pot/Pestle/Cauldron/Bed/Producer) --------
+        var iHit = Physics2D.OverlapPoint(w, interactableMask);
+        if (iHit)
+        {
+            // Pot
+            var pot = iHit.GetComponentInParent<PotController>() ?? iHit.GetComponent<PotController>();
+            if (pot && !activeSlot.IsEmpty)
+            {
+                var item = activeSlot.item;
+                if (pot.TryInsertSeed(item) || pot.TryAddPotion(item))
+                {
+                    eq.Unequip(eq.activeHand);
+                    return;
+                }
+            }
+
+            // Pestle
+            var pestle = iHit.GetComponentInParent<PestleController>() ?? iHit.GetComponent<PestleController>();
+            if (pestle)
+            {
+                if (!activeSlot.IsEmpty)
+                {
+                    var item = activeSlot.item;
+                    if (pestle.TryInsertDeadPlant(item) || pestle.TryAddMortar(item))
+                    {
+                        eq.Unequip(eq.activeHand);
+                        return;
+                    }
+                }
+                else
+                {
+                    if (pestle.TryGrindNoTool()) return;
+                }
+            }
+
+            // Producer
+            var prod = iHit.GetComponentInParent<ProducerNode>() ?? iHit.GetComponent<ProducerNode>();
+            if (prod) { prod.ProduceOne(); return; }
+
+            // Cauldron
+            var cauld = iHit.GetComponentInParent<Cauldron>() ?? iHit.GetComponent<Cauldron>();
+            if (cauld) { cauld.TryDepositFromActiveHand(); return; }
+
+            // Bed
+            var bed = iHit.GetComponentInParent<BedSleep>() ?? iHit.GetComponent<BedSleep>();
+            if (bed) { bed.TrySleep(); return; }
+        }
+
+        // -------- 2) TABLE: take (if empty hand) --------
         if (activeSlot.IsEmpty)
         {
             var tHit = Physics2D.OverlapPoint(w, tableMask);
@@ -101,7 +148,7 @@ public class PlayerClickInteractor : MonoBehaviour
             }
         }
 
-        // -------- 2) Table: place (holding) --------
+        // -------- 3) TABLE: place (if holding) --------
         if (!activeSlot.IsEmpty)
         {
             var tHit = Physics2D.OverlapPoint(w, tableMask);
@@ -114,56 +161,6 @@ public class PlayerClickInteractor : MonoBehaviour
                     return;
                 }
             }
-        }
-
-        // -------- 3) World interactables LAST (includes Pot) --------
-        var iHit = Physics2D.OverlapPoint(w, interactableMask);
-        if (iHit)
-        {
-            // Pot: try insert seed / add potion if holding item
-            var pot = iHit.GetComponentInParent<PotController>() ?? iHit.GetComponent<PotController>();
-            if (pot && !activeSlot.IsEmpty)
-            {
-                var item = activeSlot.item;
-                if (pot.TryInsertSeed(item) || pot.TryAddPotion(item))
-                {
-                    eq.Unequip(eq.activeHand); // consume the item on success
-                    return;
-                }
-            }
-
-            var pestle = iHit.GetComponentInParent<PestleController>() ?? iHit.GetComponent<PestleController>();
-            if (pestle)
-            {
-                // If holding something, try with item
-                if (!activeSlot.IsEmpty)
-                {
-                    var item = activeSlot.item;
-                    if (pestle.TryInsertDeadPlant(item) || pestle.TryAddMortar(item))
-                    {
-                        eq.Unequip(eq.activeHand); // consume used item
-                        return;
-                    }
-                }
-                else
-                {
-                    // Empty hand: allow second click to start grind
-                    if (pestle.TryGrindNoTool())
-                        return;
-                }
-            }
-
-            // Producer node
-            var prod = iHit.GetComponentInParent<ProducerNode>() ?? iHit.GetComponent<ProducerNode>();
-            if (prod) { prod.ProduceOne(); return; }
-
-            // Cauldron
-            var cauld = iHit.GetComponentInParent<Cauldron>() ?? iHit.GetComponent<Cauldron>();
-            if (cauld) { cauld.TryDepositFromActiveHand(); return; }
-
-            // Bed
-            var bed = iHit.GetComponentInParent<BedSleep>() ?? iHit.GetComponent<BedSleep>();
-            if (bed) { bed.TrySleep(); return; }
         }
     }
 
