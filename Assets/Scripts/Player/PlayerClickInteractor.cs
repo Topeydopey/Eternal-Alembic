@@ -97,23 +97,8 @@ public class PlayerClickInteractor : MonoBehaviour
             }
 
             // Pestle
-            var pestle = iHit.GetComponentInParent<PestleController>() ?? iHit.GetComponent<PestleController>();
-            if (pestle)
-            {
-                if (!activeSlot.IsEmpty)
-                {
-                    var item = activeSlot.item;
-                    if (pestle.TryInsertDeadPlant(item) || pestle.TryAddMortar(item))
-                    {
-                        eq.Unequip(eq.activeHand);
-                        return;
-                    }
-                }
-                else
-                {
-                    if (pestle.TryGrindNoTool()) return;
-                }
-            }
+            var ws = iHit.GetComponentInParent<WorkstationLauncher>() ?? iHit.GetComponent<WorkstationLauncher>();
+            if (ws) { ws.Launch(); return; }
 
             // Producer
             var prod = iHit.GetComponentInParent<ProducerNode>() ?? iHit.GetComponent<ProducerNode>();
