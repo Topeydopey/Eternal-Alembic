@@ -123,9 +123,11 @@ public class PlayerClickInteractor : MonoBehaviour
             var cauld = iHit.GetComponentInParent<Cauldron>() ?? iHit.GetComponent<Cauldron>();
             if (cauld) { cauld.TryDepositFromActiveHand(); return; }
 
-            // Bed
+            // 
+            /*
             var bed = iHit.GetComponentInParent<BedSleep>() ?? iHit.GetComponent<BedSleep>();
             if (bed) { bed.TrySleep(); return; }
+            */
         }
 
         // -------- 2) TABLE: take (if empty hand) --------

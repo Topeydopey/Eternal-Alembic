@@ -297,8 +297,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameState
   requiredPerDay:
   - {fileID: 11400000, guid: 01b30b04d9951724ba2074b8c864c05b, type: 2}
+  - {fileID: 11400000, guid: 9c7d568ed7ba60d4bb5f7ce3d48fbaf9, type: 2}
   currentDay: 1
   depositedToday: 0
+  advanceOnSubmit: 1
 --- !u!4 &47327640
 Transform:
   m_ObjectHideFlags: 0
@@ -3378,6 +3380,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54b59a91c8734ff468eeb111ff97e60a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentInventory
+  singleHandMode: 1
   leftHand:
     type: 0
     item: {fileID: 0}

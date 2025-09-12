@@ -5,6 +5,9 @@ public class EquipmentInventory : MonoBehaviour
 {
     public static EquipmentInventory Instance { get; private set; }
 
+    [Header("Mode")]
+    public bool singleHandMode = true;   // <- NEW: true = only LeftHand is used
+
     [Header("Slots")]
     public EquipmentSlot leftHand = new() { type = EquipmentSlotType.LeftHand };
     public EquipmentSlot rightHand = new() { type = EquipmentSlotType.RightHand };
@@ -25,26 +28,34 @@ public class EquipmentInventory : MonoBehaviour
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+
+        if (singleHandMode)
+            activeHand = EquipmentSlotType.LeftHand; // hard-lock to left
     }
 
-    public EquipmentSlot Get(EquipmentSlotType t) => t switch
+    public EquipmentSlot Get(EquipmentSlotType t)
     {
-        EquipmentSlotType.LeftHand => leftHand,
-        EquipmentSlotType.RightHand => rightHand,
-        EquipmentSlotType.PocketL => pocketL,
-        EquipmentSlotType.PocketR => pocketR,
-        _ => null
-    };
+        if (singleHandMode && t == EquipmentSlotType.RightHand) return null; // disable right hand
+        return t switch
+        {
+            EquipmentSlotType.LeftHand => leftHand,
+            EquipmentSlotType.RightHand => rightHand,
+            EquipmentSlotType.PocketL => pocketL,
+            EquipmentSlotType.PocketR => pocketR,
+            _ => null
+        };
+    }
 
-    // Prefer active hand if empty, then the other hand, then pockets.
+    // Prefer active hand (Left), then pockets. Right hand ignored in single-hand mode.
     public bool TryEquipToFirstAvailable(ItemSO item)
     {
         if (item == null) return false;
 
-        // Build an order that prefers the current active hand
-        EquipmentSlotType[] order = (activeHand == EquipmentSlotType.LeftHand)
-            ? new[] { EquipmentSlotType.LeftHand, EquipmentSlotType.RightHand, EquipmentSlotType.PocketL, EquipmentSlotType.PocketR }
-            : new[] { EquipmentSlotType.RightHand, EquipmentSlotType.LeftHand, EquipmentSlotType.PocketL, EquipmentSlotType.PocketR };
+        EquipmentSlotType[] order = singleHandMode
+            ? new[] { EquipmentSlotType.LeftHand, EquipmentSlotType.PocketL, EquipmentSlotType.PocketR }
+            : (activeHand == EquipmentSlotType.LeftHand)
+                ? new[] { EquipmentSlotType.LeftHand, EquipmentSlotType.RightHand, EquipmentSlotType.PocketL, EquipmentSlotType.PocketR }
+                : new[] { EquipmentSlotType.RightHand, EquipmentSlotType.LeftHand, EquipmentSlotType.PocketL, EquipmentSlotType.PocketR };
 
         foreach (var t in order)
         {
@@ -56,11 +67,12 @@ public class EquipmentInventory : MonoBehaviour
                 return true;
             }
         }
-        return false; // nowhere to put it
+        return false;
     }
 
     public void SetActiveHand(EquipmentSlotType hand)
     {
+        if (singleHandMode) { activeHand = EquipmentSlotType.LeftHand; OnChanged?.Invoke(); return; }
         if (hand == EquipmentSlotType.LeftHand || hand == EquipmentSlotType.RightHand)
         {
             activeHand = hand;
@@ -72,7 +84,7 @@ public class EquipmentInventory : MonoBehaviour
     {
         var slot = Get(slotType);
         if (slot == null || !slot.Accepts(item)) return false;
-        if (!slot.IsEmpty) return false;  // active hand must be empty for pick-up
+        if (!slot.IsEmpty) return false;
         slot.item = item;
         OnChanged?.Invoke();
         return true;
@@ -88,7 +100,6 @@ public class EquipmentInventory : MonoBehaviour
         return outItem;
     }
 
-    // Move or swap between two equipment slots
     public bool MoveOrSwap(EquipmentSlotType from, EquipmentSlotType to)
     {
         if (from == to) return false;
@@ -99,7 +110,6 @@ public class EquipmentInventory : MonoBehaviour
         var itemA = a.item;
         var itemB = b.item;
 
-        // Move into empty if accepted
         if (b.IsEmpty)
         {
             if (!b.Accepts(itemA)) return false;
@@ -109,7 +119,6 @@ public class EquipmentInventory : MonoBehaviour
             return true;
         }
 
-        // Swap if both sides accept each other
         if (b.Accepts(itemA) && a.Accepts(itemB))
         {
             a.item = itemB;
@@ -121,16 +130,21 @@ public class EquipmentInventory : MonoBehaviour
         return false;
     }
 
-    // Toggle active hand (does NOT swap items)
     public void ToggleActiveHand()
     {
+        if (singleHandMode)
+        {
+            activeHand = EquipmentSlotType.LeftHand; // no toggle
+            OnChanged?.Invoke();
+            return;
+        }
+
         activeHand = (activeHand == EquipmentSlotType.LeftHand)
             ? EquipmentSlotType.RightHand
             : EquipmentSlotType.LeftHand;
         OnChanged?.Invoke();
     }
 
-    // Drop an item from a slot to the world (spawns a Pickup)
     public bool Drop(EquipmentSlotType from, Vector3 worldPosition)
     {
         var item = Unequip(from);
@@ -149,6 +163,5 @@ public class EquipmentInventory : MonoBehaviour
         return true;
     }
 
-    // Convenience: drop from active hand
     public bool DropActive(Vector3 worldPosition) => Drop(activeHand, worldPosition);
 }

@@ -14,6 +14,7 @@ public class GameState : MonoBehaviour
     public bool depositedToday = false;
 
     public event Action OnChanged;     // HUD can listen
+    public bool advanceOnSubmit = true; // NEW
 
     private void Awake()
     {
@@ -44,9 +45,12 @@ public class GameState : MonoBehaviour
         {
             depositedToday = true;
             OnChanged?.Invoke();
+
+            if (advanceOnSubmit)
+                NextDay(); // reuse your existing increment/reset
+
             return true;
         }
-        // optional: allow wrong items? for now, reject
         return false;
     }
 
