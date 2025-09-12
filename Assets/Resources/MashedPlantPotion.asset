@@ -15,5 +15,5 @@ MonoBehaviour:
   id: mashed_plant_potion
   displayName: Mashed Plant Potion
   icon: {fileID: -3816220521141226221, guid: 263705763866c9d428fb464eede93123, type: 3}
-  maxStack: 1
   size: 0
+  tablePrefab: {fileID: 6573212671949083094, guid: 8dd0d79e551554e499f12dc91bb41aa5, type: 3}

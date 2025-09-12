@@ -5,12 +5,16 @@ using UnityEngine;
 public class TableSurface : MonoBehaviour
 {
     [Header("Grid")]
-    public float cellSize = 0.32f;              // tweak to match your art
-    public GameObject placedItemPrefab;         // prefab with SpriteRenderer + PlacedItem
-    public LayerMask tableItemMask;             // includes "TableItem" layer for placed item colliders
+    public float cellSize = 0.32f;
+
+    [Header("Prefabs")]
+    public GameObject placedItemPrefab;   // fallback if the item has no tablePrefab
+
+    [Header("Masks")]
+    public LayerMask tableItemMask;       // for ItemAt() (should include TableItem)
 
     private BoxCollider2D _box;
-    private readonly HashSet<Vector2Int> _occupied = new(); // which cells are used
+    private readonly HashSet<Vector2Int> _occupied = new();
 
     void Awake() { _box = GetComponent<BoxCollider2D>(); }
 
@@ -19,7 +23,7 @@ public class TableSurface : MonoBehaviour
         placed = null;
         if (!item) return false;
 
-        // localize & inside tabletop?
+        // inside tabletop?
         Vector2 local = transform.InverseTransformPoint(worldPoint);
         Vector2 min = (Vector2)_box.offset - _box.size * 0.5f;
         Vector2 max = (Vector2)_box.offset + _box.size * 0.5f;
@@ -32,17 +36,26 @@ public class TableSurface : MonoBehaviour
             Mathf.FloorToInt((local.y - origin.y) / cellSize)
         );
 
-        // 1x1 occupancy check
-        if (_occupied.Contains(cell)) return false;
+        if (_occupied.Contains(cell)) return false; // 1x1 occupancy
 
-        // spawn visual as child of table
-        var go = Instantiate(placedItemPrefab, transform);
+        // choose per-item prefab or fallback
+        var prefab = item.tablePrefab != null ? item.tablePrefab : placedItemPrefab;
+
+        // spawn as child of table
+        var go = Instantiate(prefab, transform);              // <-- use prefab, not placedItemPrefab
         Vector2 centerLocal = origin + new Vector2((cell.x + 0.5f) * cellSize, (cell.y + 0.5f) * cellSize);
         go.transform.localPosition = centerLocal;
 
+        // ensure correct layer for clicks
+        int tableItemLayer = LayerMask.NameToLayer("TableItem");
+        if (tableItemLayer >= 0) SetLayerRecursively(go, tableItemLayer);
+
+        // ensure PlacedItem & init
         var pi = go.GetComponent<PlacedItem>();
         if (!pi) pi = go.AddComponent<PlacedItem>();
-        pi.Init(item);
+
+        // if your PlacedItem has Init(ItemSO, float), use that; else Init(ItemSO)
+        pi.Init(item, cellSize);
 
         _occupied.Add(cell);
         placed = pi;
@@ -51,17 +64,14 @@ public class TableSurface : MonoBehaviour
 
     public PlacedItem ItemAt(Vector2 worldPoint)
     {
-        // find a placed item by collider
         var hit = Physics2D.OverlapPoint(worldPoint, tableItemMask);
-        if (!hit) return null;
-        return hit.GetComponentInParent<PlacedItem>();
+        return hit ? hit.GetComponentInParent<PlacedItem>() : null;
     }
 
     public void Remove(PlacedItem pi)
     {
         if (!pi) return;
 
-        // compute cell from current position
         Vector2 min = (Vector2)_box.offset - _box.size * 0.5f;
         Vector2 origin = min;
         Vector2 pos = pi.transform.localPosition;
@@ -72,5 +82,11 @@ public class TableSurface : MonoBehaviour
 
         _occupied.Remove(cell);
         Destroy(pi.gameObject);
+    }
+
+    private void SetLayerRecursively(GameObject obj, int layer)
+    {
+        obj.layer = layer;
+        foreach (Transform t in obj.transform) SetLayerRecursively(t.gameObject, layer);
     }
 }

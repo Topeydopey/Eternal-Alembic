@@ -15,5 +15,5 @@ MonoBehaviour:
   id: seed
   displayName: Seed
   icon: {fileID: -7866928900747384746, guid: 7f1728d799243ef45b101b15c555549c, type: 3}
-  maxStack: 1
   size: 0
+  tablePrefab: {fileID: 2570127111938726563, guid: ee0ca486587a22b44a33c472f5e37c15, type: 3}

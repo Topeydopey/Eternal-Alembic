@@ -15,5 +15,5 @@ MonoBehaviour:
   id: growth_potion
   displayName: Growth Potion
   icon: {fileID: 3870264850410026658, guid: 127184011bbf9aa42bad7dcdb524bc10, type: 3}
-  maxStack: 1
   size: 0
+  tablePrefab: {fileID: 6173732605823657975, guid: 7bc5499114151a84fa4c93e41e4f962b, type: 3}
