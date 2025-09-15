@@ -1,0 +1,899 @@
+fileFormatVersion: 2
+guid: 75e207e6691928c4587cee11859777ea
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 3818262671205694226
+    second: Green Alchemist_TurnGold-Sheet_0
+  - first:
+      213: 4834924234959807368
+    second: Green Alchemist_TurnGold-Sheet_1
+  - first:
+      213: 7427617927234719208
+    second: Green Alchemist_TurnGold-Sheet_2
+  - first:
+      213: -2641894575991691994
+    second: Green Alchemist_TurnGold-Sheet_3
+  - first:
+      213: -2367714319753143415
+    second: Green Alchemist_TurnGold-Sheet_4
+  - first:
+      213: 4086333538278327677
+    second: Green Alchemist_TurnGold-Sheet_5
+  - first:
+      213: 1991922930663339140
+    second: Green Alchemist_TurnGold-Sheet_6
+  - first:
+      213: -1530283844353247040
+    second: Green Alchemist_TurnGold-Sheet_7
+  - first:
+      213: 8228671732943808731
+    second: Green Alchemist_TurnGold-Sheet_8
+  - first:
+      213: -5179053709899465878
+    second: Green Alchemist_TurnGold-Sheet_9
+  - first:
+      213: 2417151429045107336
+    second: Green Alchemist_TurnGold-Sheet_10
+  - first:
+      213: 2711649385476852810
+    second: Green Alchemist_TurnGold-Sheet_11
+  - first:
+      213: -3926459628032200195
+    second: Green Alchemist_TurnGold-Sheet_12
+  - first:
+      213: -5369292462227482064
+    second: Green Alchemist_TurnGold-Sheet_13
+  - first:
+      213: 6570305505568189389
+    second: Green Alchemist_TurnGold-Sheet_14
+  - first:
+      213: -356862778833938165
+    second: Green Alchemist_TurnGold-Sheet_15
+  - first:
+      213: 9067253044487564612
+    second: Green Alchemist_TurnGold-Sheet_16
+  - first:
+      213: -4905370165421083217
+    second: Green Alchemist_TurnGold-Sheet_17
+  - first:
+      213: -6060691904751769047
+    second: Green Alchemist_TurnGold-Sheet_18
+  - first:
+      213: 6973090735985894096
+    second: Green Alchemist_TurnGold-Sheet_19
+  - first:
+      213: 1188681585711300865
+    second: Green Alchemist_TurnGold-Sheet_20
+  - first:
+      213: -4748682109586963826
+    second: Green Alchemist_TurnGold-Sheet_21
+  - first:
+      213: 5744895905763175207
+    second: Green Alchemist_TurnGold-Sheet_22
+  - first:
+      213: 4637354489690506755
+    second: Green Alchemist_TurnGold-Sheet_23
+  - first:
+      213: -7156364611553462530
+    second: Green Alchemist_TurnGold-Sheet_24
+  - first:
+      213: 5393988668189958576
+    second: Green Alchemist_TurnGold-Sheet_25
+  - first:
+      213: -1294477870458236808
+    second: Green Alchemist_TurnGold-Sheet_26
+  - first:
+      213: 7631008380154947522
+    second: Green Alchemist_TurnGold-Sheet_27
+  - first:
+      213: 277234719459892419
+    second: Green Alchemist_TurnGold-Sheet_28
+  - first:
+      213: 1135983368473499378
+    second: Green Alchemist_TurnGold-Sheet_29
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 16
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Green Alchemist_TurnGold-Sheet_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 21b79506ba13df430800000000000000
+      internalID: 3818262671205694226
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Green Alchemist_TurnGold-Sheet_1
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 883e4b4a9f9191340800000000000000
+      internalID: 4834924234959807368
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Green Alchemist_TurnGold-Sheet_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ed0620d623341760800000000000000
+      internalID: 7427617927234719208
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Green Alchemist_TurnGold-Sheet_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 625ebf761ea165bd0800000000000000
+      internalID: -2641894575991691994
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Green Alchemist_TurnGold-Sheet_4
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 98b1281fe50342fd0800000000000000
+      internalID: -2367714319753143415
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Green Alchemist_TurnGold-Sheet_5
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d7548d6e3b295b830800000000000000
+      internalID: 4086333538278327677
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Green Alchemist_TurnGold-Sheet_6
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 484b42e0a5bb4ab10800000000000000
+      internalID: 1991922930663339140
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Green Alchemist_TurnGold-Sheet_7
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0c83ecb83f653cae0800000000000000
+      internalID: -1530283844353247040
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Green Alchemist_TurnGold-Sheet_8
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bd8e96ff75d123270800000000000000
+      internalID: 8228671732943808731
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Green Alchemist_TurnGold-Sheet_9
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a6bf5c4371e4028b0800000000000000
+      internalID: -5179053709899465878
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Green Alchemist_TurnGold-Sheet_10
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 88abf880b627b8120800000000000000
+      internalID: 2417151429045107336
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Green Alchemist_TurnGold-Sheet_11
+      rect:
+        serializedVersion: 2
+        x: 352
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a4c01c8cfb6b1a520800000000000000
+      internalID: 2711649385476852810
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Green Alchemist_TurnGold-Sheet_12
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: df17a3685c96289c0800000000000000
+      internalID: -3926459628032200195
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Green Alchemist_TurnGold-Sheet_13
+      rect:
+        serializedVersion: 2
+        x: 416
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 03a9fbd04f07c75b0800000000000000
+      internalID: -5369292462227482064
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Green Alchemist_TurnGold-Sheet_14
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dcb6f2ddb0a6e2b50800000000000000
+      internalID: 6570305505568189389
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Green Alchemist_TurnGold-Sheet_15
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b095b02813b2c0bf0800000000000000
+      internalID: -356862778833938165
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Green Alchemist_TurnGold-Sheet_16
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 44da2458a9a55dd70800000000000000
+      internalID: 9067253044487564612
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Green Alchemist_TurnGold-Sheet_17
+      rect:
+        serializedVersion: 2
+        x: 544
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fa5f64603df9cebb0800000000000000
+      internalID: -4905370165421083217
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Green Alchemist_TurnGold-Sheet_18
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 92a6f24d2d814eba0800000000000000
+      internalID: -6060691904751769047
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Green Alchemist_TurnGold-Sheet_19
+      rect:
+        serializedVersion: 2
+        x: 608
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d2a101541565c060800000000000000
+      internalID: 6973090735985894096
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Green Alchemist_TurnGold-Sheet_20
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 101ce53ba9b0f7010800000000000000
+      internalID: 1188681585711300865
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Green Alchemist_TurnGold-Sheet_21
+      rect:
+        serializedVersion: 2
+        x: 672
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e8201dae7ca491eb0800000000000000
+      internalID: -4748682109586963826
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Green Alchemist_TurnGold-Sheet_22
+      rect:
+        serializedVersion: 2
+        x: 704
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72b2c967368f9bf40800000000000000
+      internalID: 5744895905763175207
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Green Alchemist_TurnGold-Sheet_23
+      rect:
+        serializedVersion: 2
+        x: 736
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 306c09fa6513b5040800000000000000
+      internalID: 4637354489690506755
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Green Alchemist_TurnGold-Sheet_24
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ef6fd254d4c7fac90800000000000000
+      internalID: -7156364611553462530
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Green Alchemist_TurnGold-Sheet_25
+      rect:
+        serializedVersion: 2
+        x: 800
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0b1e1f97d1c4bda40800000000000000
+      internalID: 5393988668189958576
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Green Alchemist_TurnGold-Sheet_26
+      rect:
+        serializedVersion: 2
+        x: 832
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8709bb93c37190ee0800000000000000
+      internalID: -1294477870458236808
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Green Alchemist_TurnGold-Sheet_27
+      rect:
+        serializedVersion: 2
+        x: 864
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2c72a21e0b9c6e960800000000000000
+      internalID: 7631008380154947522
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Green Alchemist_TurnGold-Sheet_28
+      rect:
+        serializedVersion: 2
+        x: 896
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3ccdfcc228fe8d300800000000000000
+      internalID: 277234719459892419
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Green Alchemist_TurnGold-Sheet_29
+      rect:
+        serializedVersion: 2
+        x: 928
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2f65d9cdad2d3cf00800000000000000
+      internalID: 1135983368473499378
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: d069888956cc6504abd3193a0587c53e
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":32.0,"y":32.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Green Alchemist_TurnGold-Sheet_0: 3818262671205694226
+      Green Alchemist_TurnGold-Sheet_1: 4834924234959807368
+      Green Alchemist_TurnGold-Sheet_10: 2417151429045107336
+      Green Alchemist_TurnGold-Sheet_11: 2711649385476852810
+      Green Alchemist_TurnGold-Sheet_12: -3926459628032200195
+      Green Alchemist_TurnGold-Sheet_13: -5369292462227482064
+      Green Alchemist_TurnGold-Sheet_14: 6570305505568189389
+      Green Alchemist_TurnGold-Sheet_15: -356862778833938165
+      Green Alchemist_TurnGold-Sheet_16: 9067253044487564612
+      Green Alchemist_TurnGold-Sheet_17: -4905370165421083217
+      Green Alchemist_TurnGold-Sheet_18: -6060691904751769047
+      Green Alchemist_TurnGold-Sheet_19: 6973090735985894096
+      Green Alchemist_TurnGold-Sheet_2: 7427617927234719208
+      Green Alchemist_TurnGold-Sheet_20: 1188681585711300865
+      Green Alchemist_TurnGold-Sheet_21: -4748682109586963826
+      Green Alchemist_TurnGold-Sheet_22: 5744895905763175207
+      Green Alchemist_TurnGold-Sheet_23: 4637354489690506755
+      Green Alchemist_TurnGold-Sheet_24: -7156364611553462530
+      Green Alchemist_TurnGold-Sheet_25: 5393988668189958576
+      Green Alchemist_TurnGold-Sheet_26: -1294477870458236808
+      Green Alchemist_TurnGold-Sheet_27: 7631008380154947522
+      Green Alchemist_TurnGold-Sheet_28: 277234719459892419
+      Green Alchemist_TurnGold-Sheet_29: 1135983368473499378
+      Green Alchemist_TurnGold-Sheet_3: -2641894575991691994
+      Green Alchemist_TurnGold-Sheet_4: -2367714319753143415
+      Green Alchemist_TurnGold-Sheet_5: 4086333538278327677
+      Green Alchemist_TurnGold-Sheet_6: 1991922930663339140
+      Green Alchemist_TurnGold-Sheet_7: -1530283844353247040
+      Green Alchemist_TurnGold-Sheet_8: 8228671732943808731
+      Green Alchemist_TurnGold-Sheet_9: -5179053709899465878
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

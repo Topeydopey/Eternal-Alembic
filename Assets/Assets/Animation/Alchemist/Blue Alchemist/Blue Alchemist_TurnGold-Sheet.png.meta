@@ -1,0 +1,899 @@
+fileFormatVersion: 2
+guid: d53be944b1c9ee74d8f437b16eeee9ed
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 5172328331801022948
+    second: Blue Alchemist_TurnGold-Sheet_0
+  - first:
+      213: -6830690733474228967
+    second: Blue Alchemist_TurnGold-Sheet_1
+  - first:
+      213: 4321779245598465906
+    second: Blue Alchemist_TurnGold-Sheet_2
+  - first:
+      213: 8161982722139513073
+    second: Blue Alchemist_TurnGold-Sheet_3
+  - first:
+      213: 8575939779880466187
+    second: Blue Alchemist_TurnGold-Sheet_4
+  - first:
+      213: 3735402631245542545
+    second: Blue Alchemist_TurnGold-Sheet_5
+  - first:
+      213: 4837885291744049098
+    second: Blue Alchemist_TurnGold-Sheet_6
+  - first:
+      213: 6191606143825655660
+    second: Blue Alchemist_TurnGold-Sheet_7
+  - first:
+      213: -7769174217103646125
+    second: Blue Alchemist_TurnGold-Sheet_8
+  - first:
+      213: -2295764673181812053
+    second: Blue Alchemist_TurnGold-Sheet_9
+  - first:
+      213: 1047324365003996372
+    second: Blue Alchemist_TurnGold-Sheet_10
+  - first:
+      213: 603051779662068342
+    second: Blue Alchemist_TurnGold-Sheet_11
+  - first:
+      213: 1597768569189603464
+    second: Blue Alchemist_TurnGold-Sheet_12
+  - first:
+      213: 8193853065840417280
+    second: Blue Alchemist_TurnGold-Sheet_13
+  - first:
+      213: 3263203371731154979
+    second: Blue Alchemist_TurnGold-Sheet_14
+  - first:
+      213: 5225098480249303320
+    second: Blue Alchemist_TurnGold-Sheet_15
+  - first:
+      213: -1961435261372829855
+    second: Blue Alchemist_TurnGold-Sheet_16
+  - first:
+      213: -3642483747794161101
+    second: Blue Alchemist_TurnGold-Sheet_17
+  - first:
+      213: 6799704938403346233
+    second: Blue Alchemist_TurnGold-Sheet_18
+  - first:
+      213: 5960502882434947683
+    second: Blue Alchemist_TurnGold-Sheet_19
+  - first:
+      213: -5095660692107469298
+    second: Blue Alchemist_TurnGold-Sheet_20
+  - first:
+      213: 4029499483858762929
+    second: Blue Alchemist_TurnGold-Sheet_21
+  - first:
+      213: 7313289382113441550
+    second: Blue Alchemist_TurnGold-Sheet_22
+  - first:
+      213: -231766151889817698
+    second: Blue Alchemist_TurnGold-Sheet_23
+  - first:
+      213: 6255531258108057734
+    second: Blue Alchemist_TurnGold-Sheet_24
+  - first:
+      213: -619841345097133958
+    second: Blue Alchemist_TurnGold-Sheet_25
+  - first:
+      213: -3369723259256726211
+    second: Blue Alchemist_TurnGold-Sheet_26
+  - first:
+      213: -4445166372870927635
+    second: Blue Alchemist_TurnGold-Sheet_27
+  - first:
+      213: 7172570001674905712
+    second: Blue Alchemist_TurnGold-Sheet_28
+  - first:
+      213: -3216707722729209743
+    second: Blue Alchemist_TurnGold-Sheet_29
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 16
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Blue Alchemist_TurnGold-Sheet_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4e150bea63dc7c740800000000000000
+      internalID: 5172328331801022948
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blue Alchemist_TurnGold-Sheet_1
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 91557bce7f28431a0800000000000000
+      internalID: -6830690733474228967
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blue Alchemist_TurnGold-Sheet_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 27f5d8b735b0afb30800000000000000
+      internalID: 4321779245598465906
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blue Alchemist_TurnGold-Sheet_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f06000ba00354170800000000000000
+      internalID: 8161982722139513073
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blue Alchemist_TurnGold-Sheet_4
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b07bae2eacbd30770800000000000000
+      internalID: 8575939779880466187
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blue Alchemist_TurnGold-Sheet_5
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1943370f6e0d6d330800000000000000
+      internalID: 3735402631245542545
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blue Alchemist_TurnGold-Sheet_6
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac7bd766a0f932340800000000000000
+      internalID: 4837885291744049098
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blue Alchemist_TurnGold-Sheet_7
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c67bad7bbf00de550800000000000000
+      internalID: 6191606143825655660
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blue Alchemist_TurnGold-Sheet_8
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 352e96f56395e2490800000000000000
+      internalID: -7769174217103646125
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blue Alchemist_TurnGold-Sheet_9
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: baa7b17713ec320e0800000000000000
+      internalID: -2295764673181812053
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blue Alchemist_TurnGold-Sheet_10
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4dcbca406f7d88e00800000000000000
+      internalID: 1047324365003996372
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blue Alchemist_TurnGold-Sheet_11
+      rect:
+        serializedVersion: 2
+        x: 352
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 67abce306687e5800800000000000000
+      internalID: 603051779662068342
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blue Alchemist_TurnGold-Sheet_12
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 88894df5c0a6c2610800000000000000
+      internalID: 1597768569189603464
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blue Alchemist_TurnGold-Sheet_13
+      rect:
+        serializedVersion: 2
+        x: 416
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 00ad92353f966b170800000000000000
+      internalID: 8193853065840417280
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blue Alchemist_TurnGold-Sheet_14
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 32874e96d2a394d20800000000000000
+      internalID: 3263203371731154979
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blue Alchemist_TurnGold-Sheet_15
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 81171bf4267438840800000000000000
+      internalID: 5225098480249303320
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blue Alchemist_TurnGold-Sheet_16
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 16f62fb950597c4e0800000000000000
+      internalID: -1961435261372829855
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blue Alchemist_TurnGold-Sheet_17
+      rect:
+        serializedVersion: 2
+        x: 544
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3327890845c437dc0800000000000000
+      internalID: -3642483747794161101
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blue Alchemist_TurnGold-Sheet_18
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 93730077d976d5e50800000000000000
+      internalID: 6799704938403346233
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blue Alchemist_TurnGold-Sheet_19
+      rect:
+        serializedVersion: 2
+        x: 608
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 36a1a3e9ac5f7b250800000000000000
+      internalID: 5960502882434947683
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blue Alchemist_TurnGold-Sheet_20
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e0e530739939849b0800000000000000
+      internalID: -5095660692107469298
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blue Alchemist_TurnGold-Sheet_21
+      rect:
+        serializedVersion: 2
+        x: 672
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1bc750e6e68abe730800000000000000
+      internalID: 4029499483858762929
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blue Alchemist_TurnGold-Sheet_22
+      rect:
+        serializedVersion: 2
+        x: 704
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e07f18012f50e7560800000000000000
+      internalID: 7313289382113441550
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blue Alchemist_TurnGold-Sheet_23
+      rect:
+        serializedVersion: 2
+        x: 736
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e9fe5ada9e998ccf0800000000000000
+      internalID: -231766151889817698
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blue Alchemist_TurnGold-Sheet_24
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68812e8398c10d650800000000000000
+      internalID: 6255531258108057734
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blue Alchemist_TurnGold-Sheet_25
+      rect:
+        serializedVersion: 2
+        x: 800
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a709268a491e567f0800000000000000
+      internalID: -619841345097133958
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blue Alchemist_TurnGold-Sheet_26
+      rect:
+        serializedVersion: 2
+        x: 832
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3d91ac9c865c31d0800000000000000
+      internalID: -3369723259256726211
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blue Alchemist_TurnGold-Sheet_27
+      rect:
+        serializedVersion: 2
+        x: 864
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dea44814cb89f42c0800000000000000
+      internalID: -4445166372870927635
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blue Alchemist_TurnGold-Sheet_28
+      rect:
+        serializedVersion: 2
+        x: 896
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 078a4742a661a8360800000000000000
+      internalID: 7172570001674905712
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Blue Alchemist_TurnGold-Sheet_29
+      rect:
+        serializedVersion: 2
+        x: 928
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17048787e55fb53d0800000000000000
+      internalID: -3216707722729209743
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 2cda880f2575a924da68f45215d4a300
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":32.0,"y":32.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Blue Alchemist_TurnGold-Sheet_0: 5172328331801022948
+      Blue Alchemist_TurnGold-Sheet_1: -6830690733474228967
+      Blue Alchemist_TurnGold-Sheet_10: 1047324365003996372
+      Blue Alchemist_TurnGold-Sheet_11: 603051779662068342
+      Blue Alchemist_TurnGold-Sheet_12: 1597768569189603464
+      Blue Alchemist_TurnGold-Sheet_13: 8193853065840417280
+      Blue Alchemist_TurnGold-Sheet_14: 3263203371731154979
+      Blue Alchemist_TurnGold-Sheet_15: 5225098480249303320
+      Blue Alchemist_TurnGold-Sheet_16: -1961435261372829855
+      Blue Alchemist_TurnGold-Sheet_17: -3642483747794161101
+      Blue Alchemist_TurnGold-Sheet_18: 6799704938403346233
+      Blue Alchemist_TurnGold-Sheet_19: 5960502882434947683
+      Blue Alchemist_TurnGold-Sheet_2: 4321779245598465906
+      Blue Alchemist_TurnGold-Sheet_20: -5095660692107469298
+      Blue Alchemist_TurnGold-Sheet_21: 4029499483858762929
+      Blue Alchemist_TurnGold-Sheet_22: 7313289382113441550
+      Blue Alchemist_TurnGold-Sheet_23: -231766151889817698
+      Blue Alchemist_TurnGold-Sheet_24: 6255531258108057734
+      Blue Alchemist_TurnGold-Sheet_25: -619841345097133958
+      Blue Alchemist_TurnGold-Sheet_26: -3369723259256726211
+      Blue Alchemist_TurnGold-Sheet_27: -4445166372870927635
+      Blue Alchemist_TurnGold-Sheet_28: 7172570001674905712
+      Blue Alchemist_TurnGold-Sheet_29: -3216707722729209743
+      Blue Alchemist_TurnGold-Sheet_3: 8161982722139513073
+      Blue Alchemist_TurnGold-Sheet_4: 8575939779880466187
+      Blue Alchemist_TurnGold-Sheet_5: 3735402631245542545
+      Blue Alchemist_TurnGold-Sheet_6: 4837885291744049098
+      Blue Alchemist_TurnGold-Sheet_7: 6191606143825655660
+      Blue Alchemist_TurnGold-Sheet_8: -7769174217103646125
+      Blue Alchemist_TurnGold-Sheet_9: -2295764673181812053
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

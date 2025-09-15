@@ -1,0 +1,899 @@
+fileFormatVersion: 2
+guid: 51ef3f9f77204fe4abda7b49e7de3ac5
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -5940679557994279051
+    second: Purple Alchemist_TurnGold-Sheet_0
+  - first:
+      213: 6001283646952725695
+    second: Purple Alchemist_TurnGold-Sheet_1
+  - first:
+      213: -1178739112302163024
+    second: Purple Alchemist_TurnGold-Sheet_2
+  - first:
+      213: -2658835234160638615
+    second: Purple Alchemist_TurnGold-Sheet_3
+  - first:
+      213: -2917462819530581076
+    second: Purple Alchemist_TurnGold-Sheet_4
+  - first:
+      213: 353749707705969069
+    second: Purple Alchemist_TurnGold-Sheet_5
+  - first:
+      213: 7078593111544290610
+    second: Purple Alchemist_TurnGold-Sheet_6
+  - first:
+      213: 2268291983848266819
+    second: Purple Alchemist_TurnGold-Sheet_7
+  - first:
+      213: 8964093633558660544
+    second: Purple Alchemist_TurnGold-Sheet_8
+  - first:
+      213: -4080695350153879647
+    second: Purple Alchemist_TurnGold-Sheet_9
+  - first:
+      213: 1342017760285912097
+    second: Purple Alchemist_TurnGold-Sheet_10
+  - first:
+      213: -595096702510404243
+    second: Purple Alchemist_TurnGold-Sheet_11
+  - first:
+      213: -8341977247898605627
+    second: Purple Alchemist_TurnGold-Sheet_12
+  - first:
+      213: -4881640629888092507
+    second: Purple Alchemist_TurnGold-Sheet_13
+  - first:
+      213: -5126100447948436703
+    second: Purple Alchemist_TurnGold-Sheet_14
+  - first:
+      213: 8387361701901266673
+    second: Purple Alchemist_TurnGold-Sheet_15
+  - first:
+      213: 6508247223775642886
+    second: Purple Alchemist_TurnGold-Sheet_16
+  - first:
+      213: -6433979133104206499
+    second: Purple Alchemist_TurnGold-Sheet_17
+  - first:
+      213: -3035834339083195756
+    second: Purple Alchemist_TurnGold-Sheet_18
+  - first:
+      213: 1355006188039340416
+    second: Purple Alchemist_TurnGold-Sheet_19
+  - first:
+      213: 6446014627373869129
+    second: Purple Alchemist_TurnGold-Sheet_20
+  - first:
+      213: 4019097183323857800
+    second: Purple Alchemist_TurnGold-Sheet_21
+  - first:
+      213: 3108726676940745438
+    second: Purple Alchemist_TurnGold-Sheet_22
+  - first:
+      213: 7827960755673687453
+    second: Purple Alchemist_TurnGold-Sheet_23
+  - first:
+      213: -36991402096324932
+    second: Purple Alchemist_TurnGold-Sheet_24
+  - first:
+      213: 2142525227475438261
+    second: Purple Alchemist_TurnGold-Sheet_25
+  - first:
+      213: 6252949068392695806
+    second: Purple Alchemist_TurnGold-Sheet_26
+  - first:
+      213: 3318781132778503859
+    second: Purple Alchemist_TurnGold-Sheet_27
+  - first:
+      213: -7691955780472266529
+    second: Purple Alchemist_TurnGold-Sheet_28
+  - first:
+      213: 5378562281404944913
+    second: Purple Alchemist_TurnGold-Sheet_29
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 16
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Purple Alchemist_TurnGold-Sheet_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 57f8355ca677e8da0800000000000000
+      internalID: -5940679557994279051
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Purple Alchemist_TurnGold-Sheet_1
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fbc5af44ea7d84350800000000000000
+      internalID: 6001283646952725695
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Purple Alchemist_TurnGold-Sheet_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0bbce58c50744afe0800000000000000
+      internalID: -1178739112302163024
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Purple Alchemist_TurnGold-Sheet_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 965009f017be91bd0800000000000000
+      internalID: -2658835234160638615
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Purple Alchemist_TurnGold-Sheet_4
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cab5874e5071387d0800000000000000
+      internalID: -2917462819530581076
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Purple Alchemist_TurnGold-Sheet_5
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: da966332c75c8e400800000000000000
+      internalID: 353749707705969069
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Purple Alchemist_TurnGold-Sheet_6
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 23ddf135ee63c3260800000000000000
+      internalID: 7078593111544290610
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Purple Alchemist_TurnGold-Sheet_7
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 34c54289a879a7f10800000000000000
+      internalID: 2268291983848266819
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Purple Alchemist_TurnGold-Sheet_8
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0c5ca997aabd66c70800000000000000
+      internalID: 8964093633558660544
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Purple Alchemist_TurnGold-Sheet_9
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1af5d7113357e57c0800000000000000
+      internalID: -4080695350153879647
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Purple Alchemist_TurnGold-Sheet_10
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 12c6b1cea0ecf9210800000000000000
+      internalID: 1342017760285912097
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Purple Alchemist_TurnGold-Sheet_11
+      rect:
+        serializedVersion: 2
+        x: 352
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d6d6cd7b3bacdb7f0800000000000000
+      internalID: -595096702510404243
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Purple Alchemist_TurnGold-Sheet_12
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c7ec9604e75b3c80800000000000000
+      internalID: -8341977247898605627
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Purple Alchemist_TurnGold-Sheet_13
+      rect:
+        serializedVersion: 2
+        x: 416
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5a6f76e06bde04cb0800000000000000
+      internalID: -4881640629888092507
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Purple Alchemist_TurnGold-Sheet_14
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 12b00154dce6cd8b0800000000000000
+      internalID: -5126100447948436703
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Purple Alchemist_TurnGold-Sheet_15
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1fe6a8c9705e56470800000000000000
+      internalID: 8387361701901266673
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Purple Alchemist_TurnGold-Sheet_16
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 605c19b2e50f15a50800000000000000
+      internalID: 6508247223775642886
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Purple Alchemist_TurnGold-Sheet_17
+      rect:
+        serializedVersion: 2
+        x: 544
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d5d4c0f211ae5b6a0800000000000000
+      internalID: -6433979133104206499
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Purple Alchemist_TurnGold-Sheet_18
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 49a630ec0cc8ed5d0800000000000000
+      internalID: -3035834339083195756
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Purple Alchemist_TurnGold-Sheet_19
+      rect:
+        serializedVersion: 2
+        x: 608
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0818a8ae2f2fdc210800000000000000
+      internalID: 1355006188039340416
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Purple Alchemist_TurnGold-Sheet_20
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9486791b628d47950800000000000000
+      internalID: 6446014627373869129
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Purple Alchemist_TurnGold-Sheet_21
+      rect:
+        serializedVersion: 2
+        x: 672
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 883aac91893b6c730800000000000000
+      internalID: 4019097183323857800
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Purple Alchemist_TurnGold-Sheet_22
+      rect:
+        serializedVersion: 2
+        x: 704
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eda65d2217a642b20800000000000000
+      internalID: 3108726676940745438
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Purple Alchemist_TurnGold-Sheet_23
+      rect:
+        serializedVersion: 2
+        x: 736
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d95e0ad35d082ac60800000000000000
+      internalID: 7827960755673687453
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Purple Alchemist_TurnGold-Sheet_24
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cbe0e4a04849c7ff0800000000000000
+      internalID: -36991402096324932
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Purple Alchemist_TurnGold-Sheet_25
+      rect:
+        serializedVersion: 2
+        x: 800
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ba8cf1c757cbbd10800000000000000
+      internalID: 2142525227475438261
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Purple Alchemist_TurnGold-Sheet_26
+      rect:
+        serializedVersion: 2
+        x: 832
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ef708245c00f6c650800000000000000
+      internalID: 6252949068392695806
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Purple Alchemist_TurnGold-Sheet_27
+      rect:
+        serializedVersion: 2
+        x: 864
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3bef78a4bddae0e20800000000000000
+      internalID: 3318781132778503859
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Purple Alchemist_TurnGold-Sheet_28
+      rect:
+        serializedVersion: 2
+        x: 896
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fd020fca8fea04590800000000000000
+      internalID: -7691955780472266529
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Purple Alchemist_TurnGold-Sheet_29
+      rect:
+        serializedVersion: 2
+        x: 928
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 112d479e5ed74aa40800000000000000
+      internalID: 5378562281404944913
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 3cfaf1deae1f77a44b37e89d816f2cf3
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":32.0,"y":32.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Purple Alchemist_TurnGold-Sheet_0: -5940679557994279051
+      Purple Alchemist_TurnGold-Sheet_1: 6001283646952725695
+      Purple Alchemist_TurnGold-Sheet_10: 1342017760285912097
+      Purple Alchemist_TurnGold-Sheet_11: -595096702510404243
+      Purple Alchemist_TurnGold-Sheet_12: -8341977247898605627
+      Purple Alchemist_TurnGold-Sheet_13: -4881640629888092507
+      Purple Alchemist_TurnGold-Sheet_14: -5126100447948436703
+      Purple Alchemist_TurnGold-Sheet_15: 8387361701901266673
+      Purple Alchemist_TurnGold-Sheet_16: 6508247223775642886
+      Purple Alchemist_TurnGold-Sheet_17: -6433979133104206499
+      Purple Alchemist_TurnGold-Sheet_18: -3035834339083195756
+      Purple Alchemist_TurnGold-Sheet_19: 1355006188039340416
+      Purple Alchemist_TurnGold-Sheet_2: -1178739112302163024
+      Purple Alchemist_TurnGold-Sheet_20: 6446014627373869129
+      Purple Alchemist_TurnGold-Sheet_21: 4019097183323857800
+      Purple Alchemist_TurnGold-Sheet_22: 3108726676940745438
+      Purple Alchemist_TurnGold-Sheet_23: 7827960755673687453
+      Purple Alchemist_TurnGold-Sheet_24: -36991402096324932
+      Purple Alchemist_TurnGold-Sheet_25: 2142525227475438261
+      Purple Alchemist_TurnGold-Sheet_26: 6252949068392695806
+      Purple Alchemist_TurnGold-Sheet_27: 3318781132778503859
+      Purple Alchemist_TurnGold-Sheet_28: -7691955780472266529
+      Purple Alchemist_TurnGold-Sheet_29: 5378562281404944913
+      Purple Alchemist_TurnGold-Sheet_3: -2658835234160638615
+      Purple Alchemist_TurnGold-Sheet_4: -2917462819530581076
+      Purple Alchemist_TurnGold-Sheet_5: 353749707705969069
+      Purple Alchemist_TurnGold-Sheet_6: 7078593111544290610
+      Purple Alchemist_TurnGold-Sheet_7: 2268291983848266819
+      Purple Alchemist_TurnGold-Sheet_8: 8964093633558660544
+      Purple Alchemist_TurnGold-Sheet_9: -4080695350153879647
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
