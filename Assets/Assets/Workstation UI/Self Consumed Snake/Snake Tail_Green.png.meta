@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: fa1de727e7c32ee41a41a4325078c168
+guid: b42e9276bf3c9ed43aeb4aa38192acb2
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5434371716167541021
-    second: Snake_Body_0
+      213: -5041125487117467825
+    second: Snake Tail_Green_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,23 +100,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Snake_Body_0
+      name: Snake Tail_Green_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 4
-        height: 41
+        height: 4
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3ee576877bb3594b0800000000000000
-      internalID: -5434371716167541021
+      spriteID: f4ff13814135a0ab0800000000000000
+      internalID: -5041125487117467825
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: b8f09719d8d89e14b803d2843aa1e62c
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Snake_Body_0: -5434371716167541021
+      Snake Tail_Green_0: -5041125487117467825
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

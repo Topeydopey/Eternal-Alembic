@@ -1,28 +1,28 @@
 fileFormatVersion: 2
-guid: dad10b9a28fdaf843b7aa913bbd727f2
+guid: 19dbf542d88ea454bbc2929d84d79f5c
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3769711318512714757
-    second: Snake_Head-Sheet_0
+      213: -6499007382804086081
+    second: Snake Head_Yellow-Sheet_0
   - first:
-      213: 8335957994810111137
-    second: Snake_Head-Sheet_1
+      213: 7379633277657099484
+    second: Snake Head_Yellow-Sheet_1
   - first:
-      213: -7755271345662480344
-    second: Snake_Head-Sheet_2
+      213: -8135000683101549882
+    second: Snake Head_Yellow-Sheet_2
   - first:
-      213: 188976713633304610
-    second: Snake_Head-Sheet_3
+      213: 6537057007382567900
+    second: Snake Head_Yellow-Sheet_3
   - first:
-      213: -831273251863855516
-    second: Snake_Head-Sheet_4
+      213: -5685150912720063247
+    second: Snake Head_Yellow-Sheet_4
   - first:
-      213: -7629869190584637633
-    second: Snake_Head-Sheet_5
+      213: -7352463207106927088
+    second: Snake Head_Yellow-Sheet_5
   - first:
-      213: 7283171029020821643
-    second: Snake_Head-Sheet_6
+      213: 6273156502798426340
+    second: Snake Head_Yellow-Sheet_6
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -118,7 +118,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Snake_Head-Sheet_0
+      name: Snake Head_Yellow-Sheet_0
       rect:
         serializedVersion: 2
         x: 0
@@ -133,14 +133,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: bfbb742578b4fabc0800000000000000
-      internalID: -3769711318512714757
+      spriteID: fb24253f733eec5a0800000000000000
+      internalID: -6499007382804086081
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Snake_Head-Sheet_1
+      name: Snake Head_Yellow-Sheet_1
       rect:
         serializedVersion: 2
         x: 16
@@ -155,14 +155,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1a4fb3761a54fa370800000000000000
-      internalID: 8335957994810111137
+      spriteID: cdc2767fd59b96660800000000000000
+      internalID: 7379633277657099484
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Snake_Head-Sheet_2
+      name: Snake Head_Yellow-Sheet_2
       rect:
         serializedVersion: 2
         x: 32
@@ -177,14 +177,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 820b501eccdbf5490800000000000000
-      internalID: -7755271345662480344
+      spriteID: 6ca0c24dafbaa1f80800000000000000
+      internalID: -8135000683101549882
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Snake_Head-Sheet_3
+      name: Snake Head_Yellow-Sheet_3
       rect:
         serializedVersion: 2
         x: 48
@@ -199,14 +199,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 2201feed1516f9200800000000000000
-      internalID: 188976713633304610
+      spriteID: cdb1481a6ba48ba50800000000000000
+      internalID: 6537057007382567900
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Snake_Head-Sheet_4
+      name: Snake Head_Yellow-Sheet_4
       rect:
         serializedVersion: 2
         x: 64
@@ -221,14 +221,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 46efe57b169b674f0800000000000000
-      internalID: -831273251863855516
+      spriteID: 1f435d8bd594a11b0800000000000000
+      internalID: -5685150912720063247
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Snake_Head-Sheet_5
+      name: Snake Head_Yellow-Sheet_5
       rect:
         serializedVersion: 2
         x: 80
@@ -243,14 +243,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f37618c55624d1690800000000000000
-      internalID: -7629869190584637633
+      spriteID: 016234c0badc6f990800000000000000
+      internalID: -7352463207106927088
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Snake_Head-Sheet_6
+      name: Snake Head_Yellow-Sheet_6
       rect:
         serializedVersion: 2
         x: 96
@@ -265,8 +265,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b88c3378675031560800000000000000
-      internalID: 7283171029020821643
+      spriteID: 4e06bb94a9abe0750800000000000000
+      internalID: 6273156502798426340
       vertices: []
       indices: 
       edges: []
@@ -275,7 +275,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: b33145264a2f3bd4d90745bcdf7a516b
+    spriteID: 430d25e132439044cbf52682d2f97324
     internalID: 0
     vertices: []
     indices: 
@@ -287,13 +287,13 @@ TextureImporter:
       - key: SpriteEditor.SliceSettings
         value: '{"sliceOnImport":false,"gridCellCount":{"x":7.0,"y":1.0},"gridSpriteSize":{"x":16.0,"y":16.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      Snake_Head-Sheet_0: -3769711318512714757
-      Snake_Head-Sheet_1: 8335957994810111137
-      Snake_Head-Sheet_2: -7755271345662480344
-      Snake_Head-Sheet_3: 188976713633304610
-      Snake_Head-Sheet_4: -831273251863855516
-      Snake_Head-Sheet_5: -7629869190584637633
-      Snake_Head-Sheet_6: 7283171029020821643
+      Snake Head_Yellow-Sheet_0: -6499007382804086081
+      Snake Head_Yellow-Sheet_1: 7379633277657099484
+      Snake Head_Yellow-Sheet_2: -8135000683101549882
+      Snake Head_Yellow-Sheet_3: 6537057007382567900
+      Snake Head_Yellow-Sheet_4: -5685150912720063247
+      Snake Head_Yellow-Sheet_5: -7352463207106927088
+      Snake Head_Yellow-Sheet_6: 6273156502798426340
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
