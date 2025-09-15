@@ -1,3 +1,4 @@
+using System;                     // <-- needed for Action
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
@@ -5,6 +6,11 @@ using System.Collections;
 public class MortarPestleMinigame : MonoBehaviour
 {
     public static MortarPestleMinigame Instance;
+
+    [Header("Closing/Owner")]
+    [SerializeField] private Canvas owningCanvas;     // assign the bottom canvas (minigame) OR auto-detect
+    [SerializeField] private GameObject owningRoot;   // optional: a wrapper object to destroy instead of the whole Canvas
+    public event Action onClosed;                     // launcher can listen to clear its state
 
     [Header("References")]
     public GameObject growthPotion;       // tag = "Potion"
@@ -36,7 +42,22 @@ public class MortarPestleMinigame : MonoBehaviour
     private bool resultReady;
     private GameObject spawnedResultToken;
 
-    void Awake() => Instance = this;
+    void Awake()
+    {
+        Instance = this;
+
+        // Auto-detect the nearest parent Canvas if not assigned
+        if (!owningCanvas) owningCanvas = GetComponentInParent<Canvas>(true);
+
+        // If you prefer to destroy a wrapper (e.g., "Minigame UI Prefab"), assign it.
+        // Otherwise we’ll destroy the owning canvas GameObject.
+        if (!owningRoot && owningCanvas) owningRoot = owningCanvas.gameObject;
+    }
+
+    void OnDestroy()
+    {
+        if (Instance == this) Instance = null;
+    }
 
     // Drop dispatch from DropSlot
     public void HandleDrop(DropSlot slot, GameObject item)
@@ -124,9 +145,9 @@ public class MortarPestleMinigame : MonoBehaviour
         if (img)
         {
             Sprite icon = null;
-            // If your ItemSO has an icon field with a different name, swap this line accordingly:
-            // e.g., icon = resultItem ? resultItem.icon : null;
-            icon = resultIconOverride ? resultIconOverride : mortarResultSprite;
+            // If your ItemSO has an icon field (e.g., resultItem.icon), prefer it:
+            // icon = resultItem ? resultItem.icon : null;
+            icon = icon ?? (resultIconOverride ? resultIconOverride : mortarResultSprite);
             img.sprite = icon;
         }
     }
@@ -140,13 +161,11 @@ public class MortarPestleMinigame : MonoBehaviour
         var eq = EquipmentInventory.Instance;
         if (eq && resultItem)
         {
-            // Prefer active hand first, then fall back to first available
             bool equipped = eq.TryEquip(eq.activeHand, resultItem) || eq.TryEquipToFirstAvailable(resultItem);
             if (!equipped)
             {
                 Debug.LogWarning("[Minigame] Inventory full; could not equip result.");
-                // Optional: you could drop a world pickup or show a message here
-                // CloseUI(); return; // up to you
+                // Optional: drop to world or show message.
             }
         }
         else
@@ -165,11 +184,28 @@ public class MortarPestleMinigame : MonoBehaviour
         else go.SetActive(false);
     }
 
-    private void CloseUI()
+    public void CloseUI()
     {
-        // If this component lives at the root of the UI prefab, destroy self is enough
-        Destroy(gameObject);
+        // Notify listeners (e.g., WorkstationLauncher) to clear references
+        onClosed?.Invoke();
+
+        // Prefer destroying a wrapper root if assigned, else the owning canvas, else this object.
+        if (owningRoot != null)
+        {
+            Destroy(owningRoot);
+        }
+        else if (owningCanvas != null)
+        {
+            Destroy(owningCanvas.gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
+
+    // Hook this to an X button or ESC
+    public void CancelAndClose() => CloseUI();
 
     // If you need to replay later:
     public void ResetMortarVisual()
