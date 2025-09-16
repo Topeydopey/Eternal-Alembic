@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 27c3068d9d797224d8f25bb60ebda9ff
+guid: b41bebe0abfc3584daa05108c0ba9668
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 9149029720711991420
-    second: Decor 5_Athanor Alchemy_0
+      213: 3289593612721548012
+    second: Bag of Seeds_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Decor 5_Athanor Alchemy_0
+      name: Bag of Seeds_0
       rect:
         serializedVersion: 2
-        x: 9
-        y: 7
-        width: 31
-        height: 34
+        x: 0
+        y: 0
+        width: 16
+        height: 21
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: c70978eae02e7fe70800000000000000
-      internalID: 9149029720711991420
+      spriteID: cea69a536fbf6ad20800000000000000
+      internalID: 3289593612721548012
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Decor 5_Athanor Alchemy_0: 9149029720711991420
+      Bag of Seeds_0: 3289593612721548012
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

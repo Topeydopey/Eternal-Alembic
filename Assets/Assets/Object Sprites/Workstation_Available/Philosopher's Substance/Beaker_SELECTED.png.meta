@@ -1,16 +1,10 @@
 fileFormatVersion: 2
-guid: a268ff66eb009724e819f66403e3b905
+guid: 74b78ce6fd2bd3a4cb69669e7c14d31d
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5001331060893127819
-    second: Decor 2_Alchemy Table_0
-  - first:
-      213: 2297583054834732933
-    second: Decor 2_Alchemy Table_1
-  - first:
-      213: 5434587294398698381
-    second: Decor 2_Alchemy Table_2
+      213: 7482670931443573107
+    second: Beaker_SELECTED_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -106,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Decor 2_Alchemy Table_0
+      name: Beaker_SELECTED_0
       rect:
         serializedVersion: 2
-        x: 6
-        y: 16
-        width: 9
-        height: 11
+        x: 20
+        y: 7
+        width: 10
+        height: 9
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -121,52 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b8499a80a1c486540800000000000000
-      internalID: 5001331060893127819
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Decor 2_Alchemy Table_1
-      rect:
-        serializedVersion: 2
-        x: 16
-        y: 17
-        width: 13
-        height: 11
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 58f81618d97a2ef10800000000000000
-      internalID: 2297583054834732933
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Decor 2_Alchemy Table_2
-      rect:
-        serializedVersion: 2
-        x: 30
-        y: 16
-        width: 11
-        height: 17
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d835c7fb9588b6b40800000000000000
-      internalID: 5434587294398698381
+      spriteID: 371e5d73199c7d760800000000000000
+      internalID: 7482670931443573107
       vertices: []
       indices: 
       edges: []
@@ -185,9 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Decor 2_Alchemy Table_0: 5001331060893127819
-      Decor 2_Alchemy Table_1: 2297583054834732933
-      Decor 2_Alchemy Table_2: 5434587294398698381
+      Beaker_SELECTED_0: 7482670931443573107
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
