@@ -1,3 +1,4 @@
+using System;                     // for Action
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
@@ -5,6 +6,12 @@ using System.Collections;
 public class MortarPestleMinigame : MonoBehaviour
 {
     public static MortarPestleMinigame Instance;
+
+    [Header("Closing/Owner")]
+    [SerializeField] private Canvas owningCanvas;     // assign the bottom canvas (minigame) OR auto-detect
+    [SerializeField] private GameObject owningRoot;   // optional: a wrapper object to destroy instead of the whole Canvas
+    [SerializeField] private bool disableInsteadOfDestroy = false; // <- reuse mode toggle (set via SetReuseMode)
+    public event Action onClosed;                     // launcher can listen to clear its state
 
     [Header("References")]
     public GameObject growthPotion;       // tag = "Potion"
@@ -20,15 +27,16 @@ public class MortarPestleMinigame : MonoBehaviour
     public Sprite mortarResultSprite;
 
     [Header("Result (Inventory)")]
-    public ItemSO resultItem;                 // <- assign your ItemSO here
-    public GameObject resultTokenPrefab;      // <- UI prefab: Image + CanvasGroup + DraggableItem, Tag="Result"
-    public Transform resultTokenSpawnParent;  // <- near the mortar is fine
-    public DropSlot takeZone;                 // <- the bottom bar DropSlot (acceptsTag="Result")
-    public Sprite resultIconOverride;         // <- optional: if your ItemSO doesn't have an icon
+    public ItemSO resultItem;                 // assign your ItemSO here
+    public GameObject resultTokenPrefab;      // UI prefab: Image + CanvasGroup + DraggableItem, Tag="Result"
+    public Transform resultTokenSpawnParent;  // near the mortar is fine
+    public DropSlot takeZone;                 // bottom bar DropSlot (acceptsTag="Result")
+    public Sprite resultIconOverride;         // optional: if your ItemSO doesn't have an icon
 
     [Header("Tuning")]
     public float grindDuration = 0f;          // keep 0 for instant
 
+    // State
     private bool potionPoured;
     private bool plantSpawned;
     private bool mortarFilled;
@@ -36,9 +44,78 @@ public class MortarPestleMinigame : MonoBehaviour
     private bool resultReady;
     private GameObject spawnedResultToken;
 
-    void Awake() => Instance = this;
+    void Awake()
+    {
+        Instance = this;
 
-    // Drop dispatch from DropSlot
+        // Auto-detect the nearest parent Canvas if not assigned
+        if (!owningCanvas) owningCanvas = GetComponentInParent<Canvas>(true);
+
+        // If you prefer to destroy a wrapper (e.g., "Minigame UI Prefab"), assign it.
+        // Otherwise we’ll destroy the owning canvas GameObject.
+        if (!owningRoot && owningCanvas) owningRoot = owningCanvas.gameObject;
+    }
+
+    void OnDestroy()
+    {
+        if (Instance == this) Instance = null;
+    }
+
+    // ---------------------------
+    // Reuse-mode helpers
+    // ---------------------------
+
+    /// <summary>
+    /// Call this when using an in-scene UI object you want to re-open/close without destroying.
+    /// </summary>
+    public void SetReuseMode(bool reuse, GameObject root = null)
+    {
+        disableInsteadOfDestroy = reuse;
+        if (root) owningRoot = root;
+        if (!owningCanvas) owningCanvas = GetComponentInParent<Canvas>(true);
+    }
+
+    /// <summary>
+    /// Reset internal flags and visuals for a fresh round each time you open the UI.
+    /// </summary>
+    public void BeginSession()
+    {
+        // reset flags
+        potionPoured = false;
+        plantSpawned = false;
+        mortarFilled = false;
+        grinding = false;
+        resultReady = false;
+
+        // visuals
+        if (mortarImage && mortarEmptySprite) mortarImage.sprite = mortarEmptySprite;
+
+        // re-enable starting items (e.g., potion) if they were consumed last round
+        if (growthPotion) growthPotion.SetActive(true);
+
+        // clear any previously spawned plant/result tokens
+        if (spawnedResultToken)
+        {
+            Destroy(spawnedResultToken);
+            spawnedResultToken = null;
+        }
+
+        if (plantSpawnParent)
+        {
+            for (int i = plantSpawnParent.childCount - 1; i >= 0; i--)
+            {
+                var child = plantSpawnParent.GetChild(i);
+                if (child && (child.CompareTag("Plant") || child.name.Contains("DeadPlant")))
+                    Destroy(child.gameObject);
+            }
+        }
+    }
+
+    // ---------------------------
+    // Gameplay
+    // ---------------------------
+
+    // Called by DropSlot when a valid item is dropped
     public void HandleDrop(DropSlot slot, GameObject item)
     {
         var t = item.tag;
@@ -80,7 +157,8 @@ public class MortarPestleMinigame : MonoBehaviour
     {
         grinding = true;
 
-        if (grindDuration > 0f) yield return new WaitForSeconds(grindDuration);
+        if (grindDuration > 0f)
+            yield return new WaitForSeconds(grindDuration);
 
         // Show completed mortar visual
         if (mortarImage && mortarResultSprite) mortarImage.sprite = mortarResultSprite;
@@ -124,9 +202,9 @@ public class MortarPestleMinigame : MonoBehaviour
         if (img)
         {
             Sprite icon = null;
-            // If your ItemSO has an icon field with a different name, swap this line accordingly:
-            // e.g., icon = resultItem ? resultItem.icon : null;
-            icon = resultIconOverride ? resultIconOverride : mortarResultSprite;
+            // If your ItemSO has an icon field (e.g., resultItem.icon), prefer it:
+            // icon = resultItem ? resultItem.icon : null;
+            icon = icon ?? (resultIconOverride ? resultIconOverride : mortarResultSprite);
             img.sprite = icon;
         }
     }
@@ -140,13 +218,11 @@ public class MortarPestleMinigame : MonoBehaviour
         var eq = EquipmentInventory.Instance;
         if (eq && resultItem)
         {
-            // Prefer active hand first, then fall back to first available
             bool equipped = eq.TryEquip(eq.activeHand, resultItem) || eq.TryEquipToFirstAvailable(resultItem);
             if (!equipped)
             {
                 Debug.LogWarning("[Minigame] Inventory full; could not equip result.");
-                // Optional: you could drop a world pickup or show a message here
-                // CloseUI(); return; // up to you
+                // Optional: drop to world or show message.
             }
         }
         else
@@ -165,18 +241,40 @@ public class MortarPestleMinigame : MonoBehaviour
         else go.SetActive(false);
     }
 
-    private void CloseUI()
+    // ---------------------------
+    // Closing
+    // ---------------------------
+
+    public void CloseUI()
     {
-        // If this component lives at the root of the UI prefab, destroy self is enough
-        Destroy(gameObject);
+        // Notify listeners (e.g., WorkstationLauncher) to clear references / re-enable HUD
+        onClosed?.Invoke();
+
+        if (disableInsteadOfDestroy)
+        {
+            // Reuse path: disable instead of destroy
+            if (owningRoot) owningRoot.SetActive(false);
+            else if (owningCanvas) owningCanvas.gameObject.SetActive(false);
+            else gameObject.SetActive(false);
+        }
+        else
+        {
+            // Prefab path: destroy the UI
+            if (owningRoot) Destroy(owningRoot);
+            else if (owningCanvas) Destroy(owningCanvas.gameObject);
+            else Destroy(gameObject);
+        }
     }
 
-    // If you need to replay later:
+    // Hook this to an X button or ESC
+    public void CancelAndClose() => CloseUI();
+
+    // If you need to replay later (manual reset utility)
     public void ResetMortarVisual()
     {
         mortarFilled = false;
         if (mortarImage && mortarEmptySprite) mortarImage.sprite = mortarEmptySprite;
         resultReady = false;
-        if (spawnedResultToken) Destroy(spawnedResultToken);
+        if (spawnedResultToken) { Destroy(spawnedResultToken); spawnedResultToken = null; }
     }
 }

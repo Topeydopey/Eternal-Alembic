@@ -1,4 +1,3 @@
-// GameState.cs
 using UnityEngine;
 using System;
 
@@ -6,68 +5,60 @@ public class GameState : MonoBehaviour
 {
     public static GameState Instance { get; private set; }
 
-    [Header("Recipe (one item per day)")]
-    public ItemSO[] requiredPerDay;    // set in Inspector: Day1=itemA, Day2=itemB...
+    [Header("Recipe (ordered)")]
+    [Tooltip("Required items in order. Example size = 3 for your 3 minigames.")]
+    public ItemSO[] recipe;
 
     [Header("Runtime")]
-    public int currentDay = 1;         // 1-based
-    public bool depositedToday = false;
+    [Tooltip("How many correct items have been deposited so far.")]
+    public int progress = 0; // 0..recipe.Length
 
-    public event Action OnChanged;     // HUD can listen
-    public bool advanceOnSubmit = true; // NEW
+    public event Action OnChanged;
+
+    public bool IsRecipeComplete => recipe != null && progress >= recipe.Length;
 
     private void Awake()
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
         DontDestroyOnLoad(gameObject);
-        ValidateDay();
+        ClampProgress();
     }
 
-    private void ValidateDay()
+    private void ClampProgress()
     {
-        if (currentDay < 1) currentDay = 1;
-        if (currentDay > requiredPerDay.Length) currentDay = requiredPerDay.Length;
+        if (recipe == null) { progress = 0; return; }
+        progress = Mathf.Clamp(progress, 0, recipe.Length);
     }
 
-    public ItemSO RequiredItemToday()
+    public ItemSO NextRequired()
     {
-        ValidateDay();
-        if (requiredPerDay == null || requiredPerDay.Length == 0) return null;
-        return requiredPerDay[Mathf.Clamp(currentDay - 1, 0, requiredPerDay.Length - 1)];
+        if (recipe == null || recipe.Length == 0) return null;
+        if (IsRecipeComplete) return null;
+        return recipe[progress];
     }
 
+    /// <summary>
+    /// Submit an item. Returns true only if it matches the next required in sequence.
+    /// </summary>
     public bool SubmitItem(ItemSO item)
     {
-        if (item == null) return false;
-        var need = RequiredItemToday();
-        if (need != null && item == need)
+        var need = NextRequired();
+        if (item != null && need != null && item == need)
         {
-            depositedToday = true;
+            progress++;
             OnChanged?.Invoke();
-
-            if (advanceOnSubmit)
-                NextDay(); // reuse your existing increment/reset
-
             return true;
         }
         return false;
     }
 
-    public bool CanSleep() => depositedToday; // simple gate
-
-    public void NextDay()
+    /// <summary>
+    /// Reset the recipe progress (e.g., after dispensing the final potion).
+    /// </summary>
+    public void ResetRecipe()
     {
-        if (!CanSleep()) return;
-        currentDay = Mathf.Min(currentDay + 1, requiredPerDay.Length);
-        depositedToday = false;
+        progress = 0;
         OnChanged?.Invoke();
-    }
-
-    public string ObjectiveText()
-    {
-        var need = RequiredItemToday();
-        if (need == null) return "No objective";
-        return depositedToday ? "Rest at bed" : $"Bring: {need.displayName}";
     }
 }
