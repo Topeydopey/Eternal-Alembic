@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 5030ec8e8b930994b95956ba822430ee
+guid: 05cef05a5648e31448098e673b343cc0
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -5734888567148846429
-    second: Cauldron_0
+      213: 8198039317454910499
+    second: Growth Potion_SELECTED_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Cauldron_0
+      name: Growth Potion_SELECTED_0
       rect:
         serializedVersion: 2
         x: 2
-        y: 0
-        width: 29
-        height: 31
+        y: 2
+        width: 13
+        height: 14
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 3a2e4a0ab359960b0800000000000000
-      internalID: -5734888567148846429
+      spriteID: 324f59bf25945c170800000000000000
+      internalID: 8198039317454910499
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Cauldron_0: -5734888567148846429
+      Growth Potion_SELECTED_0: 8198039317454910499
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
