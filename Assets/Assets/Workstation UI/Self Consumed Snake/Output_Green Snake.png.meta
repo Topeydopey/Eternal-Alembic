@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 05320043fe233e545b7c4aeaebc26132
+guid: a76a3b617c3da5341ab55223459a896a
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -606504155455206050
-    second: Snake Body_Yellow_0
+      213: 2086793153470190753
+    second: Output_Green Snake_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Snake Body_Yellow_0
+      name: Output_Green Snake_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 8
-        height: 60
+        x: 20
+        y: 21
+        width: 38
+        height: 40
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e5d4b4b1fa34597f0800000000000000
-      internalID: -606504155455206050
+      spriteID: 1a4de481157c5fc10800000000000000
+      internalID: 2086793153470190753
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Snake Body_Yellow_0: -606504155455206050
+      Output_Green Snake_0: 2086793153470190753
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
