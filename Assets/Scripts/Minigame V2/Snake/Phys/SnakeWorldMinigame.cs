@@ -64,6 +64,10 @@ public class SnakeWorldMinigame : MonoBehaviour
 
     public void BeginSession()
     {
+        snakeHead.ResetSession(seedsToWinOverride);
+        snakeHead.SetDriveMode(SnakePhysicsController.DriveMode.PlayerSteer);
+        snakeHead.SetFrozen(false);
+
         if (verbose) Debug.Log("[SnakeWorldMini] BeginSession");
 
         // Reset the physics head and optionally override required count
