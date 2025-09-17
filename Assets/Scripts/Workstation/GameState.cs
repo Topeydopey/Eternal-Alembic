@@ -1,64 +1,79 @@
 using UnityEngine;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 public class GameState : MonoBehaviour
 {
     public static GameState Instance { get; private set; }
 
-    [Header("Recipe (ordered)")]
-    [Tooltip("Required items in order. Example size = 3 for your 3 minigames.")]
-    public ItemSO[] recipe;
+    [Header("Recipe (unordered)")]
+    public ItemSO[] requiredItems;   // assign your 3 result ItemSOs here
 
-    [Header("Runtime")]
-    [Tooltip("How many correct items have been deposited so far.")]
-    public int progress = 0; // 0..recipe.Length
+    [Header("Runtime (read-only)")]
+    [SerializeField] private List<ItemSO> delivered = new(); // items already turned in
+    [SerializeField] private bool rewardAvailable = false;
 
     public event Action OnChanged;
 
-    public bool IsRecipeComplete => recipe != null && progress >= recipe.Length;
-
-    private void Awake()
+    void Awake()
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
         DontDestroyOnLoad(gameObject);
-        ClampProgress();
     }
 
-    private void ClampProgress()
+    // ---- Query API ----
+    public IReadOnlyList<ItemSO> Delivered => delivered;
+    public bool RewardAvailable => rewardAvailable;
+    public bool IsRecipeComplete => requiredItems != null && delivered.Count >= (requiredItems?.Length ?? 0);
+    public float Progress01 => (requiredItems == null || requiredItems.Length == 0)
+        ? 0f : Mathf.Clamp01((float)delivered.Count / requiredItems.Length);
+
+    public IEnumerable<ItemSO> MissingItems()
     {
-        if (recipe == null) { progress = 0; return; }
-        progress = Mathf.Clamp(progress, 0, recipe.Length);
+        if (requiredItems == null) yield break;
+        foreach (var it in requiredItems)
+            if (!delivered.Contains(it)) yield return it;
     }
 
-    public ItemSO NextRequired()
+    public string ObjectiveText()
     {
-        if (recipe == null || recipe.Length == 0) return null;
-        if (IsRecipeComplete) return null;
-        return recipe[progress];
+        if (requiredItems == null || requiredItems.Length == 0) return "No objective";
+        if (IsRecipeComplete && rewardAvailable) return "Collect the potion from the cauldron.";
+        var missing = string.Join(", ", MissingItems().Select(i => i.displayName));
+        return $"Add ingredients: {delivered.Count}/{requiredItems.Length}. Missing: {missing}";
     }
 
-    /// <summary>
-    /// Submit an item. Returns true only if it matches the next required in sequence.
-    /// </summary>
+    // ---- Mutating API ----
     public bool SubmitItem(ItemSO item)
     {
-        var need = NextRequired();
-        if (item != null && need != null && item == need)
-        {
-            progress++;
-            OnChanged?.Invoke();
-            return true;
-        }
-        return false;
+        if (item == null || requiredItems == null || requiredItems.Length == 0) return false;
+
+        // Must be one of the required items and not already submitted
+        bool isRequired = Array.Exists(requiredItems, it => it == item);
+        if (!isRequired) return false;
+        if (delivered.Contains(item)) return false; // reject duplicates
+
+        delivered.Add(item);
+
+        if (IsRecipeComplete) rewardAvailable = true;
+
+        OnChanged?.Invoke();
+        return true;
     }
 
-    /// <summary>
-    /// Reset the recipe progress (e.g., after dispensing the final potion).
-    /// </summary>
+    public void MarkRewardCollected()
+    {
+        if (!rewardAvailable) return;
+        rewardAvailable = false;
+        OnChanged?.Invoke();
+    }
+
     public void ResetRecipe()
     {
-        progress = 0;
+        delivered.Clear();
+        rewardAvailable = false;
         OnChanged?.Invoke();
     }
 }

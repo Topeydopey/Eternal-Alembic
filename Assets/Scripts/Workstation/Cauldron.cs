@@ -1,159 +1,123 @@
 using UnityEngine;
-using System.Collections;
+using UnityEngine.UI;
 
 public class Cauldron : MonoBehaviour
 {
-    [Header("Visuals")]
-    [Tooltip("SpriteRenderer for the cauldron liquid (world-space). Leave null if you use a UI Image instead.")]
-    [SerializeField] private SpriteRenderer liquidSprite;
-    [Tooltip("Optional UI Image for liquid if your cauldron is UI. If both assigned, SpriteRenderer wins.")]
-    [SerializeField] private UnityEngine.UI.Image liquidImage;
-    [Tooltip("Seconds to tween the liquid color after each deposit.")]
-    [SerializeField] private float colorLerpDuration = 0.25f;
-    [Range(0f, 1f)] public float liquidAlpha = 1f;
+    [Header("Visuals (any or none)")]
+    public SpriteRenderer liquidSprite;  // world sprite for the liquid color (optional)
+    public Image liquidImage;   // UI Image for liquid color (optional)
+    public ParticleSystem bubbles;       // optional FX on deposit
 
-    [Header("Result")]
-    [Tooltip("What the player receives after all ingredients are deposited.")]
-    public ItemSO finalPotionItem;
-    [Tooltip("Where to drop the pickup if inventory is full (defaults to this.transform).")]
-    public Transform dropPoint;
-    [Tooltip("If inventory is full, drop a pickup in the world.")]
-    public bool dropIfInventoryFull = true;
+    [Header("Final Reward")]
+    public ItemSO finalPotionItem;       // assign the final potion ItemSO
+    [Tooltip("If inventory full, optionally drop this as a world pickup using EquipmentInventory.pickupPrefab.")]
+    public bool allowWorldDropIfFull = true;
+    [Tooltip("Require empty active hand to collect the final reward.")]
+    public bool requireEmptyHandToCollect = false;
 
-    private Coroutine colorRoutine;
-    private Color currentColor = new Color(0.05f, 0.05f, 0.05f, 1f); // start dark
+    [Header("Color Mixing")]
+    public bool randomizeHuePerSession = true;
+    [Range(0f, 1f)] public float startValue = 0.25f;   // dark start
+    [Range(0f, 1f)] public float endValue = 0.85f;   // bright end
+    [Range(0f, 1f)] public float saturation = 0.85f;
 
-    private void Awake()
+    private float hue;
+
+    void OnEnable()
     {
-        if (!dropPoint) dropPoint = transform;
-        ApplyLiquidColorImmediate(currentColor);
+        if (randomizeHuePerSession) hue = Random.value;
+        else hue = 0.33f; // default green-ish
+
+        var gs = GameState.Instance;
+        if (gs) gs.OnChanged += HandleStateChanged;
+
+        // initial visual
+        UpdateLiquidVisual(gs ? gs.Progress01 : 0f);
+    }
+
+    void OnDisable()
+    {
+        var gs = GameState.Instance;
+        if (gs) gs.OnChanged -= HandleStateChanged;
+    }
+
+    private void HandleStateChanged()
+    {
+        var gs = GameState.Instance;
+        UpdateLiquidVisual(gs ? gs.Progress01 : 0f);
+    }
+
+    private void UpdateLiquidVisual(float progress01)
+    {
+        // Lighten value from start → end as progress increases
+        float v = Mathf.Lerp(startValue, endValue, Mathf.Clamp01(progress01));
+        Color c = Color.HSVToRGB(hue, saturation, v);
+
+        if (liquidSprite) liquidSprite.color = c;
+        if (liquidImage) liquidImage.color = c;
+
+        if (bubbles)
+        {
+            var em = bubbles.emission;
+            em.rateOverTime = Mathf.Lerp(2f, 12f, progress01);
+        }
     }
 
     /// <summary>
-    /// Single entry point from PlayerClickInteractor.
-    /// If holding the next ingredient -> deposit & mix color.
-    /// If empty hand and recipe complete -> dispense final potion.
+    /// Called by PlayerClickInteractor. If hand holds an item, try deposit.
+    /// If hand is empty, try to collect the final potion (if available).
     /// </summary>
     public void TryDepositFromActiveHand()
     {
         var eq = EquipmentInventory.Instance;
         var gs = GameState.Instance;
-        if (!gs) return;
+        if (!eq || !gs) return;
 
-        var hand = (eq && eq.Get(eq.activeHand) != null) ? eq.Get(eq.activeHand) : null;
+        var hand = eq.Get(eq.activeHand);
 
-        // If empty hand: try collect final potion
+        // Empty hand → attempt to collect final reward
         if (hand == null || hand.IsEmpty)
         {
-            TryDispenseIfReady();
+            TryCollectReward();
             return;
         }
 
-        // Holding something: try to submit
+        // Holding an item → attempt deposit
         var item = hand.item;
-        bool ok = gs.SubmitItem(item);
-        if (ok)
+        if (gs.SubmitItem(item))
         {
-            // Remove from hand
-            eq.Unequip(eq.activeHand);
-
-            // Mix color toward a brighter random hue
-            int stage = gs.progress;                         // 1..N after this deposit
-            int total = gs.recipe != null ? gs.recipe.Length : 1;
-            Color target = RandomStageColor(stage, total);
-            // "Mix" with current color so it doesn't jump harshly
-            Color mixed = Color.Lerp(currentColor, target, 0.6f);
-            TweenLiquidColorTo(mixed);
-
-            // TODO SFX/VFX success
+            eq.Unequip(eq.activeHand); // remove from hand
+            if (bubbles) bubbles.Play(); // little feedback
+            // Color updates via OnChanged → UpdateLiquidVisual
         }
         else
         {
-            // TODO feedback wrong ingredient
-            // Debug.Log("[Cauldron] Wrong ingredient.");
+            // Optional: wrong-ingredient feedback here (sound/UI)
         }
     }
 
-    private void TryDispenseIfReady()
+    private void TryCollectReward()
     {
         var gs = GameState.Instance;
         var eq = EquipmentInventory.Instance;
-        if (!gs || !gs.IsRecipeComplete) return;
+        if (!gs || !eq || !finalPotionItem) return;
 
-        if (finalPotionItem && eq)
+        if (!gs.IsRecipeComplete || !gs.RewardAvailable) return;
+
+        var active = eq.Get(eq.activeHand);
+        if (requireEmptyHandToCollect && active != null && !active.IsEmpty) return;
+
+        bool equipped = eq.TryEquip(eq.activeHand, finalPotionItem) || eq.TryEquipToFirstAvailable(finalPotionItem);
+
+        if (!equipped && allowWorldDropIfFull && eq.pickupPrefab)
         {
-            // Try equip to active hand, then fallback
-            bool equipped = eq.TryEquip(eq.activeHand, finalPotionItem) || eq.TryEquipToFirstAvailable(finalPotionItem);
-            if (!equipped && dropIfInventoryFull && eq.pickupPrefab)
-            {
-                // Drop a pickup in the world
-                var go = Instantiate(eq.pickupPrefab, dropPoint.position, Quaternion.identity);
-                var p = go.GetComponent<Pickup>();
-                if (p) { p.item = finalPotionItem; p.amount = 1; }
-            }
+            var go = Instantiate(eq.pickupPrefab, transform.position, Quaternion.identity);
+            var pickup = go.GetComponent<Pickup>();
+            if (pickup) { pickup.item = finalPotionItem; pickup.amount = 1; }
         }
 
-        // Reset state/visuals for next round
-        gs.ResetRecipe();
-        ResetLiquid();
-        // TODO SFX/VFX dispense
-    }
-
-    // ------------------------
-    // Color mixing helpers
-    // ------------------------
-
-    // Pick a random color with increasing brightness per stage
-    private Color RandomStageColor(int stageIndex1Based, int totalStages)
-    {
-        // Normalize t in [0..1] where 0=first deposit (dark), 1=final deposit (light)
-        float t = (totalStages <= 1) ? 1f : Mathf.InverseLerp(1, totalStages, stageIndex1Based);
-
-        float h = Random.value;                   // any hue
-        float s = Mathf.Lerp(0.55f, 0.95f, Random.value * 0.7f + 0.3f); // fairly saturated
-        // Brightness gradually increases with t; add a small random range
-        float vMin = Mathf.Lerp(0.15f, 0.75f, t);
-        float vMax = Mathf.Lerp(0.35f, 1.00f, t);
-        float v = Random.Range(vMin, vMax);
-
-        Color c = Color.HSVToRGB(h, s, v);
-        c.a = 1f;
-        return c;
-    }
-
-    private void TweenLiquidColorTo(Color target)
-    {
-        target.a = liquidAlpha;
-        if (colorRoutine != null) StopCoroutine(colorRoutine);
-        colorRoutine = StartCoroutine(CoLerpColor(currentColor, target, colorLerpDuration));
-        currentColor = target;
-    }
-
-    private IEnumerator CoLerpColor(Color from, Color to, float dur)
-    {
-        if (dur <= 0f) { ApplyLiquidColorImmediate(to); yield break; }
-        float t = 0f;
-        while (t < 1f)
-        {
-            t += Time.deltaTime / dur;
-            var c = Color.Lerp(from, to, Mathf.SmoothStep(0, 1, t));
-            ApplyLiquidColorImmediate(c);
-            yield return null;
-        }
-        ApplyLiquidColorImmediate(to);
-    }
-
-    private void ApplyLiquidColorImmediate(Color c)
-    {
-        c.a = liquidAlpha;
-        if (liquidSprite) liquidSprite.color = c;
-        else if (liquidImage) liquidImage.color = c;
-    }
-
-    private void ResetLiquid()
-    {
-        // Reset to a dark base with the configured alpha
-        currentColor = new Color(0.05f, 0.05f, 0.05f, liquidAlpha);
-        ApplyLiquidColorImmediate(currentColor);
+        gs.MarkRewardCollected();
+        // Optional: reset for replay
+        // gs.ResetRecipe(); UpdateLiquidVisual(0f);
     }
 }
