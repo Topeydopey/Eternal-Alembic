@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c6183beffb7e3154e9fbcd32c72d0820, type: 3}
-  m_Name: MashedPlantPotion
+  m_Name: PlantFinalProduct
   m_EditorClassIdentifier: Assembly-CSharp::ItemSO
-  id: mashed_plant_potion
-  displayName: Mashed Plant Potion
-  icon: {fileID: -3816220521141226221, guid: 263705763866c9d428fb464eede93123, type: 3}
+  id: plant_final_product
+  displayName: Plant Final Product
+  icon: {fileID: -7447217182848422755, guid: a789d743ea689f347b122df4aabcb7ad, type: 3}
   size: 0
   tablePrefab: {fileID: 6573212671949083094, guid: 8dd0d79e551554e499f12dc91bb41aa5, type: 3}
