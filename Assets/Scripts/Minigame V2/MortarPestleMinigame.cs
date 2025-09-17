@@ -43,7 +43,8 @@ public class MortarPestleMinigame : MonoBehaviour
     private bool grinding;
     private bool resultReady;
     private GameObject spawnedResultToken;
-
+    [SerializeField] private Vector2 resultTokenSize = new Vector2(96, 96);
+    [SerializeField] private Vector2 resultSpawnPos = Vector2.zero; // adjust in Inspector
     void Awake()
     {
         Instance = this;
@@ -192,21 +193,48 @@ public class MortarPestleMinigame : MonoBehaviour
             return;
         }
 
-        var parent = resultTokenSpawnParent ? resultTokenSpawnParent : transform;
-        spawnedResultToken = Instantiate(resultTokenPrefab, parent);
-        spawnedResultToken.SetActive(true);
-        spawnedResultToken.tag = "Result";
+        var parent = resultTokenSpawnParent ? resultTokenSpawnParent : (Transform)owningCanvas?.transform ?? transform;
 
-        // Set token icon (ItemSO icon if available, else override, else mortarResultSprite)
-        var img = spawnedResultToken.GetComponent<Image>();
-        if (img)
+        // Instantiate prefab if it’s already a proper UI token, else build a clean one
+        GameObject token = null;
+        var prefabHasRT = resultTokenPrefab.GetComponent<RectTransform>() != null;
+        if (prefabHasRT)
         {
-            Sprite icon = null;
-            // If your ItemSO has an icon field (e.g., resultItem.icon), prefer it:
-            // icon = resultItem ? resultItem.icon : null;
-            icon = icon ?? (resultIconOverride ? resultIconOverride : mortarResultSprite);
-            img.sprite = icon;
+            token = Instantiate(resultTokenPrefab, parent);
         }
+        else
+        {
+            // World prefab accidentally assigned? Build a clean UI wrapper.
+            token = new GameObject("ResultToken (UI)", typeof(RectTransform), typeof(Image), typeof(CanvasGroup));
+            token.transform.SetParent(parent, false);
+            var img = token.GetComponent<Image>();
+
+            // Try to pick a sprite: ItemSO icon (if you have one) -> override -> mortarResultSprite -> prefab SR
+            Sprite icon = resultIconOverride ? resultIconOverride : mortarResultSprite;
+            var pSr = resultTokenPrefab.GetComponent<SpriteRenderer>();
+            if (!icon && pSr && pSr.sprite) icon = pSr.sprite;
+            img.sprite = icon;
+            img.preserveAspect = true;
+
+            token.AddComponent<DraggableItem>();
+        }
+
+        token.SetActive(true);
+        token.tag = "Result";
+        token.transform.SetAsLastSibling();
+
+        // Normalize RT
+        var rt = token.GetComponent<RectTransform>();
+        if (!rt) rt = token.AddComponent<RectTransform>();
+        rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+        rt.pivot = new Vector2(0.5f, 0.5f);
+        rt.localScale = Vector3.one;           // IMPORTANT: fixes “tiny” token
+        rt.sizeDelta = resultTokenSize;        // visible default
+        rt.anchoredPosition = resultSpawnPos;  // set in Inspector
+
+        // Ensure CanvasGroup/raycast
+        var cg = token.GetComponent<CanvasGroup>() ?? token.AddComponent<CanvasGroup>();
+        cg.alpha = 1f; cg.blocksRaycasts = true; cg.interactable = true;
     }
 
     private void OnResultTaken(GameObject tokenGO)
