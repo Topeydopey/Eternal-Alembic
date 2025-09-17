@@ -1,25 +1,10 @@
 fileFormatVersion: 2
-guid: 5ce60de5b4ae3e5448f27ced54a1c9f4
+guid: 18345d2cf59477543a8ad5da93dc00b3
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1507084214471052309
-    second: Cyan Alchemist_Walk-Sheet_0
-  - first:
-      213: -49862957647018042
-    second: Cyan Alchemist_Walk-Sheet_1
-  - first:
-      213: -3285686749249569618
-    second: Cyan Alchemist_Walk-Sheet_2
-  - first:
-      213: 3638507084729112017
-    second: Cyan Alchemist_Walk-Sheet_3
-  - first:
-      213: 269798121544758209
-    second: Cyan Alchemist_Walk-Sheet_4
-  - first:
-      213: -970023752781195118
-    second: Cyan Alchemist_Walk-Sheet_5
+      213: 6130074665052212228
+    second: Potion Liquid Color-Sheet_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -115,51 +100,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Cyan Alchemist_Walk-Sheet_0
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 0
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 51c4522bb1d3ae410800000000000000
-      internalID: 1507084214471052309
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Cyan Alchemist_Walk-Sheet_1
-      rect:
-        serializedVersion: 2
-        x: 32
-        y: 0
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 6c7cff977e9de4ff0800000000000000
-      internalID: -49862957647018042
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Cyan Alchemist_Walk-Sheet_2
+      name: Potion Liquid Color-Sheet_0
       rect:
         serializedVersion: 2
         x: 64
@@ -174,14 +115,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: eac75c35f45e662d0800000000000000
-      internalID: -3285686749249569618
+      spriteID: 40c0f09ed66621550800000000000000
+      internalID: 6130074665052212228
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Cyan Alchemist_Walk-Sheet_3
+      name: Potion Liquid Color-Sheet_1
       rect:
         serializedVersion: 2
         x: 96
@@ -194,16 +135,16 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 1d5550a7ae29e7230800000000000000
-      internalID: 3638507084729112017
+      spriteID: 3fe85200e99073749a6eb701713af6d5
+      internalID: -1953345285
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Cyan Alchemist_Walk-Sheet_4
+      name: Potion Liquid Color-Sheet_2
       rect:
         serializedVersion: 2
         x: 128
@@ -216,32 +157,10 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: -1
+      tessellationDetail: 0
       bones: []
-      spriteID: 1c33ebb46f38eb300800000000000000
-      internalID: 269798121544758209
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Cyan Alchemist_Walk-Sheet_5
-      rect:
-        serializedVersion: 2
-        x: 160
-        y: 0
-        width: 32
-        height: 32
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 29819c74988c982f0800000000000000
-      internalID: -970023752781195118
+      spriteID: fefffeeb74934524d841da9705ca3a7d
+      internalID: 1021757333
       vertices: []
       indices: 
       edges: []
@@ -250,7 +169,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 3c1d4052577a9c44185d43527fae87b1
+    spriteID: 036f5a0c22f38c342bebf534c197104d
     internalID: 0
     vertices: []
     indices: 
@@ -262,12 +181,9 @@ TextureImporter:
       - key: SpriteEditor.SliceSettings
         value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":32.0,"y":32.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      Cyan Alchemist_Walk-Sheet_0: 1507084214471052309
-      Cyan Alchemist_Walk-Sheet_1: -49862957647018042
-      Cyan Alchemist_Walk-Sheet_2: -3285686749249569618
-      Cyan Alchemist_Walk-Sheet_3: 3638507084729112017
-      Cyan Alchemist_Walk-Sheet_4: 269798121544758209
-      Cyan Alchemist_Walk-Sheet_5: -970023752781195118
+      Potion Liquid Color-Sheet_0: 6130074665052212228
+      Potion Liquid Color-Sheet_1: -1953345285
+      Potion Liquid Color-Sheet_2: 1021757333
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
