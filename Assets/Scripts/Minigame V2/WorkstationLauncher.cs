@@ -14,6 +14,7 @@ public class WorkstationLauncher : MonoBehaviour
     private MortarPestleMinigame mortar;
     private SnakeStationMinigame snakeStation;
     private SnakeWorldMinigame snakeWorld;
+    private PhilosophersAlembicMinigame alembic; // NEW
 
     private bool isOpen;
 
@@ -34,6 +35,7 @@ public class WorkstationLauncher : MonoBehaviour
         mortar = minigameRoot.GetComponentInChildren<MortarPestleMinigame>(true);
         snakeStation = minigameRoot.GetComponentInChildren<SnakeStationMinigame>(true);
         snakeWorld = minigameRoot.GetComponentInChildren<SnakeWorldMinigame>(true);
+        alembic = minigameRoot.GetComponentInChildren<PhilosophersAlembicMinigame>(true); // NEW
 
         if (mortar)
         {
@@ -60,9 +62,20 @@ public class WorkstationLauncher : MonoBehaviour
             snakeWorld.BeginSession();
             Debug.Log("[Launcher] Opened SnakeWorldMinigame");
         }
+        else if (alembic) // NEW
+        {
+            // Make sure its owning refs are set for consistent close behavior
+            if (alembic.owningRoot == null) alembic.owningRoot = minigameRoot;
+            if (alembic.owningCanvas == null) alembic.owningCanvas = minigameRoot.GetComponent<Canvas>();
+
+            // Alembic uses a UnityEvent onClosed
+            alembic.onClosed.AddListener(HandleClosedAlembic);
+            alembic.BeginSession();
+            Debug.Log("[Launcher] Opened PhilosophersAlembicMinigame");
+        }
         else
         {
-            Debug.LogError("[Launcher] No MortarPestleMinigame, SnakeStationMinigame, or SnakeWorldMinigame found under the canvas.");
+            Debug.LogError("[Launcher] No known minigame found (Mortar, SnakeStation, SnakeWorld, Alembic) under the canvas.");
             minigameRoot.SetActive(false);
             return;
         }
@@ -80,6 +93,7 @@ public class WorkstationLauncher : MonoBehaviour
         mortar = null;
         snakeStation = null;
         snakeWorld = null;
+        alembic = null;
     }
 
     private void HandleClosedMortar()
@@ -100,11 +114,19 @@ public class WorkstationLauncher : MonoBehaviour
         HandleClosedCommon();
     }
 
+    // NEW: UnityEvent callback (no args)
+    private void HandleClosedAlembic()
+    {
+        if (alembic) alembic.onClosed.RemoveListener(HandleClosedAlembic);
+        HandleClosedCommon();
+    }
+
     private void OnDisable()
     {
         if (mortar) mortar.onClosed -= HandleClosedMortar;
         if (snakeStation) snakeStation.onClosed -= HandleClosedStation;
         if (snakeWorld) snakeWorld.onClosed -= HandleClosedWorld;
+        if (alembic) alembic.onClosed.RemoveListener(HandleClosedAlembic); // NEW
 
         if (hideHudWhileOpen && hudCanvas) hudCanvas.gameObject.SetActive(true);
         isOpen = false;

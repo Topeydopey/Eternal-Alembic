@@ -16,11 +16,24 @@ public class PlayerClickInteractor : MonoBehaviour
     [Header("Options")]
     public bool blockWhenPointerOverUI = true;
 
+    [Header("Elixir & Death")]
+    [Tooltip("Assign your 'Elixir of Life' ItemSO here.")]
+    [SerializeField] private ItemSO elixirOfLifeItem;
+    [Tooltip("Player death controller that plays the death animation and locks controls.")]
+    [SerializeField] private PlayerDeathController deathController;
+    [Tooltip("The player's own Collider2D used to detect self-clicks. If null, auto-detected at runtime.")]
+    [SerializeField] private Collider2D selfCollider;
+
     private Camera _cam;
 
     private void Awake()
     {
         _cam = Camera.main ?? FindFirstObjectByType<Camera>();
+        if (!selfCollider)
+        {
+            // Try to find a collider on self or parents once at startup
+            selfCollider = GetComponent<Collider2D>() ?? GetComponentInParent<Collider2D>();
+        }
     }
 
     private void OnEnable()
@@ -38,10 +51,14 @@ public class PlayerClickInteractor : MonoBehaviour
     private void OnSceneChanged(Scene prev, Scene next)
     {
         _cam = null; // re-acquire next frame
+        // collider likely persists with DontDestroyOnLoad, keep as-is
     }
 
     private void Update()
     {
+        // If we're mid-death sequence, ignore clicks entirely.
+        if (deathController && deathController.IsDying) return;
+
         if (click == null || !click.action.WasPressedThisFrame()) return;
         if (blockWhenPointerOverUI && EventSystem.current && EventSystem.current.IsPointerOverGameObject()) return;
 
@@ -58,6 +75,24 @@ public class PlayerClickInteractor : MonoBehaviour
         var eq = EquipmentInventory.Instance;
         var activeSlot = eq ? eq.Get(eq.activeHand) : null;
         if (!eq || activeSlot == null) return;
+
+        // -------- SELF-DRINK: If holding Elixir and clicked on self, consume & die --------
+        if (!activeSlot.IsEmpty && activeSlot.item == elixirOfLifeItem && ClickedSelf(w))
+        {
+            // Consume item from active hand
+            eq.Unequip(eq.activeHand);
+
+            // Trigger death sequence
+            if (deathController)
+            {
+                deathController.DrinkElixirAndDie();
+            }
+            else
+            {
+                Debug.LogWarning("[PlayerClickInteractor] No PlayerDeathController assigned; cannot play death animation.");
+            }
+            return;
+        }
 
         // -------- 0) If hand empty, try ground pickups FIRST --------
         if (activeSlot.IsEmpty)
@@ -80,7 +115,7 @@ public class PlayerClickInteractor : MonoBehaviour
             }
         }
 
-        // -------- 1) INTERACTABLES (Pot/Pestle/Cauldron/Bed/Producer) --------
+        // -------- 1) INTERACTABLES (Pot/Pestle/Cauldron/Producer/etc.) --------
         var iHit = Physics2D.OverlapPoint(w, interactableMask);
         if (iHit)
         {
@@ -96,7 +131,7 @@ public class PlayerClickInteractor : MonoBehaviour
                 }
             }
 
-            // Pestle
+            // Pestle / Workstations
             var ws = iHit.GetComponentInParent<WorkstationLauncher>() ?? iHit.GetComponent<WorkstationLauncher>();
             if (ws) { ws.Launch(); return; }
 
@@ -104,11 +139,11 @@ public class PlayerClickInteractor : MonoBehaviour
             var prod = iHit.GetComponentInParent<ProducerNode>() ?? iHit.GetComponent<ProducerNode>();
             if (prod) { prod.ProduceOne(); return; }
 
-            // Cauldron
+            // Cauldron (unordered recipe deposit or collect final reward)
             var cauld = iHit.GetComponentInParent<Cauldron>() ?? iHit.GetComponent<Cauldron>();
             if (cauld) { cauld.TryDepositFromActiveHand(); return; }
 
-            // 
+            // Bed (kept commented as in your original)
             /*
             var bed = iHit.GetComponentInParent<BedSleep>() ?? iHit.GetComponent<BedSleep>();
             if (bed) { bed.TrySleep(); return; }
@@ -149,6 +184,17 @@ public class PlayerClickInteractor : MonoBehaviour
                 }
             }
         }
+    }
+
+    private bool ClickedSelf(Vector2 worldPoint)
+    {
+        if (!selfCollider)
+        {
+            // Try to lazily acquire once if missing
+            selfCollider = GetComponent<Collider2D>() ?? GetComponentInParent<Collider2D>();
+        }
+        // OverlapPoint checks if the given world point lies within the collider's 2D shape
+        return selfCollider && selfCollider.OverlapPoint(worldPoint);
     }
 
     private void OnDrawGizmosSelected()

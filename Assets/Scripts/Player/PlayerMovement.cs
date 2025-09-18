@@ -2,58 +2,103 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
+[DisallowMultipleComponent]
 public class PlayerMovement : MonoBehaviour
 {
-    public float MoveSpeed;
+    [Header("Movement")]
+    [Tooltip("World units per second.")]
+    public float MoveSpeed = 3.5f;
     public Rigidbody2D body;
 
-    public InputActionReference move; // Link this to the "Move" InputAction in the Inspector
+    [Header("Input (New Input System)")]
+    [Tooltip("Bind to your 'Move' Vector2 action.")]
+    public InputActionReference move;
 
-    private Vector2 _moveDirection;
+    [Header("Visuals")]
+    [SerializeField] private Animator animator;          // drives Idle/Walk + Die trigger later
+    [SerializeField] private SpriteRenderer spriteRenderer;
+
+    [Header("Dependencies")]
+    [SerializeField] private PlayerDeathController deathController; // freezes movement while dying
+
+    private Vector2 _moveInput;   // raw input
+    private Vector2 _moveDir;     // normalized direction
+
+    private void Reset()
+    {
+        body = GetComponent<Rigidbody2D>();
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        animator = GetComponentInChildren<Animator>();
+        deathController = GetComponent<PlayerDeathController>();
+    }
 
     private void OnEnable()
     {
-        move.action.actionMap?.Enable();
-        move.action.Enable();
-        SceneManager.activeSceneChanged += (_, __) =>
-        {
-            move.action.actionMap?.Enable();
-            move.action.Enable();
-        };
+        move?.action?.Enable();
+        SceneManager.activeSceneChanged += OnSceneChangedEnableInput;
     }
+
     private void OnDisable()
     {
-        SceneManager.activeSceneChanged -= (_, __) => { };
-        move.action.Disable();
+        SceneManager.activeSceneChanged -= OnSceneChangedEnableInput;
+        move?.action?.Disable();
+    }
+
+    private void OnSceneChangedEnableInput(Scene _, Scene __)
+    {
+        move?.action?.Enable();
     }
 
     private void Update()
     {
-        _moveDirection = move.action.ReadValue<Vector2>();
-
-        // Normalize so diagonals aren't faster (0,0 stays (0,0))
-        if (_moveDirection.sqrMagnitude > 0)
-            _moveDirection = _moveDirection.normalized;
-
-        float xInput = _moveDirection.x;
-        float yInput = _moveDirection.y;
-
-        if (Mathf.Abs(xInput) > 0)
+        // If we're in the death sequence, stop taking input but keep animator updated (Speed=0)
+        if (deathController && deathController.IsDying)
         {
-            body.linearVelocity = new Vector2(xInput * MoveSpeed, body.linearVelocity.y);
+            UpdateAnimator(Vector2.zero);
+            return;
         }
 
-        if (Mathf.Abs(yInput) > 0)
+        // Read input every frame (render rate)
+        _moveInput = move != null ? move.action.ReadValue<Vector2>() : Vector2.zero;
+
+        // Normalize so diagonals aren't faster
+        _moveDir = _moveInput.sqrMagnitude > 1e-4f ? _moveInput.normalized : Vector2.zero;
+
+        // Visuals (anim & flip)
+        UpdateAnimator(_moveDir);
+        UpdateFlip(_moveDir);
+    }
+
+    private void FixedUpdate()
+    {
+        if (!body) return;
+
+        if (deathController && deathController.IsDying)
         {
-            body.linearVelocity = new Vector2(body.linearVelocity.x, yInput * MoveSpeed);
+            body.linearVelocity = Vector2.zero;
+            return;
         }
 
-        /*
-                // Optional: if there's no input at all, stop moving
-                if (xInput == 0 && yInput == 0)
-                {
-                    body.linearVelocity = Vector2.zero;
-                }
-        */
+        // Physics step movement
+        body.linearVelocity = _moveDir * MoveSpeed;
+    }
+
+    private void UpdateAnimator(Vector2 dir)
+    {
+        if (!animator) return;
+
+        float speed = dir.magnitude; // 0..1
+        animator.SetFloat("MoveX", dir.x);
+        animator.SetFloat("MoveY", dir.y);
+        animator.SetFloat("Speed", speed);
+    }
+
+    private void UpdateFlip(Vector2 dir)
+    {
+        if (!spriteRenderer) return;
+
+        // Only flip when there is meaningful horizontal input
+        if (Mathf.Abs(dir.x) > 0.01f)
+            spriteRenderer.flipX = dir.x < 0f;
     }
 }
