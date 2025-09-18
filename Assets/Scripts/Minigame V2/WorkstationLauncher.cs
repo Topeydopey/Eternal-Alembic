@@ -18,6 +18,16 @@ public class WorkstationLauncher : MonoBehaviour
     [Header("Options")]
     public bool hideHudWhileOpen = true;
 
+    [Header("Single Use")]
+    [Tooltip("If true, this workstation can only be used once (after success).")]
+    [SerializeField] private bool onceOnly = true;
+    [Tooltip("Optional PlayerPrefs key to persist 'consumed' state across sessions. Leave empty to keep runtime-only.")]
+    [SerializeField] private string persistKey;
+    [Tooltip("Extra colliders to disable once consumed (e.g., trigger around the workstation).")]
+    [SerializeField] private Collider2D[] collidersToDisableOnConsume;
+    [Tooltip("Extra behaviours to disable once consumed (e.g., outline shader controller, hover highlighter).")]
+    [SerializeField] private Behaviour[] behavioursToDisableOnConsume;
+
     // controllers (one of these will be found)
     private MortarPestleMinigame mortar;
     private SnakeStationMinigame snakeStation;
@@ -25,6 +35,16 @@ public class WorkstationLauncher : MonoBehaviour
     private PhilosophersAlembicMinigame alembic;
 
     private bool isOpen;
+    private bool consumed;
+
+    private void Awake()
+    {
+        if (!string.IsNullOrEmpty(persistKey))
+            consumed = PlayerPrefs.GetInt(persistKey, 0) == 1;
+
+        if (consumed)
+            DisableForever();
+    }
 
     public void Launch()
     {
@@ -34,6 +54,13 @@ public class WorkstationLauncher : MonoBehaviour
             return;
         }
         if (isOpen) return;
+
+        // Block if already consumed and onceOnly
+        if (onceOnly && consumed)
+        {
+            // Optional: play a denied SFX or show a tooltip here
+            return;
+        }
 
         // Turn on the minigame canvas
         minigameRoot.SetActive(true);
@@ -49,6 +76,7 @@ public class WorkstationLauncher : MonoBehaviour
         {
             mortar.SetReuseMode(true, minigameRoot);
             mortar.onClosed += HandleClosedMortar;
+            mortar.onSucceeded += HandleSucceeded; // 🔔 listen for success
             mortar.BeginSession();
             Debug.Log("[Launcher] Opened MortarPestleMinigame");
         }
@@ -56,27 +84,28 @@ public class WorkstationLauncher : MonoBehaviour
         {
             snakeStation.SetReuseMode(true, minigameRoot);
             snakeStation.onClosed += HandleClosedStation;
+            // If you add onSucceeded to SnakeStationMinigame, subscribe here too.
             snakeStation.BeginSession();
             Debug.Log("[Launcher] Opened SnakeStationMinigame");
         }
         else if (snakeWorld)
         {
-            // Ensure it disables instead of destroying when closing
             snakeWorld.disableInsteadOfDestroy = true;
             if (snakeWorld.owningRoot == null) snakeWorld.owningRoot = minigameRoot;
             if (snakeWorld.owningCanvas == null) snakeWorld.owningCanvas = minigameRoot.GetComponent<Canvas>();
 
             snakeWorld.onClosed += HandleClosedWorld;
+            // If you add onSucceeded to SnakeWorldMinigame, subscribe here too.
             snakeWorld.BeginSession();
             Debug.Log("[Launcher] Opened SnakeWorldMinigame");
         }
         else if (alembic)
         {
-            // If not already set in Inspector, set owning refs for consistency
             if (alembic.owningRoot == null) alembic.owningRoot = minigameRoot;
             if (alembic.owningCanvas == null) alembic.owningCanvas = minigameRoot.GetComponent<Canvas>();
 
             alembic.onClosed.AddListener(HandleClosedAlembic);
+            // If you add onSucceeded UnityEvent on Alembic, add a listener to HandleSucceeded as well.
             alembic.BeginSession();
             Debug.Log("[Launcher] Opened PhilosophersAlembicMinigame");
         }
@@ -87,7 +116,6 @@ public class WorkstationLauncher : MonoBehaviour
             return;
         }
 
-        // Global UI/UX while open
         if (hideHudWhileOpen && hudCanvas) hudCanvas.gameObject.SetActive(false);
         if (dimmer) dimmer.Show();
         if (disableWhileOpen != null)
@@ -98,7 +126,6 @@ public class WorkstationLauncher : MonoBehaviour
 
     private void HandleClosedCommon()
     {
-        // Restore UI/controls
         if (hideHudWhileOpen && hudCanvas) hudCanvas.gameObject.SetActive(true);
         if (dimmer) dimmer.Hide();
         if (disableWhileOpen != null)
@@ -106,8 +133,7 @@ public class WorkstationLauncher : MonoBehaviour
 
         isOpen = false;
 
-        // clear refs
-        if (mortar) mortar.onClosed -= HandleClosedMortar;
+        if (mortar) { mortar.onClosed -= HandleClosedMortar; mortar.onSucceeded -= HandleSucceeded; }
         if (snakeStation) snakeStation.onClosed -= HandleClosedStation;
         if (snakeWorld) snakeWorld.onClosed -= HandleClosedWorld;
         if (alembic) alembic.onClosed.RemoveListener(HandleClosedAlembic);
@@ -117,35 +143,48 @@ public class WorkstationLauncher : MonoBehaviour
         snakeWorld = null;
         alembic = null;
 
-        // Turn off the minigame canvas (if your minigame didn't already)
         if (minigameRoot) minigameRoot.SetActive(false);
     }
 
-    private void HandleClosedMortar()
+    private void HandleClosedMortar() => HandleClosedCommon();
+    private void HandleClosedStation() => HandleClosedCommon();
+    private void HandleClosedWorld() => HandleClosedCommon();
+    private void HandleClosedAlembic() => HandleClosedCommon();
+
+    // 🔒 Called when the minigame reports success (result item awarded)
+    private void HandleSucceeded()
     {
-        HandleClosedCommon();
+        if (!onceOnly) return;
+
+        consumed = true;
+        if (!string.IsNullOrEmpty(persistKey))
+        {
+            PlayerPrefs.SetInt(persistKey, 1);
+            PlayerPrefs.Save();
+        }
+
+        DisableForever();
     }
 
-    private void HandleClosedStation()
+    private void DisableForever()
     {
-        HandleClosedCommon();
-    }
+        // Turn off in-world interaction
+        var myColliders = GetComponents<Collider2D>();
+        foreach (var c in myColliders) if (c) c.enabled = false;
+        if (collidersToDisableOnConsume != null)
+            foreach (var c in collidersToDisableOnConsume) if (c) c.enabled = false;
 
-    private void HandleClosedWorld()
-    {
-        HandleClosedCommon();
-    }
+        if (behavioursToDisableOnConsume != null)
+            foreach (var b in behavioursToDisableOnConsume) if (b) b.enabled = false;
 
-    // UnityEvent callback (no args) for Alembic
-    private void HandleClosedAlembic()
-    {
-        HandleClosedCommon();
+        // Optional: also hide any prompt/outline VFX you have here
+
+        // If the minigame is currently open, let normal close flow restore HUD/dimmer etc.
     }
 
     private void OnDisable()
     {
-        // Safety: unsubscribe and restore UI on disable
-        if (mortar) mortar.onClosed -= HandleClosedMortar;
+        if (mortar) { mortar.onClosed -= HandleClosedMortar; mortar.onSucceeded -= HandleSucceeded; }
         if (snakeStation) snakeStation.onClosed -= HandleClosedStation;
         if (snakeWorld) snakeWorld.onClosed -= HandleClosedWorld;
         if (alembic) alembic.onClosed.RemoveListener(HandleClosedAlembic);
