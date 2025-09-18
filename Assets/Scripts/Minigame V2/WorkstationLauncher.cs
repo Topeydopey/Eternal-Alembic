@@ -7,6 +7,14 @@ public class WorkstationLauncher : MonoBehaviour
     [SerializeField] private Canvas hudCanvas;          // your top HUD/slots canvas
     [SerializeField] private GameObject minigameRoot;   // the minigame Canvas root (set inactive at start)
 
+    [Header("Modal Dimmer")]
+    [Tooltip("Full-screen Image with MinigameDimmer on the minigame canvas. Blocks clicks + fades.")]
+    [SerializeField] private MinigameDimmer dimmer;     // optional but recommended
+
+    [Header("Disable While Open (optional)")]
+    [Tooltip("Scripts to disable when a minigame is open (e.g., PlayerMovement, PlayerClickInteractor).")]
+    [SerializeField] private MonoBehaviour[] disableWhileOpen;
+
     [Header("Options")]
     public bool hideHudWhileOpen = true;
 
@@ -14,7 +22,7 @@ public class WorkstationLauncher : MonoBehaviour
     private MortarPestleMinigame mortar;
     private SnakeStationMinigame snakeStation;
     private SnakeWorldMinigame snakeWorld;
-    private PhilosophersAlembicMinigame alembic; // NEW
+    private PhilosophersAlembicMinigame alembic;
 
     private bool isOpen;
 
@@ -35,7 +43,7 @@ public class WorkstationLauncher : MonoBehaviour
         mortar = minigameRoot.GetComponentInChildren<MortarPestleMinigame>(true);
         snakeStation = minigameRoot.GetComponentInChildren<SnakeStationMinigame>(true);
         snakeWorld = minigameRoot.GetComponentInChildren<SnakeWorldMinigame>(true);
-        alembic = minigameRoot.GetComponentInChildren<PhilosophersAlembicMinigame>(true); // NEW
+        alembic = minigameRoot.GetComponentInChildren<PhilosophersAlembicMinigame>(true);
 
         if (mortar)
         {
@@ -62,13 +70,12 @@ public class WorkstationLauncher : MonoBehaviour
             snakeWorld.BeginSession();
             Debug.Log("[Launcher] Opened SnakeWorldMinigame");
         }
-        else if (alembic) // NEW
+        else if (alembic)
         {
-            // Make sure its owning refs are set for consistent close behavior
+            // If not already set in Inspector, set owning refs for consistency
             if (alembic.owningRoot == null) alembic.owningRoot = minigameRoot;
             if (alembic.owningCanvas == null) alembic.owningCanvas = minigameRoot.GetComponent<Canvas>();
 
-            // Alembic uses a UnityEvent onClosed
             alembic.onClosed.AddListener(HandleClosedAlembic);
             alembic.BeginSession();
             Debug.Log("[Launcher] Opened PhilosophersAlembicMinigame");
@@ -80,55 +87,74 @@ public class WorkstationLauncher : MonoBehaviour
             return;
         }
 
+        // Global UI/UX while open
         if (hideHudWhileOpen && hudCanvas) hudCanvas.gameObject.SetActive(false);
+        if (dimmer) dimmer.Show();
+        if (disableWhileOpen != null)
+            foreach (var mb in disableWhileOpen) if (mb) mb.enabled = false;
+
         isOpen = true;
     }
 
     private void HandleClosedCommon()
     {
+        // Restore UI/controls
         if (hideHudWhileOpen && hudCanvas) hudCanvas.gameObject.SetActive(true);
+        if (dimmer) dimmer.Hide();
+        if (disableWhileOpen != null)
+            foreach (var mb in disableWhileOpen) if (mb) mb.enabled = true;
+
         isOpen = false;
 
         // clear refs
+        if (mortar) mortar.onClosed -= HandleClosedMortar;
+        if (snakeStation) snakeStation.onClosed -= HandleClosedStation;
+        if (snakeWorld) snakeWorld.onClosed -= HandleClosedWorld;
+        if (alembic) alembic.onClosed.RemoveListener(HandleClosedAlembic);
+
         mortar = null;
         snakeStation = null;
         snakeWorld = null;
         alembic = null;
+
+        // Turn off the minigame canvas (if your minigame didn't already)
+        if (minigameRoot) minigameRoot.SetActive(false);
     }
 
     private void HandleClosedMortar()
     {
-        if (mortar) mortar.onClosed -= HandleClosedMortar;
         HandleClosedCommon();
     }
 
     private void HandleClosedStation()
     {
-        if (snakeStation) snakeStation.onClosed -= HandleClosedStation;
         HandleClosedCommon();
     }
 
     private void HandleClosedWorld()
     {
-        if (snakeWorld) snakeWorld.onClosed -= HandleClosedWorld;
         HandleClosedCommon();
     }
 
-    // NEW: UnityEvent callback (no args)
+    // UnityEvent callback (no args) for Alembic
     private void HandleClosedAlembic()
     {
-        if (alembic) alembic.onClosed.RemoveListener(HandleClosedAlembic);
         HandleClosedCommon();
     }
 
     private void OnDisable()
     {
+        // Safety: unsubscribe and restore UI on disable
         if (mortar) mortar.onClosed -= HandleClosedMortar;
         if (snakeStation) snakeStation.onClosed -= HandleClosedStation;
         if (snakeWorld) snakeWorld.onClosed -= HandleClosedWorld;
-        if (alembic) alembic.onClosed.RemoveListener(HandleClosedAlembic); // NEW
+        if (alembic) alembic.onClosed.RemoveListener(HandleClosedAlembic);
 
         if (hideHudWhileOpen && hudCanvas) hudCanvas.gameObject.SetActive(true);
+        if (dimmer) dimmer.Hide();
+        if (disableWhileOpen != null)
+            foreach (var mb in disableWhileOpen) if (mb) mb.enabled = true;
+
         isOpen = false;
     }
 }
