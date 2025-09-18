@@ -1,34 +1,63 @@
+// Assets/Scripts/Minigame V2/Common/WorkstationLauncher.cs
 using UnityEngine;
+using System.Collections.Generic;
+using UnityEngine.Events;
 
 [DisallowMultipleComponent]
 public class WorkstationLauncher : MonoBehaviour
 {
-    [Header("Scene Objects (no prefabs here)")]
-    [SerializeField] private Canvas hudCanvas;          // your top HUD/slots canvas
-    [SerializeField] private GameObject minigameRoot;   // the minigame Canvas root (set inactive at start)
+    public enum LockScope { PerRun, Permanent }
+
+    [Header("Scene Objects")]
+    [SerializeField] private Canvas hudCanvas;
+    [SerializeField] private GameObject minigameRoot;
 
     [Header("Modal Dimmer")]
-    [Tooltip("Full-screen Image with MinigameDimmer on the minigame canvas. Blocks clicks + fades.")]
-    [SerializeField] private MinigameDimmer dimmer;     // optional but recommended
+    [SerializeField] private MinigameDimmer dimmer;
 
     [Header("Disable While Open (optional)")]
-    [Tooltip("Scripts to disable when a minigame is open (e.g., PlayerMovement, PlayerClickInteractor).")]
     [SerializeField] private MonoBehaviour[] disableWhileOpen;
+
+    [Header("While Open: Other Stations")]
+    [SerializeField] private bool disableOtherStationsColliders = true;
+    [SerializeField] private bool deactivateOtherStationsObjects = false;
 
     [Header("Options")]
     public bool hideHudWhileOpen = true;
 
     [Header("Single Use")]
-    [Tooltip("If true, this workstation can only be used once (after success).")]
     [SerializeField] private bool onceOnly = true;
-    [Tooltip("Optional PlayerPrefs key to persist 'consumed' state across sessions. Leave empty to keep runtime-only.")]
+    [SerializeField] private LockScope lockScope = LockScope.PerRun;
+    [Tooltip("Station id used for locking. Use the SAME id across openers if you have multiple.")]
+    [SerializeField] private string stationId = "workstation_default";
+    [Tooltip("Only used if scope=Permanent; legacy local key (optional).")]
     [SerializeField] private string persistKey;
-    [Tooltip("Extra colliders to disable once consumed (e.g., trigger around the workstation).")]
-    [SerializeField] private Collider2D[] collidersToDisableOnConsume;
-    [Tooltip("Extra behaviours to disable once consumed (e.g., outline shader controller, hover highlighter).")]
-    [SerializeField] private Behaviour[] behavioursToDisableOnConsume;
 
-    // controllers (one of these will be found)
+    [Header("Hands Gating (no pockets)")]
+    [Tooltip("If true, player must have an empty active hand to open this station.")]
+    [SerializeField] private bool requireEmptyHandToLaunch = true;
+    [Tooltip("Optional: show a floating text hint above the player when blocked.")]
+    [SerializeField] private bool showHintWhenBlocked = true;
+    [Tooltip("Hint text to display when the player is holding an item.")]
+    [SerializeField] private string blockedHintText = "Put your ingredient in the cauldron first";
+    [Tooltip("Player transform used to position the hint. If empty, we'll try tag 'Player'.")]
+    [SerializeField] private Transform playerTransform;
+    [Tooltip("World-space local offset above player's head for the hint.")]
+    [SerializeField] private Vector3 hintLocalOffset = new Vector3(0f, 1.6f, 0f);
+    [SerializeField] private float hintFadeIn = 0.12f;
+    [SerializeField] private float hintHold = 1.25f;
+    [SerializeField] private float hintFadeOut = 0.25f;
+
+    [Header("Optional: hard-disable when consumed")]
+    [SerializeField] private bool disableCollidersOnConsume = false;
+    [SerializeField] private Collider2D[] collidersToDisableOnConsume;
+    [SerializeField] private Behaviour[] behavioursToDisableOnConsume;
+    [SerializeField] private bool disableHighlightsOnConsume = true;
+
+    [Header("Debug")]
+    [SerializeField] private bool verbose = false;
+
+    // controllers
     private MortarPestleMinigame mortar;
     private SnakeStationMinigame snakeStation;
     private SnakeWorldMinigame snakeWorld;
@@ -37,36 +66,65 @@ public class WorkstationLauncher : MonoBehaviour
     private bool isOpen;
     private bool consumed;
 
+    private readonly List<Collider2D> _othersCollidersDisabled = new();
+    private readonly List<GameObject> _othersObjectsDeactivated = new();
+
     private void Awake()
     {
-        if (!string.IsNullOrEmpty(persistKey))
-            consumed = PlayerPrefs.GetInt(persistKey, 0) == 1;
+        // Init consumed flag
+        if (lockScope == LockScope.Permanent)
+        {
+            if (!string.IsNullOrEmpty(persistKey))
+                consumed = PlayerPrefs.GetInt(persistKey, 0) == 1;
+            if (!consumed && !string.IsNullOrEmpty(stationId) && WorkstationOnce.IsUsed(stationId))
+                consumed = true;
+        }
+        else // PerRun
+        {
+            if (!string.IsNullOrEmpty(stationId) && RunOnce.IsUsed(stationId))
+                consumed = true;
+        }
 
         if (consumed)
-            DisableForever();
+        {
+            if (disableHighlightsOnConsume) DisableConsumedHighlights();
+            if (disableCollidersOnConsume) DisableForever();
+        }
+
+        // Try to cache player by tag if not set
+        TryCachePlayer();
     }
 
     public void Launch()
     {
-        if (!minigameRoot)
-        {
-            Debug.LogError("[Launcher] minigameRoot not assigned.");
-            return;
-        }
+        if (!minigameRoot) { Debug.LogError("[Launcher] minigameRoot not assigned."); return; }
         if (isOpen) return;
 
-        // Block if already consumed and onceOnly
-        if (onceOnly && consumed)
+        // Single-use gate
+        if (onceOnly && !string.IsNullOrEmpty(stationId))
         {
-            // Optional: play a denied SFX or show a tooltip here
+            bool used = (lockScope == LockScope.PerRun)
+                ? RunOnce.IsUsed(stationId)
+                : (WorkstationOnce.IsUsed(stationId) ||
+                   (!string.IsNullOrEmpty(persistKey) && PlayerPrefs.GetInt(persistKey, 0) == 1));
+            if (used) return;
+        }
+
+        // Hands gate (no pockets). If holding something -> block & hint.
+        if (requireEmptyHandToLaunch && !PlayerHandIsEmpty())
+        {
+            if (verbose) Debug.Log($"[Launcher:{name}] Launch blocked: hands full.");
+            if (showHintWhenBlocked && playerTransform)
+            {
+                FloatingWorldHint.Show(playerTransform, blockedHintText, hintLocalOffset, hintFadeIn, hintHold, hintFadeOut);
+            }
             return;
         }
 
-        // Turn on the minigame canvas
+        // Activate UI
         minigameRoot.SetActive(true);
-        Debug.Log($"[Launcher] Activated {minigameRoot.name}");
 
-        // Try each known controller under that root
+        // Find controllers
         mortar = minigameRoot.GetComponentInChildren<MortarPestleMinigame>(true);
         snakeStation = minigameRoot.GetComponentInChildren<SnakeStationMinigame>(true);
         snakeWorld = minigameRoot.GetComponentInChildren<SnakeWorldMinigame>(true);
@@ -76,73 +134,82 @@ public class WorkstationLauncher : MonoBehaviour
         {
             mortar.SetReuseMode(true, minigameRoot);
             mortar.onClosed += HandleClosedMortar;
-            mortar.onSucceeded += HandleSucceeded; // 🔔 listen for success
+            mortar.onSucceeded += HandleSucceeded;
             mortar.BeginSession();
-            Debug.Log("[Launcher] Opened MortarPestleMinigame");
         }
         else if (snakeStation)
         {
             snakeStation.SetReuseMode(true, minigameRoot);
             snakeStation.onClosed += HandleClosedStation;
-            // If you add onSucceeded to SnakeStationMinigame, subscribe here too.
             snakeStation.BeginSession();
-            Debug.Log("[Launcher] Opened SnakeStationMinigame");
         }
         else if (snakeWorld)
         {
             snakeWorld.disableInsteadOfDestroy = true;
-            if (snakeWorld.owningRoot == null) snakeWorld.owningRoot = minigameRoot;
-            if (snakeWorld.owningCanvas == null) snakeWorld.owningCanvas = minigameRoot.GetComponent<Canvas>();
+            if (!snakeWorld.owningRoot) snakeWorld.owningRoot = minigameRoot;
+            if (!snakeWorld.owningCanvas) snakeWorld.owningCanvas = minigameRoot.GetComponent<Canvas>();
 
             snakeWorld.onClosed += HandleClosedWorld;
-            // If you add onSucceeded to SnakeWorldMinigame, subscribe here too.
+            snakeWorld.onSuccess += HandleSucceeded;
             snakeWorld.BeginSession();
-            Debug.Log("[Launcher] Opened SnakeWorldMinigame");
         }
         else if (alembic)
         {
-            if (alembic.owningRoot == null) alembic.owningRoot = minigameRoot;
-            if (alembic.owningCanvas == null) alembic.owningCanvas = minigameRoot.GetComponent<Canvas>();
+            if (!alembic.owningRoot) alembic.owningRoot = minigameRoot;
+            if (!alembic.owningCanvas) alembic.owningCanvas = minigameRoot.GetComponent<Canvas>();
 
             alembic.onClosed.AddListener(HandleClosedAlembic);
-            // If you add onSucceeded UnityEvent on Alembic, add a listener to HandleSucceeded as well.
+            alembic.onSuccess += HandleSucceeded;
             alembic.BeginSession();
-            Debug.Log("[Launcher] Opened PhilosophersAlembicMinigame");
         }
         else
         {
-            Debug.LogError("[Launcher] No known minigame found (Mortar, SnakeStation, SnakeWorld, Alembic) under the canvas.");
+            Debug.LogError("[Launcher] No known minigame under the canvas.");
             minigameRoot.SetActive(false);
             return;
         }
 
         if (hideHudWhileOpen && hudCanvas) hudCanvas.gameObject.SetActive(false);
         if (dimmer) dimmer.Show();
-        if (disableWhileOpen != null)
-            foreach (var mb in disableWhileOpen) if (mb) mb.enabled = false;
+        if (disableWhileOpen != null) foreach (var mb in disableWhileOpen) if (mb) mb.enabled = false;
 
+        DisableOtherStations();
         isOpen = true;
     }
 
+    // --- success path: mark used in selected scope ---
+    private void HandleSucceeded()
+    {
+        if (!onceOnly || string.IsNullOrEmpty(stationId)) return;
+
+        if (lockScope == LockScope.PerRun) RunOnce.MarkUsed(stationId);
+        else
+        {
+            WorkstationOnce.MarkUsed(stationId);
+            if (!string.IsNullOrEmpty(persistKey)) { PlayerPrefs.SetInt(persistKey, 1); PlayerPrefs.Save(); }
+        }
+
+        consumed = true;
+        if (disableHighlightsOnConsume) DisableConsumedHighlights();
+        if (disableCollidersOnConsume) DisableForever();
+    }
+
+    // --- common close cleanup ---
     private void HandleClosedCommon()
     {
         if (hideHudWhileOpen && hudCanvas) hudCanvas.gameObject.SetActive(true);
         if (dimmer) dimmer.Hide();
-        if (disableWhileOpen != null)
-            foreach (var mb in disableWhileOpen) if (mb) mb.enabled = true;
+        if (disableWhileOpen != null) foreach (var mb in disableWhileOpen) if (mb) mb.enabled = true;
 
+        RestoreOtherStations();
         isOpen = false;
 
         if (mortar) { mortar.onClosed -= HandleClosedMortar; mortar.onSucceeded -= HandleSucceeded; }
-        if (snakeStation) snakeStation.onClosed -= HandleClosedStation;
-        if (snakeWorld) snakeWorld.onClosed -= HandleClosedWorld;
-        if (alembic) alembic.onClosed.RemoveListener(HandleClosedAlembic);
+        if (snakeStation) { snakeStation.onClosed -= HandleClosedStation; }
+        if (snakeWorld) { snakeWorld.onClosed -= HandleClosedWorld; snakeWorld.onSuccess -= HandleSucceeded; }
+        if (alembic) { alembic.onClosed.RemoveListener(HandleClosedAlembic); alembic.onSuccess -= HandleSucceeded; }
 
-        mortar = null;
-        snakeStation = null;
-        snakeWorld = null;
-        alembic = null;
-
+        mortar = null; snakeStation = null; snakeWorld = null; alembic = null;
         if (minigameRoot) minigameRoot.SetActive(false);
     }
 
@@ -151,49 +218,80 @@ public class WorkstationLauncher : MonoBehaviour
     private void HandleClosedWorld() => HandleClosedCommon();
     private void HandleClosedAlembic() => HandleClosedCommon();
 
-    // 🔒 Called when the minigame reports success (result item awarded)
-    private void HandleSucceeded()
+    // --- others gating ---
+    private void DisableOtherStations()
     {
-        if (!onceOnly) return;
+        _othersCollidersDisabled.Clear();
+        _othersObjectsDeactivated.Clear();
 
-        consumed = true;
-        if (!string.IsNullOrEmpty(persistKey))
+        var all = FindObjectsOfType<WorkstationLauncher>(true);
+        foreach (var ws in all)
         {
-            PlayerPrefs.SetInt(persistKey, 1);
-            PlayerPrefs.Save();
-        }
+            if (ws == this) continue;
+            if (!ws.gameObject.activeInHierarchy) continue;
 
-        DisableForever();
+            if (disableOtherStationsColliders)
+            {
+                var cols = ws.GetComponentsInChildren<Collider2D>(true);
+                foreach (var c in cols) { if (c && c.enabled) { c.enabled = false; _othersCollidersDisabled.Add(c); } }
+            }
+            if (deactivateOtherStationsObjects && ws.gameObject.activeSelf)
+            {
+                ws.gameObject.SetActive(false);
+                _othersObjectsDeactivated.Add(ws.gameObject);
+            }
+        }
+    }
+
+    private void RestoreOtherStations()
+    {
+        foreach (var c in _othersCollidersDisabled) if (c) c.enabled = true;
+        _othersCollidersDisabled.Clear();
+
+        foreach (var go in _othersObjectsDeactivated) if (go) go.SetActive(true);
+        _othersObjectsDeactivated.Clear();
     }
 
     private void DisableForever()
     {
-        // Turn off in-world interaction
         var myColliders = GetComponents<Collider2D>();
         foreach (var c in myColliders) if (c) c.enabled = false;
-        if (collidersToDisableOnConsume != null)
-            foreach (var c in collidersToDisableOnConsume) if (c) c.enabled = false;
+        if (collidersToDisableOnConsume != null) foreach (var c in collidersToDisableOnConsume) if (c) c.enabled = false;
 
-        if (behavioursToDisableOnConsume != null)
-            foreach (var b in behavioursToDisableOnConsume) if (b) b.enabled = false;
-
-        // Optional: also hide any prompt/outline VFX you have here
-
-        // If the minigame is currently open, let normal close flow restore HUD/dimmer etc.
+        DisableConsumedHighlights();
     }
 
-    private void OnDisable()
+    private void DisableConsumedHighlights()
     {
-        if (mortar) { mortar.onClosed -= HandleClosedMortar; mortar.onSucceeded -= HandleSucceeded; }
-        if (snakeStation) snakeStation.onClosed -= HandleClosedStation;
-        if (snakeWorld) snakeWorld.onClosed -= HandleClosedWorld;
-        if (alembic) alembic.onClosed.RemoveListener(HandleClosedAlembic);
+        if (!disableHighlightsOnConsume) return;
+        if (behavioursToDisableOnConsume == null) return;
+        foreach (var b in behavioursToDisableOnConsume) if (b) b.EnabledIfExists(false);
+    }
 
-        if (hideHudWhileOpen && hudCanvas) hudCanvas.gameObject.SetActive(true);
-        if (dimmer) dimmer.Hide();
-        if (disableWhileOpen != null)
-            foreach (var mb in disableWhileOpen) if (mb) mb.enabled = true;
+    // --- helpers -------------------------------------------------------------
 
-        isOpen = false;
+    // Replaces missing EquipmentInventory.IsActiveHandEmpty()
+    private bool PlayerHandIsEmpty()
+    {
+        var eq = EquipmentInventory.Instance;
+        if (!eq) return true;
+        var slot = eq.Get(eq.activeHand);
+        return slot == null || slot.IsEmpty;
+    }
+
+    private void TryCachePlayer()
+    {
+        if (playerTransform) return;
+        var p = GameObject.FindGameObjectWithTag("Player");
+        if (p) playerTransform = p.transform;
+    }
+}
+
+// Small extension helper to safely enable/disable behaviours if present
+static class BehaviourExt
+{
+    public static void EnabledIfExists(this Behaviour b, bool on)
+    {
+        if (b) b.enabled = on;
     }
 }

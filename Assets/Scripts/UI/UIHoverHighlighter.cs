@@ -6,102 +6,114 @@ using UnityEngine.UI;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Image))]
-public class UIHoverHighlighter : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IEndDragHandler
+public class UIHoverHighlighter : MonoBehaviour,
+    IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IEndDragHandler
 {
     [Header("Sprites")]
-    [Tooltip("Your normal sprite. If left null, uses the Image's current sprite.")]
     public Sprite baseSprite;
-    [Tooltip("The highlighted (outlined) sprite variant.")]
     public Sprite highlightSprite;
+
+    [Header("Per-Phase Highlight (optional)")]
+    [Tooltip("Order matches phases: 0..N-1")]
+    public Sprite[] highlightByPhase;
+    public bool usePerPhaseHighlight = true;
 
     [Header("Fade")]
     [Range(0f, 1f)] public float maxHighlightAlpha = 1f;
-    [Tooltip("Seconds to fade in/out the highlight overlay.")]
     public float fadeDuration = 0.15f;
-    [Tooltip("Optional slight scale bump on hover.")]
     public float hoverPopScale = 1.05f;
 
     [Header("Options")]
-    [Tooltip("If true, the base Image's sprite is kept as-is; we add a child overlay that fades in.")]
     public bool useOverlay = true;
+
+    [Header("Robustness")]
+    [Tooltip("If true, we re-sample the current localScale as the baseline each time hover/drag begins.")]
+    public bool recalcBaseScaleOnPointerEnter = true;
 
     private Image _baseImage;
     private RectTransform _rt;
     private Image _overlayImage;
     private CanvasGroup _overlayCg;
     private Coroutine _fadeCo;
-    private bool _hovering;
     private Vector3 _baseScale;
+    private int _phaseIndex;
 
     void Awake()
     {
         _baseImage = GetComponent<Image>();
-        _rt = transform as RectTransform;
+        _rt = (RectTransform)transform;
         _baseScale = _rt.localScale;
+        if (!baseSprite && _baseImage) baseSprite = _baseImage.sprite;
 
-        if (!baseSprite) baseSprite = _baseImage ? _baseImage.sprite : null;
+        if (useOverlay) { EnsureOverlay(); SetOverlaySpriteForPhase(); }
+        else if (!_baseImage) Debug.LogWarning("[UIHoverHighlighter] No Image found.");
+    }
 
+    void OnEnable()
+    {
+        // If parent scale changed while disabled, make sure baseline is sane.
+        _baseScale = _rt ? _rt.localScale : Vector3.one;
+    }
+
+    // ---------- Public API ----------
+    public void SetPhaseIndex(int phaseIndex, bool resetFade = true)
+    {
+        _phaseIndex = Mathf.Max(0, phaseIndex);
         if (useOverlay)
         {
-            if (!_overlayImage)
-            {
-                var go = new GameObject("HighlightOverlay", typeof(RectTransform), typeof(Image), typeof(CanvasGroup));
-                var child = go.transform as RectTransform;
-                child.SetParent(transform, false);
-                child.anchorMin = Vector2.zero;
-                child.anchorMax = Vector2.one;
-                child.offsetMin = Vector2.zero;
-                child.offsetMax = Vector2.zero;
-                child.pivot = _rt.pivot;
-                child.localScale = Vector3.one;
-
-                _overlayImage = go.GetComponent<Image>();
-                _overlayImage.raycastTarget = false; // don’t block pointer
-                _overlayImage.preserveAspect = _baseImage ? _baseImage.preserveAspect : true;
-
-                _overlayCg = go.GetComponent<CanvasGroup>();
-                _overlayCg.alpha = 0f;
-                _overlayCg.blocksRaycasts = false;
-                _overlayCg.interactable = false;
-            }
-            _overlayImage.sprite = highlightSprite ? highlightSprite : baseSprite;
-        }
-        else
-        {
-            // Fallback to swapping the base image color alpha if no overlay
-            if (!_baseImage) Debug.LogWarning("[UIHoverHighlighter] No Image found.");
+            EnsureOverlay();
+            SetOverlaySpriteForPhase();
+            if (resetFade && _overlayCg) _overlayCg.alpha = 0f;
         }
     }
 
+    public void SetHighlightSprite(Sprite sprite, bool resetFade = false)
+    {
+        highlightSprite = sprite;
+        if (useOverlay)
+        {
+            EnsureOverlay();
+            if (_overlayImage) _overlayImage.sprite = sprite ? sprite : _overlayImage.sprite;
+            if (resetFade && _overlayCg) _overlayCg.alpha = 0f;
+        }
+    }
+
+    /// Call this AFTER you finish sizing/scaling at spawn.
+    public void SetBaseScaleToCurrent()
+    {
+        if (!_rt) _rt = (RectTransform)transform;
+        _baseScale = _rt.localScale;
+    }
+
+    // ---------- Pointer hooks ----------
     public void OnPointerEnter(PointerEventData eventData)
     {
-        _hovering = true;
-        StartFade(entering: true);
+        if (recalcBaseScaleOnPointerEnter) _baseScale = _rt.localScale;
+        StartFade(true);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        _hovering = false;
-        StartFade(entering: false);
+        StartFade(false);
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        // While dragging, kill highlight so it doesn't look odd
-        _hovering = false;
-        StartFade(entering: false, instant: true);
+        if (recalcBaseScaleOnPointerEnter) _baseScale = _rt.localScale;
+        StartFade(false, instant: true); // hide highlight while dragging
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        // Restore hover if pointer still over us
+        // If pointer is still over this object, resum ehighlight from the *current* baseline.
         if (eventData != null && eventData.pointerEnter == gameObject)
         {
-            _hovering = true;
-            StartFade(entering: true);
+            if (recalcBaseScaleOnPointerEnter) _baseScale = _rt.localScale;
+            StartFade(true);
         }
     }
 
+    // ---------- Internals ----------
     private void StartFade(bool entering, bool instant = false)
     {
         if (_fadeCo != null) StopCoroutine(_fadeCo);
@@ -112,7 +124,6 @@ public class UIHoverHighlighter : MonoBehaviour, IPointerEnterHandler, IPointerE
     {
         float dur = instant ? 0f : Mathf.Max(0.0001f, fadeDuration);
 
-        // Optional pop scale
         var fromScale = _rt.localScale;
         var toScale = entering ? (_baseScale * hoverPopScale) : _baseScale;
 
@@ -134,9 +145,9 @@ public class UIHoverHighlighter : MonoBehaviour, IPointerEnterHandler, IPointerE
         }
         else if (_baseImage)
         {
-            // Color-luminance fallback (tint more visible on hover)
             Color cFrom = _baseImage.color;
-            Color cTo = entering ? new Color(cFrom.r, cFrom.g, cFrom.b, 1f) : new Color(cFrom.r, cFrom.g, cFrom.b, 0.9f);
+            Color cTo = entering ? new Color(cFrom.r, cFrom.g, cFrom.b, 1f)
+                                 : new Color(cFrom.r, cFrom.g, cFrom.b, 0.9f);
 
             float t = 0f;
             while (t < dur)
@@ -153,17 +164,37 @@ public class UIHoverHighlighter : MonoBehaviour, IPointerEnterHandler, IPointerE
         _rt.localScale = toScale;
         _fadeCo = null;
     }
-    // Runtime setter so gameplay can swap the highlight overlay (e.g., empty->filled->result)
-    public void SetHighlightSprite(Sprite sprite, bool resetFade = false)
-    {
-        highlightSprite = sprite;
 
-        if (useOverlay)
-        {
-            // Make sure overlay exists (Awake builds it)
-            if (_overlayImage == null) Awake();
-            if (_overlayImage) _overlayImage.sprite = sprite ? sprite : _overlayImage.sprite;
-            if (resetFade && _overlayCg) _overlayCg.alpha = 0f;
-        }
+    private void EnsureOverlay()
+    {
+        if (_overlayImage) return;
+
+        var go = new GameObject("HighlightOverlay", typeof(RectTransform), typeof(Image), typeof(CanvasGroup));
+        var child = (RectTransform)go.transform;
+        child.SetParent(transform, false);
+        child.anchorMin = Vector2.zero;
+        child.anchorMax = Vector2.one;
+        child.offsetMin = Vector2.zero;
+        child.offsetMax = Vector2.zero;
+        child.pivot = _rt.pivot;
+        child.localScale = Vector3.one;
+
+        _overlayImage = go.GetComponent<Image>();
+        _overlayImage.raycastTarget = false;
+        _overlayImage.preserveAspect = _baseImage ? _baseImage.preserveAspect : true;
+
+        _overlayCg = go.GetComponent<CanvasGroup>();
+        _overlayCg.alpha = 0f;
+        _overlayCg.blocksRaycasts = false;
+        _overlayCg.interactable = false;
+    }
+
+    private void SetOverlaySpriteForPhase()
+    {
+        if (!_overlayImage) return;
+        Sprite s = (usePerPhaseHighlight && highlightByPhase != null && _phaseIndex < highlightByPhase.Length)
+                     ? highlightByPhase[Mathf.Clamp(_phaseIndex, 0, highlightByPhase.Length - 1)]
+                     : null;
+        _overlayImage.sprite = s ? s : (highlightSprite ? highlightSprite : baseSprite);
     }
 }

@@ -1,4 +1,8 @@
-// SnakeWorldMinigame.cs
+// Assets/Scripts/Minigame V2/SnakeWorldMinigame.cs
+// Unity 6.2 • Universal 2D • Input System
+// Spawns your prefab for the result token (preserves highlight scripts), with optional UI overrides.
+// Supports "once only" stations with PlayerPrefs persistence and a success event.
+
 using System;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,11 +10,19 @@ using UnityEngine.UI;
 public class SnakeWorldMinigame : MonoBehaviour
 {
     public event Action onClosed;
+    public event Action onSuccess;   // fired only when result is successfully awarded
 
     [Header("Owns / Canvas")]
     public Canvas owningCanvas;
     public GameObject owningRoot;
     public bool disableInsteadOfDestroy = true;
+
+    [Header("Once Only")]
+    [Tooltip("Unique ID for this station (e.g., 'snake_station_A'). Required if Once Only is on.")]
+    public string stationId = "snake_station";
+    public bool onceOnly = false;
+    [Tooltip("If already used and onceOnly is on, immediately close when opened.")]
+    public bool autoCloseIfAlreadyUsed = true;
 
     [Header("Snake (World)")]
     public SnakePhysicsController snakeHead;   // required
@@ -22,11 +34,23 @@ public class SnakeWorldMinigame : MonoBehaviour
 
     [Header("Result Token (UI)")]
     public ItemSO resultItem;                  // assign your ItemSO
-    public GameObject resultTokenPrefab;       // Image + CanvasGroup + DraggableItem; tag="Result"
+    public GameObject resultTokenPrefab;       // UI prefab: RectTransform + Image + CanvasGroup (+ DraggableItem + your highlight script)
     public DropSlotResult takeZone;            // acceptsTag="Result"
     public Transform resultTokenSpawnParent;   // default: owningCanvas.transform
     public Vector2 resultSpawnAnchoredPos = new Vector2(0, -80); // visible spot
-    public Sprite resultIconOverride;          // optional
+    public Sprite resultIconOverride;          // optional explicit icon override
+
+    [Header("Result Token (Overrides)")]
+    [SerializeField] private bool overridePrefabIcon = true;
+    [SerializeField] private bool overridePrefabSizeAndScale = true;
+    [SerializeField] private bool forceTagAndLayer = true;
+    [SerializeField] private string resultTokenTag = "Result";
+
+    [Header("Result Token Sizing")]
+    [SerializeField] private Vector2 resultTokenSize = new Vector2(100, 100); // pixels
+    [SerializeField] private bool sizeByScale = true;     // if true, also scale the RectTransform
+    [SerializeField, Range(0.05f, 5f)]
+    private float resultTokenScale = 0.2f;                // e.g., 0.2 to match your prefab look
 
     [Header("Win Condition")]
     [Tooltip("-1 = use SnakePhysicsController value")]
@@ -36,12 +60,6 @@ public class SnakeWorldMinigame : MonoBehaviour
     public bool verbose = false;
 
     private GameObject spawnedToken;
-    // --- Result token sizing ---
-    [SerializeField] private Vector2 resultTokenSize = new Vector2(100, 100); // pixels
-    [SerializeField] private bool sizeByScale = true;     // if true, also scale the RectTransform
-    [SerializeField]
-    [Range(0.05f, 5f)]
-    private float resultTokenScale = 0.2f;                   // e.g. 0.2 to match your prefab look
 
     void Awake()
     {
@@ -54,6 +72,14 @@ public class SnakeWorldMinigame : MonoBehaviour
     {
         if (!snakeHead) { Debug.LogError("[SnakeWorldMini] snakeHead not assigned."); return; }
         snakeHead.OnCompleted += OnCompleted;
+
+        // 🔒 Guard once-only right when station opens (only if we have a valid id)
+        if (onceOnly && !string.IsNullOrEmpty(stationId) && WorkstationOnce.IsUsed(stationId))
+        {
+            if (verbose) Debug.Log($"[SnakeWorldMini] '{stationId}' already used. Auto-close={autoCloseIfAlreadyUsed}.");
+            if (autoCloseIfAlreadyUsed) { CloseUI(); return; }
+        }
+
         BeginSession();
     }
 
@@ -64,14 +90,13 @@ public class SnakeWorldMinigame : MonoBehaviour
 
     public void BeginSession()
     {
-        snakeHead.ResetSession(seedsToWinOverride);
+        if (!snakeHead) { Debug.LogError("[SnakeWorldMini] snakeHead not assigned."); return; }
+
         snakeHead.SetDriveMode(SnakePhysicsController.DriveMode.PlayerSteer);
         snakeHead.SetFrozen(false);
+        snakeHead.ResetSession(seedsToWinOverride);
 
         if (verbose) Debug.Log("[SnakeWorldMini] BeginSession");
-
-        // Reset the physics head and optionally override required count
-        snakeHead.ResetSession(seedsToWinOverride);
 
         // Show the snake visuals
         if (snakeRoot) snakeRoot.SetActive(true);
@@ -114,7 +139,6 @@ public class SnakeWorldMinigame : MonoBehaviour
         SpawnResultToken();
     }
 
-    // SnakeWorldMinigame.cs
     private void SpawnResultToken()
     {
         if (!owningCanvas)
@@ -125,51 +149,126 @@ public class SnakeWorldMinigame : MonoBehaviour
 
         var parent = resultTokenSpawnParent ? resultTokenSpawnParent : owningCanvas.transform;
 
-        // Resolve a sprite (override -> prefab Image -> prefab SpriteRenderer)
-        Sprite icon = resultIconOverride;
-        if (!icon && resultTokenPrefab)
+        // Resolve desired icon: explicit override -> prefab's Image -> prefab's SpriteRenderer (if any)
+        Sprite resolvedIcon = resultIconOverride;
+        if (!resolvedIcon && resultTokenPrefab)
         {
             var pImg = resultTokenPrefab.GetComponent<Image>();
-            if (pImg && pImg.sprite) icon = pImg.sprite;
-            if (!icon)
+            if (pImg && pImg.sprite) resolvedIcon = pImg.sprite;
+            if (!resolvedIcon)
             {
                 var pSr = resultTokenPrefab.GetComponent<SpriteRenderer>();
-                if (pSr && pSr.sprite) icon = pSr.sprite;
+                if (pSr && pSr.sprite) resolvedIcon = pSr.sprite;
             }
         }
 
-        // Build a clean UI token
-        var go = new GameObject("ResultToken (UI)", typeof(RectTransform), typeof(Image), typeof(CanvasGroup));
-        go.tag = "Result";
-        go.layer = LayerMask.NameToLayer("UI");
-        go.transform.SetParent(parent, worldPositionStays: false);
-        go.transform.SetAsLastSibling();
+        GameObject go = null;
 
-        var img = go.GetComponent<Image>();
-        img.sprite = icon;
-        img.preserveAspect = true;
-        img.raycastTarget = true;
+        if (resultTokenPrefab != null)
+        {
+            // --- Use the user's prefab (so highlight scripts, etc., are preserved) ---
+            go = Instantiate(resultTokenPrefab, parent, worldPositionStays: false);
+            go.name = $"{resultTokenPrefab.name} (ResultToken)";
 
-        var rt = go.GetComponent<RectTransform>();
-        // Normalize anchors/pivot
-        rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
-        rt.pivot = new Vector2(0.5f, 0.5f);
-        // Apply sizing
-        rt.sizeDelta = resultTokenSize;              // base pixel size (Canvas Scaler will handle DPI)
-        rt.localScale = sizeByScale ? Vector3.one * resultTokenScale : Vector3.one;
-        // Position
-        rt.anchoredPosition = resultSpawnAnchoredPos; // e.g. (0,-80) in your inspector
+            // Optional: enforce tag/layer for drop filtering + UI interaction
+            if (forceTagAndLayer)
+            {
+                if (!string.IsNullOrEmpty(resultTokenTag)) go.tag = resultTokenTag;
+                int uiLayer = LayerMask.NameToLayer("UI");
+                if (uiLayer >= 0) go.layer = uiLayer;
+            }
 
-        var cg = go.GetComponent<CanvasGroup>();
-        cg.alpha = 1f; cg.blocksRaycasts = true; cg.interactable = true;
+            // Ensure it is a UI token (has RectTransform)
+            var rt = go.GetComponent<RectTransform>();
+            if (!rt)
+            {
+                Debug.LogError("[SnakeWorldMini] Result prefab is not UI (RectTransform missing). " +
+                               "Use a UI prefab for this minigame’s takeZone, or change the takeZone to world-space.");
+            }
+            else
+            {
+                // Position/anchor
+                rt.SetAsLastSibling();
+                rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+                rt.pivot = new Vector2(0.5f, 0.5f);
+                rt.anchoredPosition = resultSpawnAnchoredPos;
 
-        go.AddComponent<DraggableItem>(); // your drag script (make sure it does NOT force scale=1)
+                // Size & scale (optional override)
+                if (overridePrefabSizeAndScale)
+                {
+                    rt.sizeDelta = resultTokenSize;
+                    rt.localScale = sizeByScale ? Vector3.one * resultTokenScale : Vector3.one;
+                }
+            }
+
+            // Image + icon override (optional)
+            var img = go.GetComponent<Image>();
+            if (!img)
+            {
+                img = go.AddComponent<Image>();
+                img.preserveAspect = true;
+            }
+            if (overridePrefabIcon && resolvedIcon) img.sprite = resolvedIcon;
+            img.raycastTarget = true;
+
+            // CanvasGroup (ensure interactable)
+            var cg = go.GetComponent<CanvasGroup>();
+            if (!cg) cg = go.AddComponent<CanvasGroup>();
+            cg.alpha = 1f; cg.blocksRaycasts = true; cg.interactable = true;
+
+            // DraggableItem (warn if missing)
+            var drag = go.GetComponent<DraggableItem>();
+            if (!drag)
+            {
+                drag = go.AddComponent<DraggableItem>();
+                if (verbose) Debug.LogWarning("[SnakeWorldMini] Result prefab had no DraggableItem; added one.");
+            }
+        }
+        else
+        {
+            // --- Fallback: build a simple UI token if no prefab assigned ---
+            go = new GameObject("ResultToken (UI)", typeof(RectTransform), typeof(Image), typeof(CanvasGroup));
+            if (!string.IsNullOrEmpty(resultTokenTag)) go.tag = resultTokenTag;
+            go.layer = LayerMask.NameToLayer("UI");
+            go.transform.SetParent(parent, worldPositionStays: false);
+            go.transform.SetAsLastSibling();
+
+            var img = go.GetComponent<Image>();
+            img.sprite = resolvedIcon;
+            img.preserveAspect = true;
+            img.raycastTarget = true;
+
+            var rt = go.GetComponent<RectTransform>();
+            rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+            rt.pivot = new Vector2(0.5f, 0.5f);
+            rt.sizeDelta = resultTokenSize;
+            rt.localScale = sizeByScale ? Vector3.one * resultTokenScale : Vector3.one;
+            rt.anchoredPosition = resultSpawnAnchoredPos;
+
+            var cg = go.GetComponent<CanvasGroup>();
+            cg.alpha = 1f; cg.blocksRaycasts = true; cg.interactable = true;
+
+            go.AddComponent<DraggableItem>();
+        }
+
+        // Rebind hover baseline after scaling (prevents pop-to-giant/small on hover/drag)
+        RebindHoverScaleOn(go);
+
         spawnedToken = go;
 
-        if (verbose) Debug.Log($"[SnakeWorldMini] Result token spawned. size={resultTokenSize}, scale={(sizeByScale ? resultTokenScale : 1f)}");
+        // If your prefab/highlight script wants initialization data, it can implement this:
+        var init = go.GetComponent<IResultTokenInit>();
+        if (init != null) init.Init(resultItem, resolvedIcon);
+
+        if (verbose)
+            Debug.Log($"[SnakeWorldMini] Result token spawned from {(resultTokenPrefab ? "prefab" : "builder")} at {resultSpawnAnchoredPos}.");
     }
 
-
+    private void RebindHoverScaleOn(GameObject go)
+    {
+        var highlighters = go.GetComponentsInChildren<UIHoverHighlighter>(true);
+        foreach (var hh in highlighters) if (hh) hh.SetBaseScaleToCurrent();
+    }
 
     public void HandleResultDrop(GameObject token)
     {
@@ -186,6 +285,10 @@ public class SnakeWorldMinigame : MonoBehaviour
         }
         else Debug.LogWarning("[SnakeWorldMini] Missing EquipmentInventory or resultItem.");
 
+        // ✅ mark once-only here (SUCCESS path) if we have a valid id
+        if (onceOnly && !string.IsNullOrEmpty(stationId)) WorkstationOnce.MarkUsed(stationId);
+
+        onSuccess?.Invoke();
         CloseUI();
     }
 
@@ -208,4 +311,10 @@ public class SnakeWorldMinigame : MonoBehaviour
     }
 
     public void CancelAndClose() => CloseUI();
+}
+
+// Optional initializer contract your highlight/selection script can implement
+public interface IResultTokenInit
+{
+    void Init(ItemSO item, Sprite icon);
 }

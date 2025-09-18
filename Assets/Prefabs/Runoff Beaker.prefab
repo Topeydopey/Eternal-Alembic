@@ -1,0 +1,184 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &1511524542626371353
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6375327483579887562}
+  - component: {fileID: 4986077337580298763}
+  - component: {fileID: 4954394480345957098}
+  - component: {fileID: 1413564612339489988}
+  - component: {fileID: 4745637054414439170}
+  - component: {fileID: 1243102213226095856}
+  - component: {fileID: 4319448561510394010}
+  - component: {fileID: 56429568962053000}
+  m_Layer: 5
+  m_Name: Runoff Beaker
+  m_TagString: Runoff
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &6375327483579887562
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1511524542626371353}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 136, y: -128}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &4986077337580298763
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1511524542626371353}
+  m_CullTransparentMesh: 1
+--- !u!114 &4954394480345957098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1511524542626371353}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 4188138289311528293, guid: 442032bea5a68cc48bcf6dadd58ffb28, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!225 &1413564612339489988
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1511524542626371353}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!114 &4745637054414439170
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1511524542626371353}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13383954c8813f841b1750f5b60e8dd9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DraggableItem
+  canvas: {fileID: 0}
+  snapBackIfNoDrop: 1
+--- !u!114 &1243102213226095856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1511524542626371353}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9c4757c2f4a6b344d9e2c48451f9cb93, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RunoffBeakerSprites
+  beakerImage: {fileID: 4954394480345957098}
+  liquidImage: {fileID: 0}
+  beakerBase:
+  - {fileID: 4188138289311528293, guid: 442032bea5a68cc48bcf6dadd58ffb28, type: 3}
+  - {fileID: -366182450800547375, guid: e50e709e3e0bf6445bc8fc3785d50db6, type: 3}
+  - {fileID: 4791261687698623793, guid: e165d51b56227e141a98d750d92a2f3f, type: 3}
+  - {fileID: 8964016002043503013, guid: 794dc4659724916439f9b296f02d5afe, type: 3}
+  - {fileID: 4188138289311528293, guid: 442032bea5a68cc48bcf6dadd58ffb28, type: 3}
+  beakerFull: []
+  beakerSelected: []
+  draggable: {fileID: 0}
+  beakerAnimator: {fileID: 0}
+  showFullTrigger: ShowFull
+  phaseIntParam: Phase
+  hoverHighlighter: {fileID: 0}
+  resetHighlightFadeOnPhaseChange: 1
+--- !u!95 &4319448561510394010
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1511524542626371353}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &56429568962053000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1511524542626371353}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3155d6981a047b54cae78c2e91c9b2b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UIHoverHighlighter
+  baseSprite: {fileID: 4188138289311528293, guid: 442032bea5a68cc48bcf6dadd58ffb28, type: 3}
+  highlightSprite: {fileID: -3627302502618239123, guid: fcd299e63e90fa943a596d8570194d1d, type: 3}
+  highlightByPhase:
+  - {fileID: -3627302502618239123, guid: fcd299e63e90fa943a596d8570194d1d, type: 3}
+  - {fileID: 5514538225514427549, guid: ef492984fa481b74eaadaadda1725ca7, type: 3}
+  - {fileID: -7640180379224046815, guid: a7b21cbfd396f4b44b2ff547de83d7e8, type: 3}
+  - {fileID: -7656448154194129549, guid: 7b78f6dbb561cc24798a800e5ac6595c, type: 3}
+  - {fileID: -3627302502618239123, guid: fcd299e63e90fa943a596d8570194d1d, type: 3}
+  usePerPhaseHighlight: 1
+  maxHighlightAlpha: 1
+  fadeDuration: 0.15
+  hoverPopScale: 1.05
+  useOverlay: 1
+  _phaseIndex: 0

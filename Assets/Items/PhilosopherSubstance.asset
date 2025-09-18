@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemSO
   id: philosopher_substance
   displayName: Philosopher Substance
-  icon: {fileID: 4791261687698623793, guid: e165d51b56227e141a98d750d92a2f3f, type: 3}
+  icon: {fileID: 4188138289311528293, guid: 442032bea5a68cc48bcf6dadd58ffb28, type: 3}
   size: 0
   tablePrefab: {fileID: 0}

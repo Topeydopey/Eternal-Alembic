@@ -1,54 +1,74 @@
 // Assets/Scripts/Minigame V2/PhilosophersAlembic/RunoffBeakerSprites.cs
-using System.Collections;
+// Unity 6.2 • Universal 2D • Input System
+// Beaker visuals + drag only. No position resets here (minigame controls placement).
+// Now updates UIHoverHighlighter per phase for hover-outline variants.
+
 using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(RectTransform))]
+[DisallowMultipleComponent]
 public class RunoffBeakerSprites : MonoBehaviour
 {
     [Header("Visuals")]
-    [SerializeField] private Image beakerImage;     // The main beaker image
-    [SerializeField] private Image liquidImage;     // Optional: an inner liquid image you can tint per phase (can be null)
+    [SerializeField] private Image beakerImage;
+    [SerializeField] private Image liquidImage; // optional tint overlay
 
-    [Header("Sprites by Phase (index: 0=Black,1=White,2=Gold,3=Red)")]
-    [SerializeField] private Sprite[] beakerBase;       // Idle/empty (or same as full if you don’t have empties)
-    [SerializeField] private Sprite[] beakerFull;       // “full” look (non-selected)
-    [SerializeField] private Sprite[] beakerSelected;   // *_SELECTED variants (ready to drag)
+    [Header("Sprites by Phase (0..N-1)")]
+    [SerializeField] private Sprite[] beakerBase;     // idle/empty
+    [SerializeField] private Sprite[] beakerFull;     // optional
+    [SerializeField] private Sprite[] beakerSelected; // ready-to-drag look
 
-    [Header("Drag + Pour Tilt")]
-    [SerializeField] private DraggableItem draggable;   // Your existing script
-    [SerializeField] private float tiltAngle = -35f;
-    [SerializeField] private float tiltSeconds = 0.25f;
+    [Header("Drag")]
+    [SerializeField] private DraggableItem draggable;
+
+    [Header("Optional: 'pop' when full")]
+    [SerializeField] private Animator beakerAnimator;
+    [SerializeField] private string showFullTrigger = "ShowFull";
+    [SerializeField] private string phaseIntParam = "Phase";
+
+    [Header("Hover Highlight (optional)")]
+    [Tooltip("If present, this will receive the current phase index so it can swap highlight sprites.")]
+    [SerializeField] private UIHoverHighlighter hoverHighlighter;
+    [Tooltip("Reset highlight fade when the phase changes.")]
+    [SerializeField] private bool resetHighlightFadeOnPhaseChange = true;
 
     private PhilosophersAlembicMinigame owner;
     private RectTransform rt;
-    private Vector2 armDefaultAnchoredPos;
-    private Quaternion defaultRotation;
-    private bool ready;      // full and ready to drag (Selected sprite)
-    private bool collectible;// red phase: drag to TakeZone
+    private bool ready;
+    private bool collectible;
+
+    // --- Init ----------------------------------------------------------------
 
     public void Init(PhilosophersAlembicMinigame owner)
     {
         this.owner = owner;
         rt = (RectTransform)transform;
-        defaultRotation = rt.localRotation;
-        armDefaultAnchoredPos = rt.anchoredPosition;
+
+        if (!beakerImage) beakerImage = GetComponent<Image>();
         if (!draggable) draggable = GetComponent<DraggableItem>();
+        if (!hoverHighlighter) hoverHighlighter = GetComponent<UIHoverHighlighter>();
+        if (!TryGetComponent(out CanvasGroup _)) gameObject.AddComponent<CanvasGroup>();
+
         SetDraggable(false);
     }
+
+    // --- Public API -----------------------------------------------------------
 
     public void SetVisualPhase(int phaseIndex, Color tint)
     {
         ready = false; collectible = false;
         if (liquidImage) liquidImage.color = tint;
 
-        Sprite s = (phaseIndex >= 0 && phaseIndex < beakerBase.Length) ? beakerBase[phaseIndex] : null;
+        var s = GetSafeSprite(beakerBase, phaseIndex);
         if (beakerImage && s) beakerImage.sprite = s;
 
-        // reset transform
-        rt.localRotation = defaultRotation;
-        rt.anchoredPosition = armDefaultAnchoredPos;
+        SetAnimatorPhase(phaseIndex);
+        UpdateHighlighterPhase(phaseIndex);          // <-- keep hover outline in sync with phase
+
         SetDraggable(false);
+        gameObject.tag = "Untagged";
+        // IMPORTANT: no anchoredPosition changes here (minigame handles placement)
     }
 
     public void MarkFullPourable(int phaseIndex)
@@ -57,6 +77,12 @@ public class RunoffBeakerSprites : MonoBehaviour
         SwapSelected(phaseIndex);
         SetDraggable(true);
         gameObject.tag = "Runoff";
+
+        SetAnimatorPhase(phaseIndex);
+        UpdateHighlighterPhase(phaseIndex);          // <-- ensure hover outline matches this phase
+
+        if (beakerAnimator && !string.IsNullOrEmpty(showFullTrigger))
+            beakerAnimator.SetTrigger(showFullTrigger);
     }
 
     public void MarkFullCollectible(int phaseIndex)
@@ -65,50 +91,52 @@ public class RunoffBeakerSprites : MonoBehaviour
         SwapSelected(phaseIndex);
         SetDraggable(true);
         gameObject.tag = "Result";
-    }
 
-    private void SwapSelected(int phaseIndex)
-    {
-        Sprite s = (phaseIndex >= 0 && phaseIndex < beakerSelected.Length) ? beakerSelected[phaseIndex] : null;
-        if (beakerImage && s) beakerImage.sprite = s;
-    }
+        SetAnimatorPhase(phaseIndex);
+        UpdateHighlighterPhase(phaseIndex);          // <-- ensure hover outline matches this phase
 
-    public IEnumerator PourTiltRoutine()
-    {
-        // quick tilt forward then back
-        float t = 0f;
-        Quaternion from = defaultRotation;
-        Quaternion to = Quaternion.Euler(0, 0, tiltAngle);
-
-        while (t < tiltSeconds)
-        {
-            t += Time.deltaTime;
-            rt.localRotation = Quaternion.Slerp(from, to, Mathf.Clamp01(t / tiltSeconds));
-            yield return null;
-        }
-
-        t = 0f;
-        while (t < tiltSeconds)
-        {
-            t += Time.deltaTime;
-            rt.localRotation = Quaternion.Slerp(to, from, Mathf.Clamp01(t / tiltSeconds));
-            yield return null;
-        }
+        if (beakerAnimator && !string.IsNullOrEmpty(showFullTrigger))
+            beakerAnimator.SetTrigger(showFullTrigger);
     }
 
     public void EmptyAndReturnToArm(int nextPhaseIndex, Color nextPhaseTint)
     {
-        // Reset visuals for next fill
         SetVisualPhase(nextPhaseIndex, nextPhaseTint);
+    }
+
+    // --- Internals ------------------------------------------------------------
+
+    private void SwapSelected(int phaseIndex)
+    {
+        Sprite s = GetSafeSprite(beakerSelected, phaseIndex);
+        if (!s) s = GetSafeSprite(beakerFull, phaseIndex);
+        if (beakerImage && s) beakerImage.sprite = s;
+    }
+
+    private Sprite GetSafeSprite(Sprite[] arr, int i)
+    {
+        if (arr == null || arr.Length == 0) return null;
+        i = Mathf.Clamp(i, 0, arr.Length - 1);
+        return arr[i];
+    }
+
+    private void SetAnimatorPhase(int index)
+    {
+        if (beakerAnimator && !string.IsNullOrEmpty(phaseIntParam))
+            beakerAnimator.SetInteger(phaseIntParam, index);
     }
 
     private void SetDraggable(bool on)
     {
-        if (!draggable) return;
-        draggable.enabled = on;
+        if (draggable) draggable.enabled = on;
         var cg = GetComponent<CanvasGroup>() ?? gameObject.AddComponent<CanvasGroup>();
-        // while dragging, DraggableItem sets blocksRaycasts=false; here we just ensure it’s interactable when ready
         cg.interactable = on;
-        cg.blocksRaycasts = true;
+        cg.blocksRaycasts = true; // DraggableItem toggles during drag
+    }
+
+    private void UpdateHighlighterPhase(int phaseIndex)
+    {
+        if (!hoverHighlighter) return;
+        hoverHighlighter.SetPhaseIndex(phaseIndex, resetHighlightFadeOnPhaseChange);
     }
 }

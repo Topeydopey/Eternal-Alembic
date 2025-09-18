@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ItemSO
   id: result_snake
   displayName: Result Snake
-  icon: {fileID: 2349651856428718222, guid: 154e524a5ba096f468585fd1c36a289b, type: 3}
+  icon: {fileID: 6634164951110630519, guid: b47ac7b3bd6fc2a4f970d12a96dc9803, type: 3}
   size: 0
   tablePrefab: {fileID: 0}
