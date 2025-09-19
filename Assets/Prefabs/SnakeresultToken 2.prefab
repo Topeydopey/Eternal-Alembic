@@ -30,7 +30,7 @@ RectTransform:
   m_GameObject: {fileID: 8720366370195665566}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 100, y: 100, z: 100}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -103,7 +103,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DraggableItem
   canvas: {fileID: 0}
-  snapBackIfNoDrop: 1
+  snapBackIfNoDrop: 0
 --- !u!114 &-16332508418907192
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -122,6 +122,6 @@ MonoBehaviour:
   usePerPhaseHighlight: 1
   maxHighlightAlpha: 1
   fadeDuration: 0.15
-  hoverPopScale: 1.05
+  hoverPopScale: 1
   useOverlay: 1
-  _phaseIndex: 0
+  recalcBaseScaleOnPointerEnter: 1
