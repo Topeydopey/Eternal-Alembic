@@ -650,8 +650,8 @@ MonoBehaviour:
     loved ones vanish into memories.
 
 
-    It becomes not a blessing,
-    but a curse.
+    It is not a blessing, but
+    a curse.
 
 '
 --- !u!222 &388171235
@@ -1736,7 +1736,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Everything has its end,
+  m_Text: 'Everything needs to end,
 
 
     a seed becomes a tree,

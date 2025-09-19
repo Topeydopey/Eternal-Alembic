@@ -119,5 +119,6 @@ public class PoemController : MonoBehaviour
 
         yield return new WaitForSeconds(24f); 
         Application.Quit();
+        Debug.Log("Game Ended");
     }
 }
