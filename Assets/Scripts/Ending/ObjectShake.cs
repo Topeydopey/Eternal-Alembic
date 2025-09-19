@@ -6,14 +6,19 @@ public class ObjectShake : MonoBehaviour
     public float duration = 0.5f;   // how long to shake
     public float magnitude = 10f;   // how strong the shake
 
+    public AudioSource rumble;
+
     private void OnEnable()
     {
+
         StartCoroutine(Shake());
     }
 
     private IEnumerator Shake()
     {
         Vector3 originalPos = transform.localPosition;
+        rumble.PlayOneShot(rumble.clip);
+        
         float elapsed = 0f;
 
         while (elapsed < duration)
