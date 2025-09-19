@@ -36,7 +36,6 @@ public class StartFunction : MonoBehaviour
         {
             isTriggered = true;
             StartCoroutine(StartGame());
-            Debug.Log("CHeck");
         }
     }
 
@@ -53,7 +52,7 @@ public class StartFunction : MonoBehaviour
 
         fadeScript.FadeIn();
 
-        yield return new WaitForSeconds(4);
+        yield return new WaitForSeconds(3);
 
         SceneManager.LoadScene("Home");
 
