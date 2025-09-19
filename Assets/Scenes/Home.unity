@@ -4204,7 +4204,7 @@ MonoBehaviour:
   requireProximity: 1
   interactRadius: 1.9
   proximityOrigin: {fileID: 0}
-  disableCollidersOnConsume: 1
+  disableCollidersOnConsume: 0
   collidersToDisableOnConsume: []
   behavioursToDisableOnConsume: []
   disableHighlightsOnConsume: 1
@@ -14247,7 +14247,7 @@ MonoBehaviour:
   requireProximity: 1
   interactRadius: 1.9
   proximityOrigin: {fileID: 0}
-  disableCollidersOnConsume: 1
+  disableCollidersOnConsume: 0
   collidersToDisableOnConsume: []
   behavioursToDisableOnConsume: []
   disableHighlightsOnConsume: 1
@@ -14672,8 +14672,7 @@ MonoBehaviour:
   interactRadius: 1.9
   proximityOrigin: {fileID: 0}
   disableCollidersOnConsume: 0
-  collidersToDisableOnConsume:
-  - {fileID: 1632450750}
+  collidersToDisableOnConsume: []
   behavioursToDisableOnConsume: []
   disableHighlightsOnConsume: 1
   verbose: 0
