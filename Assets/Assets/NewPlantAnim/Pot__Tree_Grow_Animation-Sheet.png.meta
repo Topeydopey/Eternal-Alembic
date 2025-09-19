@@ -1,0 +1,902 @@
+fileFormatVersion: 2
+guid: cee58de6341ade043b34094ef26cab64
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3589245737012058016
+    second: Pot__Tree_Grow_Animation-Sheet_0
+  - first:
+      213: -7468858776526889791
+    second: Pot__Tree_Grow_Animation-Sheet_1
+  - first:
+      213: -7417378619835224390
+    second: Pot__Tree_Grow_Animation-Sheet_2
+  - first:
+      213: -1013251798661988008
+    second: Pot__Tree_Grow_Animation-Sheet_3
+  - first:
+      213: 2531459876169108652
+    second: Pot__Tree_Grow_Animation-Sheet_4
+  - first:
+      213: -4997733769126888548
+    second: Pot__Tree_Grow_Animation-Sheet_5
+  - first:
+      213: 4015389122301406170
+    second: Pot__Tree_Grow_Animation-Sheet_6
+  - first:
+      213: -906611571114642124
+    second: Pot__Tree_Grow_Animation-Sheet_7
+  - first:
+      213: -6709882641231511768
+    second: Pot__Tree_Grow_Animation-Sheet_8
+  - first:
+      213: 7545443895529981845
+    second: Pot__Tree_Grow_Animation-Sheet_9
+  - first:
+      213: -6302170421682086170
+    second: Pot__Tree_Grow_Animation-Sheet_10
+  - first:
+      213: 900581847692648788
+    second: Pot__Tree_Grow_Animation-Sheet_11
+  - first:
+      213: 3174144332750009227
+    second: Pot__Tree_Grow_Animation-Sheet_12
+  - first:
+      213: 3477585899048341366
+    second: Pot__Tree_Grow_Animation-Sheet_13
+  - first:
+      213: 4047463060287593805
+    second: Pot__Tree_Grow_Animation-Sheet_14
+  - first:
+      213: -5287658290909293623
+    second: Pot__Tree_Grow_Animation-Sheet_15
+  - first:
+      213: 982980358522510780
+    second: Pot__Tree_Grow_Animation-Sheet_16
+  - first:
+      213: -5336411780241431274
+    second: Pot__Tree_Grow_Animation-Sheet_17
+  - first:
+      213: 3726916842529168072
+    second: Pot__Tree_Grow_Animation-Sheet_18
+  - first:
+      213: -180119996667658074
+    second: Pot__Tree_Grow_Animation-Sheet_19
+  - first:
+      213: -322248389328642206
+    second: Pot__Tree_Grow_Animation-Sheet_20
+  - first:
+      213: 8450676845879635558
+    second: Pot__Tree_Grow_Animation-Sheet_21
+  - first:
+      213: -29694299689982178
+    second: Pot__Tree_Grow_Animation-Sheet_22
+  - first:
+      213: 8515505711928973123
+    second: Pot__Tree_Grow_Animation-Sheet_23
+  - first:
+      213: -3514535220284456811
+    second: Pot__Tree_Grow_Animation-Sheet_24
+  - first:
+      213: -7361733263993524973
+    second: Pot__Tree_Grow_Animation-Sheet_25
+  - first:
+      213: -7721874148746694119
+    second: Pot__Tree_Grow_Animation-Sheet_26
+  - first:
+      213: 6595091694660690308
+    second: Pot__Tree_Grow_Animation-Sheet_27
+  - first:
+      213: 2893269075121295670
+    second: Pot__Tree_Grow_Animation-Sheet_28
+  - first:
+      213: -8679695781532702267
+    second: Pot__Tree_Grow_Animation-Sheet_29
+  - first:
+      213: 1313427671506923370
+    second: Pot__Tree_Grow_Animation-Sheet_30
+  - first:
+      213: 6067941356918560924
+    second: Pot__Tree_Grow_Animation-Sheet_31
+  - first:
+      213: -460461234254325988
+    second: Pot__Tree_Grow_Animation-Sheet_32
+  - first:
+      213: -7615371971510032674
+    second: Pot__Tree_Grow_Animation-Sheet_33
+  - first:
+      213: -7076230253341185607
+    second: Pot__Tree_Grow_Animation-Sheet_34
+  - first:
+      213: 6629268940004329944
+    second: Pot__Tree_Grow_Animation-Sheet_35
+  - first:
+      213: -5563040402758944978
+    second: Pot__Tree_Grow_Animation-Sheet_36
+  - first:
+      213: 42996521872316375
+    second: Pot__Tree_Grow_Animation-Sheet_37
+  - first:
+      213: -2151982226413038629
+    second: Pot__Tree_Grow_Animation-Sheet_38
+  - first:
+      213: -3803691012668928901
+    second: Pot__Tree_Grow_Animation-Sheet_39
+  - first:
+      213: -6429406825611844546
+    second: Pot__Tree_Grow_Animation-Sheet_40
+  - first:
+      213: -3066231470953143780
+    second: Pot__Tree_Grow_Animation-Sheet_41
+  - first:
+      213: -5401991954715756320
+    second: Pot__Tree_Grow_Animation-Sheet_42
+  - first:
+      213: 1453518862710071133
+    second: Pot__Tree_Grow_Animation-Sheet_43
+  - first:
+      213: -2873197511128153084
+    second: Pot__Tree_Grow_Animation-Sheet_44
+  - first:
+      213: -5063706344695384647
+    second: Pot__Tree_Grow_Animation-Sheet_45
+  - first:
+      213: 6747326825659793703
+    second: Pot__Tree_Grow_Animation-Sheet_46
+  - first:
+      213: 7919506852196746205
+    second: Pot__Tree_Grow_Animation-Sheet_47
+  - first:
+      213: -973406447365710141
+    second: Pot__Tree_Grow_Animation-Sheet_48
+  - first:
+      213: -8993124747078433262
+    second: Pot__Tree_Grow_Animation-Sheet_49
+  - first:
+      213: -5309827699473650724
+    second: Pot__Tree_Grow_Animation-Sheet_50
+  - first:
+      213: -3519021456110595570
+    second: Pot__Tree_Grow_Animation-Sheet_51
+  - first:
+      213: -7772100102676126845
+    second: Pot__Tree_Grow_Animation-Sheet_52
+  - first:
+      213: -3428225399319139358
+    second: Pot__Tree_Grow_Animation-Sheet_53
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 16
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Pot__Tree_Grow_Animation-Sheet_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 068afc1d400703ec0800000000000000
+      internalID: -3589245737012058016
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pot__Tree_Grow_Animation-Sheet_1
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1cc5e83b388495890800000000000000
+      internalID: -7468858776526889791
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pot__Tree_Grow_Animation-Sheet_2
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: abee428b17d201990800000000000000
+      internalID: -7417378619835224390
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pot__Tree_Grow_Animation-Sheet_3
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8510ab88bd430f1f0800000000000000
+      internalID: -1013251798661988008
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pot__Tree_Grow_Animation-Sheet_4
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cacc63a585d812320800000000000000
+      internalID: 2531459876169108652
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pot__Tree_Grow_Animation-Sheet_5
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c9bb739bd9b74aab0800000000000000
+      internalID: -4997733769126888548
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pot__Tree_Grow_Animation-Sheet_6
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: adb2ebdd12789b730800000000000000
+      internalID: 4015389122301406170
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pot__Tree_Grow_Animation-Sheet_7
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 435f37a54911b63f0800000000000000
+      internalID: -906611571114642124
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pot__Tree_Grow_Animation-Sheet_8
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 82ff5dcc945b1e2a0800000000000000
+      internalID: -6709882641231511768
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pot__Tree_Grow_Animation-Sheet_9
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59744b9de3dc6b860800000000000000
+      internalID: 7545443895529981845
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pot__Tree_Grow_Animation-Sheet_10
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6ee5aad44613a88a0800000000000000
+      internalID: -6302170421682086170
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pot__Tree_Grow_Animation-Sheet_11
+      rect:
+        serializedVersion: 2
+        x: 704
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 451a2e24b628f7c00800000000000000
+      internalID: 900581847692648788
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pot__Tree_Grow_Animation-Sheet_12
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b83326b0473dc0c20800000000000000
+      internalID: 3174144332750009227
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pot__Tree_Grow_Animation-Sheet_13
+      rect:
+        serializedVersion: 2
+        x: 832
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 67f0fac33fdd24030800000000000000
+      internalID: 3477585899048341366
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pot__Tree_Grow_Animation-Sheet_14
+      rect:
+        serializedVersion: 2
+        x: 896
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d4d15fd753a7b2830800000000000000
+      internalID: 4047463060287593805
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pot__Tree_Grow_Animation-Sheet_15
+      rect:
+        serializedVersion: 2
+        x: 960
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c3d3b4bcc67e96b0800000000000000
+      internalID: -5287658290909293623
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pot__Tree_Grow_Animation-Sheet_16
+      rect:
+        serializedVersion: 2
+        x: 1024
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cbd9be29d6f34ad00800000000000000
+      internalID: 982980358522510780
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pot__Tree_Grow_Animation-Sheet_17
+      rect:
+        serializedVersion: 2
+        x: 1088
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 615ef7762c141f5b0800000000000000
+      internalID: -5336411780241431274
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pot__Tree_Grow_Animation-Sheet_18
+      rect:
+        serializedVersion: 2
+        x: 1152
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ca1f5a4f1ba8b330800000000000000
+      internalID: 3726916842529168072
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pot__Tree_Grow_Animation-Sheet_19
+      rect:
+        serializedVersion: 2
+        x: 1216
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6a00ead31d5108df0800000000000000
+      internalID: -180119996667658074
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pot__Tree_Grow_Animation-Sheet_20
+      rect:
+        serializedVersion: 2
+        x: 1280
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 26fdf981cc4278bf0800000000000000
+      internalID: -322248389328642206
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pot__Tree_Grow_Animation-Sheet_21
+      rect:
+        serializedVersion: 2
+        x: 1344
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 66e264651d5d64570800000000000000
+      internalID: 8450676845879635558
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pot__Tree_Grow_Animation-Sheet_22
+      rect:
+        serializedVersion: 2
+        x: 1408
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e17ef171131869ff0800000000000000
+      internalID: -29694299689982178
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pot__Tree_Grow_Animation-Sheet_23
+      rect:
+        serializedVersion: 2
+        x: 1472
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3471652f3572d2670800000000000000
+      internalID: 8515505711928973123
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pot__Tree_Grow_Animation-Sheet_24
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 590885486dcd93fc0800000000000000
+      internalID: -3514535220284456811
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pot__Tree_Grow_Animation-Sheet_25
+      rect:
+        serializedVersion: 2
+        x: 1600
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 31d2d7cb99ed5d990800000000000000
+      internalID: -7361733263993524973
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pot__Tree_Grow_Animation-Sheet_26
+      rect:
+        serializedVersion: 2
+        x: 1664
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9127eabbf5466d490800000000000000
+      internalID: -7721874148746694119
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 0ddf630c88f010947ac99b5c3420f869
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Pot__Tree_Grow_Animation-Sheet_0: -3589245737012058016
+      Pot__Tree_Grow_Animation-Sheet_1: -7468858776526889791
+      Pot__Tree_Grow_Animation-Sheet_10: -6302170421682086170
+      Pot__Tree_Grow_Animation-Sheet_11: 900581847692648788
+      Pot__Tree_Grow_Animation-Sheet_12: 3174144332750009227
+      Pot__Tree_Grow_Animation-Sheet_13: 3477585899048341366
+      Pot__Tree_Grow_Animation-Sheet_14: 4047463060287593805
+      Pot__Tree_Grow_Animation-Sheet_15: -5287658290909293623
+      Pot__Tree_Grow_Animation-Sheet_16: 982980358522510780
+      Pot__Tree_Grow_Animation-Sheet_17: -5336411780241431274
+      Pot__Tree_Grow_Animation-Sheet_18: 3726916842529168072
+      Pot__Tree_Grow_Animation-Sheet_19: -180119996667658074
+      Pot__Tree_Grow_Animation-Sheet_2: -7417378619835224390
+      Pot__Tree_Grow_Animation-Sheet_20: -322248389328642206
+      Pot__Tree_Grow_Animation-Sheet_21: 8450676845879635558
+      Pot__Tree_Grow_Animation-Sheet_22: -29694299689982178
+      Pot__Tree_Grow_Animation-Sheet_23: 8515505711928973123
+      Pot__Tree_Grow_Animation-Sheet_24: -3514535220284456811
+      Pot__Tree_Grow_Animation-Sheet_25: -7361733263993524973
+      Pot__Tree_Grow_Animation-Sheet_26: -7721874148746694119
+      Pot__Tree_Grow_Animation-Sheet_3: -1013251798661988008
+      Pot__Tree_Grow_Animation-Sheet_4: 2531459876169108652
+      Pot__Tree_Grow_Animation-Sheet_5: -4997733769126888548
+      Pot__Tree_Grow_Animation-Sheet_6: 4015389122301406170
+      Pot__Tree_Grow_Animation-Sheet_7: -906611571114642124
+      Pot__Tree_Grow_Animation-Sheet_8: -6709882641231511768
+      Pot__Tree_Grow_Animation-Sheet_9: 7545443895529981845
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

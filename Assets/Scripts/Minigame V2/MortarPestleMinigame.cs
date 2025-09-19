@@ -1,4 +1,5 @@
-using System;                     // for Action
+// Assets/Scripts/Minigame V2/MortarPestle/MortarPestleMinigame.cs
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
@@ -8,21 +9,34 @@ public class MortarPestleMinigame : MonoBehaviour
     public static MortarPestleMinigame Instance;
 
     [Header("Closing/Owner")]
-    [SerializeField] public Canvas owningCanvas;     // assign the bottom canvas (minigame) OR auto-detect
-    [SerializeField] public GameObject owningRoot;   // optional: a wrapper object to destroy instead of the whole Canvas
-    [SerializeField] private bool disableInsteadOfDestroy = false; // <- reuse mode toggle (set via SetReuseMode)
-    public event Action onClosed;                     // launcher can listen to clear its state
-    public event Action onSucceeded;                  // 🔔 NEW: fired when result is granted
+    [SerializeField] public Canvas owningCanvas;
+    [SerializeField] public GameObject owningRoot;
+    [SerializeField] private bool disableInsteadOfDestroy = false;
+    public event Action onClosed;
+    public event Action onSucceeded;
 
     [Header("References")]
     [Tooltip("UI token for Growth Potion (tag='Potion') placed in the UI.")]
     public GameObject growthPotion;       // tag = "Potion"
     [Tooltip("UI area that accepts the potion drop (DropSlot acceptsTag='Potion').")]
     public GameObject plantPot;
-    [Tooltip("Dead plant UI prefab that will be spawned (will be tagged 'Plant').")]
+
+    [Header("Plant (Remnant)")]
+    [Tooltip("Prefab used when spawning a NEW plant token.")]
     public GameObject deadPlantPrefab;
-    [Tooltip("Where the dead plant UI spawns (usually a container near the pot).")]
+    [Tooltip("If assigned AND reuseScenePlantInstance = true, this disabled scene object will be activated instead of instantiating a clone.")]
+    public GameObject deadPlantSceneInstance;
+    [Tooltip("Parent to hold the plant token UI.")]
     public Transform plantSpawnParent;
+    [Tooltip("Optional anchor to place the plant token. Must share the same parent space as the spawned token.")]
+    public RectTransform plantSpawnAnchor;
+    [Tooltip("Fallback anchored position if no anchor is given.")]
+    public Vector2 plantSpawnAnchoredPos = Vector2.zero;
+    [Tooltip("If true and a scene instance is assigned, we will activate/reuse it. Otherwise we always instantiate the prefab.")]
+    public bool reuseScenePlantInstance = true;
+    [Tooltip("Tag name expected by your DropSlot on the mortar. Must exist in Project Tags.")]
+    public string plantTag = "Plant";
+
     [Tooltip("Clickable mortar+pestle root; a separate MortarClickable is attached to it.")]
     public GameObject mortarPestle;
     [Tooltip("Image that swaps between empty/filled/result mortar sprites.")]
@@ -42,11 +56,11 @@ public class MortarPestleMinigame : MonoBehaviour
     private MortarClickable mortarClickable;       // cached
 
     [Header("Result (Inventory)")]
-    public ItemSO resultItem;                 // assign your ItemSO here
+    public ItemSO resultItem;
     public GameObject resultTokenPrefab;      // UI prefab: Image + CanvasGroup + DraggableItem, Tag="Result"
     public Transform resultTokenSpawnParent;  // near the mortar is fine
-    public DropSlot takeZone;                 // bottom bar DropSlot (acceptsTag="Result")
-    public Sprite resultIconOverride;         // optional: if your ItemSO doesn't have an icon
+    public DropSlot takeZone;                 // acceptsTag="Result"
+    public Sprite resultIconOverride;
 
     [Header("Result Token Sizing/Placement")]
     [SerializeField] private Vector2 resultTokenSize = new Vector2(96, 96);
@@ -54,12 +68,25 @@ public class MortarPestleMinigame : MonoBehaviour
     [SerializeField] private float resultTokenScale = 1f;
     [SerializeField] private Vector2 resultTokenSpawnPos = Vector2.zero;
 
-    [Header("Animation (optional but recommended)")]
+    // -------- Pot unified sequence (potion pour + tree grow in one clip) --------
+    [Header("Pot Sequence (single animation clip)")]
     [SerializeField] private Animator potAnimator;
-    [SerializeField] private string potPourTrigger = "Pour";
-    [SerializeField] private float potPourAnimSeconds = 0.6f;
+    [Tooltip("Trigger on the pot animator that runs the entire sequence (pour + growth).")]
+    [SerializeField] private string potFullSequenceTrigger = "FullPourAndGrow";
+    [Tooltip("Fallback duration if we can’t read the current clip length.")]
+    [SerializeField] private float potFullSequenceSeconds = 1.2f;
 
-    [Space(8)]
+    [Tooltip("Optional Animator state TAG on the pot's full sequence state. If set, we'll wait until this state finishes.")]
+    [SerializeField] private string potFullStateTag = "FullPourAndGrow";
+    [Tooltip("Safety timeout in case the animator never reaches the tagged state or never finishes.")]
+    [SerializeField, Min(0.25f)] private float potSequenceWaitTimeout = 3f;
+    [Tooltip("Small extra delay after the state completes before we spawn the plant.")]
+    [SerializeField, Min(0f)] private float potSequenceEndExtraWait = 0.05f;
+
+    // Set by an Animation Event at the end of the pot's sequence (optional)
+    private bool potSequenceDoneFlag = false;
+
+    [Header("Mortar Animation")]
     [SerializeField] private Animator mortarAnimator;
     [SerializeField] private string mortarGrindTrigger = "Grind";
     [SerializeField] private float mortarGrindAnimSeconds = 0.6f;
@@ -72,6 +99,7 @@ public class MortarPestleMinigame : MonoBehaviour
     [SerializeField] private bool disableMortarRaycastAfterResult = true;
 
     // State
+    private bool busy;               // blocks re-entrant sequences
     private bool potionPoured;
     private bool plantSpawned;
     private bool mortarFilled;
@@ -79,6 +107,7 @@ public class MortarPestleMinigame : MonoBehaviour
     private bool resultReady;
 
     private GameObject spawnedResultToken;
+    private GameObject activePlantToken;     // <- track the actual plant instance we activated/spawned
 
     void Awake()
     {
@@ -139,11 +168,15 @@ public class MortarPestleMinigame : MonoBehaviour
 
     public void BeginSession()
     {
+        busy = false;
         potionPoured = false;
         plantSpawned = false;
         mortarFilled = false;
         grinding = false;
         resultReady = false;
+        potSequenceDoneFlag = false;
+
+        activePlantToken = null;
 
         ApplyMortarVisual(mortarEmptySprite, mortarEmptyHighlight, resetHighlightFade: true);
         SetMortarInteractive(true);
@@ -161,10 +194,14 @@ public class MortarPestleMinigame : MonoBehaviour
             for (int i = plantSpawnParent.childCount - 1; i >= 0; i--)
             {
                 var child = plantSpawnParent.GetChild(i);
-                if (child && (child.CompareTag("Plant") || child.name.Contains("DeadPlant")))
+                if (child && (child.CompareTag(plantTag) || child.name.Contains("DeadPlant")))
                     Destroy(child.gameObject);
             }
         }
+
+        // Ensure the scene instance stays disabled until we need it
+        if (deadPlantSceneInstance && reuseScenePlantInstance)
+            deadPlantSceneInstance.SetActive(false);
     }
 
     // ---------------------------
@@ -173,22 +210,20 @@ public class MortarPestleMinigame : MonoBehaviour
 
     public void HandleDrop(DropSlot slot, GameObject item)
     {
+        if (busy) return;
         var t = item.tag;
 
         // Potion -> Pot
         if (!potionPoured && slot.acceptsTag == "Potion" && t == "Potion")
         {
-            StartCoroutine(PotionToPotSequence(item));
+            StartCoroutine(PotionIntoPot_FullPotSequence(item));
             return;
         }
 
-        // Plant -> Mortar
-        if (slot.acceptsTag == "Plant" && t == "Plant")
+        // Plant -> Mortar (auto-start grind)
+        if (slot.acceptsTag == plantTag && t == plantTag)
         {
-            ConsumeUIItem(item);
-            mortarFilled = true;
-            ApplyMortarVisual(mortarFilledSprite, mortarFilledHighlight);
-            Debug.Log("[Mortar] Mortar filled. Click mortar to grind.");
+            StartCoroutine(PlantToMortarGrindSequence(item));
             return;
         }
 
@@ -200,32 +235,111 @@ public class MortarPestleMinigame : MonoBehaviour
         }
     }
 
-    private IEnumerator PotionToPotSequence(GameObject potionToken)
+    // --------- Potion → Pot unified sequence (pot anim shows pour + growth) ----------
+    private IEnumerator PotionIntoPot_FullPotSequence(GameObject potionToken)
     {
-        potionPoured = true;
+        busy = true;
+
+        // Immediately hide/consume the potion token — the pot animation will visually show the bottle emptying.
         ConsumeUIItem(potionToken);
 
-        float wait = potPourAnimSeconds;
-        if (potAnimator)
+        if (potAnimator && !string.IsNullOrEmpty(potFullSequenceTrigger))
         {
-            potAnimator.ResetTrigger(potPourTrigger);
-            potAnimator.SetTrigger(potPourTrigger);
+            potSequenceDoneFlag = false;
+
+            potAnimator.ResetTrigger(potFullSequenceTrigger);
+            potAnimator.SetTrigger(potFullSequenceTrigger);
+
+            // Let Animator update at least once
             yield return null;
-            var st = potAnimator.GetCurrentAnimatorStateInfo(0);
-            if (st.length > 0.05f) wait = st.length;
+
+            float t = 0f;
+            bool started = false;
+
+            while (t < potSequenceWaitTimeout)
+            {
+                if (!potAnimator) break;
+
+                var st = potAnimator.GetCurrentAnimatorStateInfo(0);
+                bool inTarget =
+                    string.IsNullOrEmpty(potFullStateTag) || st.IsTag(potFullStateTag);
+
+                if (inTarget)
+                {
+                    started = true;
+                    if (potSequenceDoneFlag || (st.normalizedTime >= 1f && !potAnimator.IsInTransition(0)))
+                        break;
+                }
+
+                t += Time.deltaTime;
+                yield return null;
+            }
+
+            if (!started && potFullSequenceSeconds > 0f)
+                yield return new WaitForSeconds(potFullSequenceSeconds);
+
+            if (potSequenceEndExtraWait > 0f)
+                yield return new WaitForSeconds(potSequenceEndExtraWait);
+        }
+        else
+        {
+            if (potFullSequenceSeconds > 0f)
+                yield return new WaitForSeconds(potFullSequenceSeconds);
         }
 
-        if (wait > 0f) yield return new WaitForSeconds(wait);
+        potionPoured = true;
+        SpawnDeadPlant();   // <- activates or instantiates + positions + makes draggable
 
-        SpawnDeadPlant();
+        potSequenceDoneFlag = false;
+        busy = false;
     }
 
+    // Back-compat click (still supported if you keep MortarClickable)
     public void OnMortarClicked()
     {
-        if (!mortarFilled || grinding) return;
+        if (busy || grinding || !mortarFilled) return;
         StartCoroutine(GrindSequence());
     }
 
+    // --------- Plant → Mortar full sequence ----------
+    private IEnumerator PlantToMortarGrindSequence(GameObject plantToken)
+    {
+        busy = true;
+
+        mortarFilled = true;
+        ApplyMortarVisual(mortarFilledSprite, mortarFilledHighlight);
+
+        float waitMortar = 0f;
+        if (mortarAnimator && !string.IsNullOrEmpty(mortarGrindTrigger))
+        {
+            mortarAnimator.ResetTrigger(mortarGrindTrigger);
+            mortarAnimator.SetTrigger(mortarGrindTrigger);
+            yield return null;
+            var stm = mortarAnimator.GetCurrentAnimatorStateInfo(0);
+            waitMortar = stm.length > 0.05f ? stm.length : mortarGrindAnimSeconds;
+        }
+        else
+        {
+            waitMortar = mortarGrindAnimSeconds;
+        }
+
+        if (grindDuration > 0f) waitMortar += grindDuration;
+        if (waitMortar > 0f) yield return new WaitForSeconds(waitMortar);
+
+        // Consume plant and spawn result
+        ConsumeUIItem(plantToken);
+        ApplyMortarVisual(mortarResultSprite, mortarResultHighlight);
+        SpawnResultToken();
+
+        if (disableMortarHoverAfterResult)
+            SetMortarInteractive(false);
+
+        grinding = false;
+        resultReady = true;
+        busy = false;
+    }
+
+    // Original click-driven grind (kept)
     private IEnumerator GrindSequence()
     {
         grinding = true;
@@ -253,25 +367,85 @@ public class MortarPestleMinigame : MonoBehaviour
         resultReady = true;
     }
 
+    // -------------------- Spawning & Utils --------------------
+
     private void SpawnDeadPlant()
     {
         if (plantSpawned) return;
-        plantSpawned = true;
 
         var parent = plantSpawnParent ? plantSpawnParent : transform;
-        var plant = Instantiate(deadPlantPrefab, parent);
-        plant.SetActive(true);
-        plant.tag = "Plant";
+        GameObject plant = null;
 
+        if (reuseScenePlantInstance && deadPlantSceneInstance)
+        {
+            plant = deadPlantSceneInstance;
+
+            // ensure parent if provided
+            if (parent && plant.transform.parent != parent)
+                plant.transform.SetParent(parent, worldPositionStays: false);
+        }
+        else
+        {
+            if (!deadPlantPrefab)
+            {
+                Debug.LogError("[MortarPestle] deadPlantPrefab not assigned.");
+                return;
+            }
+            plant = Instantiate(deadPlantPrefab, parent);
+        }
+
+        // Ensure UI components exist & are visible
+        var rt = plant.GetComponent<RectTransform>() ?? plant.AddComponent<RectTransform>();
+        var img = plant.GetComponent<Image>();
+        if (!img) Debug.LogWarning("[MortarPestle] Spawned plant has no Image; add one for UI visibility.");
+
+        var cg = plant.GetComponent<CanvasGroup>() ?? plant.AddComponent<CanvasGroup>();
+        cg.alpha = 1f; cg.blocksRaycasts = true; cg.interactable = true;
+
+        // Position in UI
+        if (plantSpawnAnchor && plantSpawnAnchor.parent == (parent as RectTransform))
+        {
+            rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+            rt.pivot = new Vector2(0.5f, 0.5f);
+            rt.anchoredPosition = plantSpawnAnchor.anchoredPosition;
+        }
+        else
+        {
+            rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
+            rt.pivot = new Vector2(0.5f, 0.5f);
+            rt.anchoredPosition = plantSpawnAnchoredPos;
+        }
+
+        // Ensure draggable + correct tag
         if (!plant.GetComponent<DraggableItem>()) plant.AddComponent<DraggableItem>();
-        if (!plant.GetComponent<Image>()) Debug.LogWarning("[Minigame] Spawned plant has no Image; add one.");
+        TrySetTag(plant, plantTag);
+
+        plant.SetActive(true);
+        plant.transform.SetAsLastSibling();
+
+        activePlantToken = plant;
+        plantSpawned = true;
+        // Debug.Log("[MortarPestle] Plant spawned/activated.");
+    }
+
+    private void TrySetTag(GameObject go, string tagName)
+    {
+        if (!go || string.IsNullOrEmpty(tagName)) return;
+        try
+        {
+            go.tag = tagName; // Will throw if tag isn't defined in Project Settings > Tags and Layers
+        }
+        catch (UnityException)
+        {
+            Debug.LogWarning($"[MortarPestle] Tag '{tagName}' is not defined. Please add it in Tags & Layers. Using '{go.tag}' instead.");
+        }
     }
 
     private void SpawnResultToken()
     {
         if (!resultTokenPrefab)
         {
-            Debug.LogError("[Minigame] resultTokenPrefab not assigned.");
+            Debug.LogError("[MortarPestle] resultTokenPrefab not assigned.");
             return;
         }
 
@@ -329,29 +503,32 @@ public class MortarPestleMinigame : MonoBehaviour
         if (eq && resultItem)
         {
             bool equipped = eq.TryEquip(eq.activeHand, resultItem) || eq.TryEquipToFirstAvailable(resultItem);
-            if (!equipped) Debug.LogWarning("[Minigame] Inventory full; could not equip result.");
+            if (!equipped) Debug.LogWarning("[MortarPestle] Inventory full; could not equip result.");
         }
-        else Debug.LogWarning("[Minigame] No EquipmentInventory or resultItem not assigned.");
+        else Debug.LogWarning("[MortarPestle] No EquipmentInventory or resultItem not assigned.");
 
-        // 🔔 Notify listeners (WorkstationLauncher will lock the station)
         onSucceeded?.Invoke();
-
         CloseUI();
     }
 
     private void ConsumeUIItem(GameObject go)
     {
         var drag = go.GetComponent<DraggableItem>();
-        if (drag) drag.Consume();
-        else go.SetActive(false);
+        if (drag) { drag.Consume(); }
+        else { go.SetActive(false); }
 
         if (go == growthPotion && growthPotion) growthPotion.SetActive(false);
     }
 
-    // Animation Events (optional)
+    // -------- Animation Events --------
     public void AE_PourFinished_SpawnPlant()
     {
         if (!plantSpawned) SpawnDeadPlant();
+    }
+
+    public void AE_PotFullSequence_Done()
+    {
+        potSequenceDoneFlag = true;
     }
 
     public void AE_GrindFinished_SpawnResult()
@@ -366,6 +543,7 @@ public class MortarPestleMinigame : MonoBehaviour
 
             resultReady = true;
             grinding = false;
+            busy = false;
         }
     }
 
