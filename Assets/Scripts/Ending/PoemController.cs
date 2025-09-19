@@ -9,6 +9,7 @@ public class PoemController : MonoBehaviour
     public GameObject poem3;
     public GameObject poem4;
     public GameObject poem5;
+    public GameObject poem6;
 
     public GameObject credits;
 
@@ -45,6 +46,7 @@ public class PoemController : MonoBehaviour
         {
             ouroboros1.SetActive(true);
             ouroboros1.transform.Rotate(0, 0, -0.1f);
+
         }
 
         if(text4Done) //Bite effect
@@ -106,7 +108,13 @@ public class PoemController : MonoBehaviour
         yield return new WaitForSeconds(9); 
         poem5.SetActive(false); // text 5 disapear -> run credit/change scene
 
-        yield return new WaitForSeconds(1.5f); 
+        yield return new WaitForSeconds(1.5f);
+        poem6.SetActive(true);
+
+        yield return new WaitForSeconds(2f);
+        poem6.SetActive(false);
+
+        yield return new WaitForSeconds(3f); 
         credits.SetActive(true); // use animation to scroll
     }
 }

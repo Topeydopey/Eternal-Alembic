@@ -155,8 +155,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -24.79602, y: 0}
-  m_SizeDelta: {x: -49.591, y: 0}
+  m_AnchoredPosition: {x: -24.796143, y: -709}
+  m_SizeDelta: {x: -49.591, y: -25.063}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!95 &123407962
 Animator:
@@ -259,7 +259,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1123.97, y: 333.19}
+  m_SizeDelta: {x: 1152.4, y: 265.6}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &187032146
 MonoBehaviour:
@@ -288,7 +288,7 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 1
     m_MaxSize: 136
-    m_Alignment: 0
+    m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
@@ -505,8 +505,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.0000076293945, y: 0.0000076293945}
-  m_SizeDelta: {x: 1123.97, y: 492.82}
+  m_AnchoredPosition: {x: 0, y: -0.0000038146973}
+  m_SizeDelta: {x: 1152.4, y: 412.014}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &388171234
 MonoBehaviour:
@@ -535,31 +535,29 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 1
     m_MaxSize: 136
-    m_Alignment: 0
+    m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'But immortality belongs to one and one only.
+  m_Text: 'Immortality is a circle that traps the seeker,
 
     
 
-    The world continues
-    to fade,
+    the world
+    continues to fade,
 
     
 
-    loved ones vanish into memories,
+    loved ones vanish into memories.
 
     
 
-    eternity becomes
-    not a blessing,
+    It
+    becomes not a blessing, but a curse.
 
-    
-
-    but a lonely curse.'
+'
 --- !u!222 &388171235
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -697,8 +695,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 30, y: -83}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 30, y: -663.21625}
+  m_SizeDelta: {x: 0, y: 1160.431}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &567798640
 MonoBehaviour:
@@ -733,8 +731,11 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "Trieu Khang Vy        Artist\n\n                      UI Designer\n\n\nNguyen
-    Duc Son Hai\n\n\nDoan Phu Khang\n\n\nSpecial thanks to Dr Agnieszka Kiejziewicz\n\n\n\n\n\n\n\n\n\n\n         
+  m_Text: "Trieu Khang Vy        Game Designer \n \n                      Artist\n\n                     
+    UI Designer\n\n\nNguyen Duc Son Hai    Game Designer\n                                       
+    \n                      Artist\n                      \n                     
+    UI Designer\n\n\nDoan Phu Khang        Game Designer\n\n                     
+    Developer\n\n\nSpecial thanks to Dr Agnieszka Kiejziewicz\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n         
     THANK YOU FOR PLAYING"
 --- !u!222 &567798641
 CanvasRenderer:
@@ -751,13 +752,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 567798638}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dd09f84e0dbb92d49802a07a060cbb25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TypingEffect
   targetText: {fileID: 567798640}
-  timePerChar: 0.05
+  timePerChar: 0.01
   typeSFX: {fileID: 1626144467}
 --- !u!1 &651391290
 GameObject:
@@ -1177,6 +1178,101 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ObjectShake
   duration: 10
   magnitude: 10
+--- !u!1 &1207629360
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1207629361}
+  - component: {fileID: 1207629364}
+  - component: {fileID: 1207629363}
+  - component: {fileID: 1207629362}
+  m_Layer: 5
+  m_Name: Text 6
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &1207629361
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1207629360}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1626144463}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1123.97, y: 81.894}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1207629362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1207629360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Text
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: 130e54de208a30e44b3dd6a228ef19ff, type: 3}
+    m_FontSize: 50
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 1
+    m_MaxSize: 136
+    m_Alignment: 1
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: Hen to Pan
+--- !u!222 &1207629363
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1207629360}
+  m_CullTransparentMesh: 1
+--- !u!114 &1207629364
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1207629360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd09f84e0dbb92d49802a07a060cbb25, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TypingEffect
+  targetText: {fileID: 1207629362}
+  timePerChar: 0.05
+  typeSFX: {fileID: 1626144467}
 --- !u!1 &1233868090
 GameObject:
   m_ObjectHideFlags: 0
@@ -1212,7 +1308,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.0000076293945, y: 0.0000076293945}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1123.97, y: 333.19}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1233868092
@@ -1242,14 +1338,14 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 1
     m_MaxSize: 136
-    m_Alignment: 0
+    m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: "For as long as humans have lived,\n\r\nthey have longed to defy the end.\n\r\nTo
-    live forever\u2026 to claim eternity as an achievement."
+    live forever\u2026 to claim eternity as a reward."
 --- !u!222 &1233868093
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1309,8 +1405,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.0000076293945, y: -0.000005722046}
-  m_SizeDelta: {x: 1123.97, y: 539.48}
+  m_AnchoredPosition: {x: 0, y: -0.00001335144}
+  m_SizeDelta: {x: 1179.589, y: 562.87}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1467294534
 MonoBehaviour:
@@ -1339,7 +1435,7 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 1
     m_MaxSize: 136
-    m_Alignment: 0
+    m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
@@ -1356,17 +1452,20 @@ MonoBehaviour:
     a
     tree returns to the soil.
 
+    
 
     So it is with us.
 
     
 
-    Within our finite
-    days,
+    What seems
+    to vanish is only transmuted,
 
     
 
-    each life writes its own story.'
+    folded back into the great cycle.
+
+'
 --- !u!222 &1467294535
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1441,6 +1540,7 @@ RectTransform:
   - {fileID: 388171233}
   - {fileID: 1467294533}
   - {fileID: 1992900885}
+  - {fileID: 1207629361}
   - {fileID: 651391291}
   - {fileID: 1096901740}
   - {fileID: 882029049}
@@ -1507,6 +1607,7 @@ MonoBehaviour:
   poem3: {fileID: 388171232}
   poem4: {fileID: 1467294532}
   poem5: {fileID: 1992900884}
+  poem6: {fileID: 1207629360}
   credits: {fileID: 123407960}
   ouroboros1: {fileID: 651391290}
   ouroboros2: {fileID: 1096901739}
@@ -1688,8 +1789,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.0000076293945, y: -0.000005722046}
-  m_SizeDelta: {x: 1123.97, y: 539.48}
+  m_AnchoredPosition: {x: 0, y: -0.0000076293945}
+  m_SizeDelta: {x: 1123.97, y: 520.69}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1992900886
 MonoBehaviour:
@@ -1718,15 +1819,15 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 1
     m_MaxSize: 136
-    m_Alignment: 0
+    m_Alignment: 1
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "So choose:\n\nTo clutch endlessly at the circle\u2026\n\r\nlike ourobors
-    still bitting its tail\n\r\nOr to embrace the brief\n\r\nbut meaningful\n\r\nwith
-    those we hold dear."
+  m_Text: "So choose:\r\n\r\nto clutch endlessly at the circle\u2026\r\n\r\nLike
+    Ouroboros biting its tail.\n\r\n\r\nOr to accept the end\r\n\r\nand to embrace
+    it.\r\n"
 --- !u!222 &1992900887
 CanvasRenderer:
   m_ObjectHideFlags: 0
