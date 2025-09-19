@@ -8,13 +8,13 @@ public class StartFunction : MonoBehaviour
 {
     public GameObject head;
     public GameObject replace;
-    
+
     private bool isTriggered = false;
     public bool isStart = false;
 
     private bool inputLocked = true;
-    
-    public FadeScript fadeScript; 
+
+    public FadeScript fadeScript;
 
     void Start()
     {
@@ -42,7 +42,7 @@ public class StartFunction : MonoBehaviour
 
     IEnumerator DelayInput()
     {
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(1);
         inputLocked = false;
     }
 
