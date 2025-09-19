@@ -3392,6 +3392,7 @@ GameObject:
   m_Component:
   - component: {fileID: 211449507}
   - component: {fileID: 211449506}
+  - component: {fileID: 211449508}
   m_Layer: 0
   m_Name: Decor 4_Balneum Mariae_0
   m_TagString: Untagged
@@ -3472,6 +3473,52 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &211449508
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 211449505}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0.2933957}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 2.9375, y: 2.75}
+    newSize: {x: 2.9375, y: 2.75}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 2.9375, y: 1.8991526}
+  m_EdgeRadius: 0
 --- !u!1 &227900784
 GameObject:
   m_ObjectHideFlags: 0
@@ -4125,11 +4172,14 @@ MonoBehaviour:
   requireEmptyHandToLaunch: 1
   showHintWhenBlocked: 1
   blockedHintText: Put your ingredient in the cauldron first
-  playerTransform: {fileID: 1494772015}
+  playerTransform: {fileID: 0}
   hintLocalOffset: {x: 0, y: 1.6, z: 0}
   hintFadeIn: 0.12
   hintHold: 1.25
   hintFadeOut: 0.25
+  requireProximity: 1
+  interactRadius: 1.8
+  proximityOrigin: {fileID: 0}
   disableCollidersOnConsume: 1
   collidersToDisableOnConsume: []
   behavioursToDisableOnConsume: []
@@ -5406,7 +5456,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.0025613308, y: -0.18185508}
+  m_Offset: {x: 0.0025613308, y: -0.16607606}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -5416,7 +5466,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.7832892, y: 0.7166779}
+  m_Size: {x: 0.7832892, y: 0.68511987}
   m_EdgeRadius: 0
 --- !u!1 &509745942
 GameObject:
@@ -5715,7 +5765,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2, y: -4.74, z: -10}
+  m_LocalPosition: {x: -3.91, y: -5.36, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9060,7 +9110,7 @@ Transform:
   m_GameObject: {fileID: 965406896}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10.000001}
+  m_LocalPosition: {x: 0, y: 0, z: -10.638298}
   m_LocalScale: {x: 2.2727273, y: 2.2727273, z: 2.2727273}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -10438,6 +10488,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1041178233}
   - component: {fileID: 1041178232}
+  - component: {fileID: 1041178234}
   m_Layer: 0
   m_Name: Table_Vertical (1)
   m_TagString: Untagged
@@ -10518,6 +10569,52 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &1041178234
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1041178231}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0.26844788}
+  m_SpriteTilingProperty:
+    border: {x: 0.375, y: 1, z: 0.375, w: 1}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 3}
+    newSize: {x: 1.2928729, y: 2.8250513}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 2
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 1, y: 2.4631042}
+  m_EdgeRadius: 0
 --- !u!1 &1054563637
 GameObject:
   m_ObjectHideFlags: 0
@@ -11248,7 +11345,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 52, y: -31}
+  m_AnchoredPosition: {x: 52, y: -49}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1145382901
@@ -11768,6 +11865,9 @@ MonoBehaviour:
   hintFadeOut: 0.25
   receivedTemplate: You received {0}!
   droppedTemplate: '{0} was dropped nearby.'
+  requireProximity: 1
+  interactRadius: 1.8
+  proximityOrigin: {fileID: 0}
   randomizeHuePerSession: 1
   startValue: 0.25
   endValue: 0.85
@@ -13057,8 +13157,8 @@ Transform:
   m_GameObject: {fileID: 1494772013}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2, y: -4.74, z: 0}
-  m_LocalScale: {x: 0.99999994, y: 0.99999994, z: 0.99999994}
+  m_LocalPosition: {x: -3.91, y: -5.36, z: 0}
+  m_LocalScale: {x: 0.94, y: 0.94, z: 0.94}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1213780059}
@@ -13119,8 +13219,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.013762357, y: -0.15712811}
-  m_Size: {x: 0.9174268, y: 0.9268061}
+  m_Offset: {x: 0.006258868, y: -0.10701811}
+  m_Size: {x: 0.58971745, y: 1.0082674}
   m_Direction: 0
 --- !u!50 &1494772018
 Rigidbody2D:
@@ -13174,7 +13274,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInteractor
   interact: {fileID: 1781555164194001046, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
-  radius: 1.25
+  radius: 1.5
   interactableMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -13246,9 +13346,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerDeathController
   animator: {fileID: 1494772025}
   deathTriggerName: Die
+  deathVariantIntParam: DeathIndex
+  deathVariantCount: 4
+  deathTriggerOptions: []
+  deathStateTag: Death
+  waitTimeoutSeconds: 3
+  stateEndExtraWait: 1
   disableOnDeath:
   - {fileID: 1494772016}
-  extraDelayAfterAnim: 0
   onDeathStarted:
     m_PersistentCalls:
       m_Calls: []
@@ -13884,11 +13989,14 @@ MonoBehaviour:
   requireEmptyHandToLaunch: 1
   showHintWhenBlocked: 1
   blockedHintText: Put your ingredient in the cauldron first
-  playerTransform: {fileID: 1494772015}
+  playerTransform: {fileID: 0}
   hintLocalOffset: {x: 0, y: 1.6, z: 0}
   hintFadeIn: 0.12
   hintHold: 1.25
   hintFadeOut: 0.25
+  requireProximity: 1
+  interactRadius: 1.8
+  proximityOrigin: {fileID: 0}
   disableCollidersOnConsume: 1
   collidersToDisableOnConsume: []
   behavioursToDisableOnConsume: []
@@ -14305,11 +14413,14 @@ MonoBehaviour:
   requireEmptyHandToLaunch: 1
   showHintWhenBlocked: 1
   blockedHintText: Put your ingredient in the cauldron first
-  playerTransform: {fileID: 1494772015}
+  playerTransform: {fileID: 0}
   hintLocalOffset: {x: 0, y: 1.6, z: 0}
   hintFadeIn: 0.12
   hintHold: 1.25
   hintFadeOut: 0.25
+  requireProximity: 1
+  interactRadius: 1.8
+  proximityOrigin: {fileID: 0}
   disableCollidersOnConsume: 1
   collidersToDisableOnConsume: []
   behavioursToDisableOnConsume: []
@@ -16557,6 +16668,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1805459647}
   - component: {fileID: 1805459646}
+  - component: {fileID: 1805459648}
   m_Layer: 0
   m_Name: Table_Horizontal (1)
   m_TagString: Untagged
@@ -16637,6 +16749,52 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &1805459648
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1805459645}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: -0.0366745, y: 0.15403295}
+  m_SpriteTilingProperty:
+    border: {x: 1.0625, y: 0.9375, z: 1, w: 0.625}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 3, y: 2}
+    newSize: {x: 3.3383574, y: 2.520598}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 2
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 3.073349, y: 1.1931615}
+  m_EdgeRadius: 0
 --- !u!114 &1812870073
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18289,7 +18447,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -17.3, y: 255}
+  m_AnchoredPosition: {x: -17.3, y: 231}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1660057539 &9223372036854775807

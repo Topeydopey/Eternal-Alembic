@@ -1,4 +1,3 @@
-// Assets/Scripts/Minigame V2/Common/WorkstationLauncher.cs
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.Events;
@@ -34,19 +33,21 @@ public class WorkstationLauncher : MonoBehaviour
     [SerializeField] private string persistKey;
 
     [Header("Hands Gating (no pockets)")]
-    [Tooltip("If true, player must have an empty active hand to open this station.")]
     [SerializeField] private bool requireEmptyHandToLaunch = true;
-    [Tooltip("Optional: show a floating text hint above the player when blocked.")]
     [SerializeField] private bool showHintWhenBlocked = true;
-    [Tooltip("Hint text to display when the player is holding an item.")]
     [SerializeField] private string blockedHintText = "Put your ingredient in the cauldron first";
-    [Tooltip("Player transform used to position the hint. If empty, we'll try tag 'Player'.")]
     [SerializeField] private Transform playerTransform;
-    [Tooltip("World-space local offset above player's head for the hint.")]
     [SerializeField] private Vector3 hintLocalOffset = new Vector3(0f, 1.6f, 0f);
     [SerializeField] private float hintFadeIn = 0.12f;
     [SerializeField] private float hintHold = 1.25f;
     [SerializeField] private float hintFadeOut = 0.25f;
+
+    [Header("Proximity")]
+    [Tooltip("Require the player to be within radius to use this station.")]
+    [SerializeField] private bool requireProximity = true;
+    [SerializeField, Min(0f)] private float interactRadius = 1.8f;
+    [Tooltip("Origin used for distance. If null, this.transform is used.")]
+    [SerializeField] private Transform proximityOrigin;
 
     [Header("Optional: hard-disable when consumed")]
     [SerializeField] private bool disableCollidersOnConsume = false;
@@ -69,9 +70,17 @@ public class WorkstationLauncher : MonoBehaviour
     private readonly List<Collider2D> _othersCollidersDisabled = new();
     private readonly List<GameObject> _othersObjectsDeactivated = new();
 
+    // --- Proximity API for the interactor ---
+    public bool RequireProximity => requireProximity;
+    public bool IsInRange(Transform player)
+    {
+        if (!player) return false;
+        Vector3 a = (proximityOrigin ? proximityOrigin.position : transform.position);
+        return Vector2.Distance(a, player.position) <= interactRadius;
+    }
+
     private void Awake()
     {
-        // Init consumed flag
         if (lockScope == LockScope.Permanent)
         {
             if (!string.IsNullOrEmpty(persistKey))
@@ -79,7 +88,7 @@ public class WorkstationLauncher : MonoBehaviour
             if (!consumed && !string.IsNullOrEmpty(stationId) && WorkstationOnce.IsUsed(stationId))
                 consumed = true;
         }
-        else // PerRun
+        else
         {
             if (!string.IsNullOrEmpty(stationId) && RunOnce.IsUsed(stationId))
                 consumed = true;
@@ -91,7 +100,6 @@ public class WorkstationLauncher : MonoBehaviour
             if (disableCollidersOnConsume) DisableForever();
         }
 
-        // Try to cache player by tag if not set
         TryCachePlayer();
     }
 
@@ -100,7 +108,6 @@ public class WorkstationLauncher : MonoBehaviour
         if (!minigameRoot) { Debug.LogError("[Launcher] minigameRoot not assigned."); return; }
         if (isOpen) return;
 
-        // Single-use gate
         if (onceOnly && !string.IsNullOrEmpty(stationId))
         {
             bool used = (lockScope == LockScope.PerRun)
@@ -110,7 +117,6 @@ public class WorkstationLauncher : MonoBehaviour
             if (used) return;
         }
 
-        // Hands gate (no pockets). If holding something -> block & hint.
         if (requireEmptyHandToLaunch && !PlayerHandIsEmpty())
         {
             if (verbose) Debug.Log($"[Launcher:{name}] Launch blocked: hands full.");
@@ -121,10 +127,8 @@ public class WorkstationLauncher : MonoBehaviour
             return;
         }
 
-        // Activate UI
         minigameRoot.SetActive(true);
 
-        // Find controllers
         mortar = minigameRoot.GetComponentInChildren<MortarPestleMinigame>(true);
         snakeStation = minigameRoot.GetComponentInChildren<SnakeStationMinigame>(true);
         snakeWorld = minigameRoot.GetComponentInChildren<SnakeWorldMinigame>(true);
@@ -177,7 +181,6 @@ public class WorkstationLauncher : MonoBehaviour
         isOpen = true;
     }
 
-    // --- success path: mark used in selected scope ---
     private void HandleSucceeded()
     {
         if (!onceOnly || string.IsNullOrEmpty(stationId)) return;
@@ -194,7 +197,6 @@ public class WorkstationLauncher : MonoBehaviour
         if (disableCollidersOnConsume) DisableForever();
     }
 
-    // --- common close cleanup ---
     private void HandleClosedCommon()
     {
         if (hideHudWhileOpen && hudCanvas) hudCanvas.gameObject.SetActive(true);
@@ -218,7 +220,6 @@ public class WorkstationLauncher : MonoBehaviour
     private void HandleClosedWorld() => HandleClosedCommon();
     private void HandleClosedAlembic() => HandleClosedCommon();
 
-    // --- others gating ---
     private void DisableOtherStations()
     {
         _othersCollidersDisabled.Clear();
@@ -268,9 +269,6 @@ public class WorkstationLauncher : MonoBehaviour
         foreach (var b in behavioursToDisableOnConsume) if (b) b.EnabledIfExists(false);
     }
 
-    // --- helpers -------------------------------------------------------------
-
-    // Replaces missing EquipmentInventory.IsActiveHandEmpty()
     private bool PlayerHandIsEmpty()
     {
         var eq = EquipmentInventory.Instance;
@@ -285,9 +283,18 @@ public class WorkstationLauncher : MonoBehaviour
         var p = GameObject.FindGameObjectWithTag("Player");
         if (p) playerTransform = p.transform;
     }
+
+#if UNITY_EDITOR
+    private void OnDrawGizmosSelected()
+    {
+        if (!requireProximity) return;
+        Gizmos.color = new Color(0.2f, 0.8f, 1f, 0.35f);
+        Vector3 o = (proximityOrigin ? proximityOrigin.position : transform.position);
+        Gizmos.DrawWireSphere(o, interactRadius);
+    }
+#endif
 }
 
-// Small extension helper to safely enable/disable behaviours if present
 static class BehaviourExt
 {
     public static void EnabledIfExists(this Behaviour b, bool on)

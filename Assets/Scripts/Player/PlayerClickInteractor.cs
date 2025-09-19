@@ -31,7 +31,6 @@ public class PlayerClickInteractor : MonoBehaviour
         _cam = Camera.main ?? FindFirstObjectByType<Camera>();
         if (!selfCollider)
         {
-            // Try to find a collider on self or parents once at startup
             selfCollider = GetComponent<Collider2D>() ?? GetComponentInParent<Collider2D>();
         }
     }
@@ -51,12 +50,10 @@ public class PlayerClickInteractor : MonoBehaviour
     private void OnSceneChanged(Scene prev, Scene next)
     {
         _cam = null; // re-acquire next frame
-        // collider likely persists with DontDestroyOnLoad, keep as-is
     }
 
     private void Update()
     {
-        // If we're mid-death sequence, ignore clicks entirely.
         if (deathController && deathController.IsDying) return;
 
         if (click == null || !click.action.WasPressedThisFrame()) return;
@@ -76,25 +73,16 @@ public class PlayerClickInteractor : MonoBehaviour
         var activeSlot = eq ? eq.Get(eq.activeHand) : null;
         if (!eq || activeSlot == null) return;
 
-        // -------- SELF-DRINK: If holding Elixir and clicked on self, consume & die --------
+        // --- self click to drink elixir ---
         if (!activeSlot.IsEmpty && activeSlot.item == elixirOfLifeItem && ClickedSelf(w))
         {
-            // Consume item from active hand
             eq.Unequip(eq.activeHand);
-
-            // Trigger death sequence
-            if (deathController)
-            {
-                deathController.DrinkElixirAndDie();
-            }
-            else
-            {
-                Debug.LogWarning("[PlayerClickInteractor] No PlayerDeathController assigned; cannot play death animation.");
-            }
+            if (deathController) deathController.DrinkElixirAndDie();
+            else Debug.LogWarning("[PlayerClickInteractor] No PlayerDeathController assigned.");
             return;
         }
 
-        // -------- 0) If hand empty, try ground pickups FIRST --------
+        // --- ground pickups first if empty hand ---
         if (activeSlot.IsEmpty)
         {
             var hits = Physics2D.OverlapPointAll(w, pickupMask);
@@ -115,7 +103,7 @@ public class PlayerClickInteractor : MonoBehaviour
             }
         }
 
-        // -------- 1) INTERACTABLES (Pot/Pestle/Cauldron/Producer/etc.) --------
+        // --- interactables ---
         var iHit = Physics2D.OverlapPoint(w, interactableMask);
         if (iHit)
         {
@@ -131,26 +119,43 @@ public class PlayerClickInteractor : MonoBehaviour
                 }
             }
 
-            // Pestle / Workstations
+            // Workstation
             var ws = iHit.GetComponentInParent<WorkstationLauncher>() ?? iHit.GetComponent<WorkstationLauncher>();
-            if (ws) { ws.Launch(); return; }
+            if (ws)
+            {
+                // proximity gate (no collider changes)
+                if (!ws.RequireProximity || ws.IsInRange(transform))
+                {
+                    ws.Launch();
+                }
+                else
+                {
+                    FloatingWorldHint.Show(transform, "Move closer to the workstation.", new Vector3(0f, 1.6f, 0f), 0.1f, 1.0f, 0.2f);
+                }
+                return;
+            }
 
             // Producer
             var prod = iHit.GetComponentInParent<ProducerNode>() ?? iHit.GetComponent<ProducerNode>();
             if (prod) { prod.ProduceOne(); return; }
 
-            // Cauldron (unordered recipe deposit or collect final reward)
+            // Cauldron
             var cauld = iHit.GetComponentInParent<Cauldron>() ?? iHit.GetComponent<Cauldron>();
-            if (cauld) { cauld.TryDepositFromActiveHand(); return; }
-
-            // Bed (kept commented as in your original)
-            /*
-            var bed = iHit.GetComponentInParent<BedSleep>() ?? iHit.GetComponent<BedSleep>();
-            if (bed) { bed.TrySleep(); return; }
-            */
+            if (cauld)
+            {
+                if (!cauld.RequireProximity || cauld.IsInRange(transform))
+                {
+                    cauld.TryDepositFromActiveHand();
+                }
+                else
+                {
+                    FloatingWorldHint.Show(transform, "Move closer to the cauldron.", new Vector3(0f, 1.6f, 0f), 0.1f, 1.0f, 0.2f);
+                }
+                return;
+            }
         }
 
-        // -------- 2) TABLE: take (if empty hand) --------
+        // --- table take ---
         if (activeSlot.IsEmpty)
         {
             var tHit = Physics2D.OverlapPoint(w, tableMask);
@@ -170,7 +175,7 @@ public class PlayerClickInteractor : MonoBehaviour
             }
         }
 
-        // -------- 3) TABLE: place (if holding) --------
+        // --- table place ---
         if (!activeSlot.IsEmpty)
         {
             var tHit = Physics2D.OverlapPoint(w, tableMask);
@@ -189,11 +194,7 @@ public class PlayerClickInteractor : MonoBehaviour
     private bool ClickedSelf(Vector2 worldPoint)
     {
         if (!selfCollider)
-        {
-            // Try to lazily acquire once if missing
             selfCollider = GetComponent<Collider2D>() ?? GetComponentInParent<Collider2D>();
-        }
-        // OverlapPoint checks if the given world point lies within the collider's 2D shape
         return selfCollider && selfCollider.OverlapPoint(worldPoint);
     }
 
