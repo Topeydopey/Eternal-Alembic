@@ -13313,7 +13313,6 @@ GameObject:
   - component: {fileID: 1494772014}
   - component: {fileID: 1494772018}
   - component: {fileID: 1494772017}
-  - component: {fileID: 1494772019}
   - component: {fileID: 1494772016}
   - component: {fileID: 1494772020}
   - component: {fileID: 1494772021}
@@ -13488,18 +13487,6 @@ Rigidbody2D:
   m_SleepingMode: 0
   m_CollisionDetection: 1
   m_Constraints: 4
---- !u!114 &1494772019
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1494772013}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3bb3442bcb4ae3646aa97f0682c749dc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerPersist
 --- !u!114 &1494772020
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13594,7 +13581,7 @@ MonoBehaviour:
   disableOnDeath:
   - {fileID: 1494772016}
   idleTriggerName: Idle
-  idleStateName: 
+  idleStateName: Blue Alchemist_Idle
   resetAllTriggersOnForceIdle: 1
   onDeathStarted:
     m_PersistentCalls:
@@ -13644,8 +13631,7 @@ MonoBehaviour:
   respawn: 3
   sceneNameToLoad: Main Menu
   spawnPoint: {fileID: 1824570352}
-  reEnableAfter:
-  - {fileID: 1494772016}
+  reEnableAfter: []
 --- !u!1 &1505986245
 GameObject:
   m_ObjectHideFlags: 0
@@ -14685,8 +14671,9 @@ MonoBehaviour:
   requireProximity: 1
   interactRadius: 1.9
   proximityOrigin: {fileID: 0}
-  disableCollidersOnConsume: 1
-  collidersToDisableOnConsume: []
+  disableCollidersOnConsume: 0
+  collidersToDisableOnConsume:
+  - {fileID: 1632450750}
   behavioursToDisableOnConsume: []
   disableHighlightsOnConsume: 1
   verbose: 0

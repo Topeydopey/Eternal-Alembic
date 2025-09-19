@@ -1,3 +1,4 @@
+// Assets/Scripts/Inventory/EquipmentInventory.cs
 using System;
 using UnityEngine;
 
@@ -6,7 +7,7 @@ public class EquipmentInventory : MonoBehaviour
     public static EquipmentInventory Instance { get; private set; }
 
     [Header("Mode")]
-    public bool singleHandMode = true;   // <- NEW: true = only LeftHand is used
+    public bool singleHandMode = true;   // true = only LeftHand is used
 
     [Header("Slots")]
     public EquipmentSlot leftHand = new() { type = EquipmentSlotType.LeftHand };
@@ -20,6 +21,10 @@ public class EquipmentInventory : MonoBehaviour
     public GameObject pickupPrefab;
 
     public event Action OnChanged;
+
+    // Convenience for gating interactions elsewhere
+    public bool IsActiveHandEmpty => Get(activeHand)?.IsEmpty ?? true;
+
     public bool MoveActiveTo(EquipmentSlotType to) => MoveOrSwap(activeHand, to);
     public bool MoveToActiveFrom(EquipmentSlotType from) => MoveOrSwap(from, activeHand);
 
@@ -164,4 +169,20 @@ public class EquipmentInventory : MonoBehaviour
     }
 
     public bool DropActive(Vector3 worldPosition) => Drop(activeHand, worldPosition);
+
+    // ----------------- Per-run reset -----------------
+    public void ResetForNewRun()
+    {
+        ClearAllSlots();
+        activeHand = EquipmentSlotType.LeftHand;
+        OnChanged?.Invoke();
+    }
+
+    private void ClearAllSlots()
+    {
+        if (leftHand != null) leftHand.item = null;
+        if (rightHand != null) rightHand.item = null;
+        if (pocketL != null) pocketL.item = null;
+        if (pocketR != null) pocketR.item = null;
+    }
 }

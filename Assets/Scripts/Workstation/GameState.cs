@@ -1,3 +1,4 @@
+// Assets/Scripts/State/GameState.cs
 using UnityEngine;
 using System;
 using System.Collections.Generic;
@@ -8,20 +9,35 @@ public class GameState : MonoBehaviour
     public static GameState Instance { get; private set; }
 
     [Header("Recipe (unordered)")]
-    public ItemSO[] requiredItems;   // assign your 3 result ItemSOs here
+    public ItemSO[] requiredItems;
 
     [Header("Runtime (read-only)")]
-    [SerializeField] private List<ItemSO> delivered = new(); // items already turned in
+    [SerializeField] private List<ItemSO> delivered = new();
     [SerializeField] private bool rewardAvailable = false;
 
     public event Action OnChanged;
 
     void Awake()
     {
-        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
+        // Scene-scoped singleton: keep the FIRST one in the scene, no cross-scene persistence.
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
         Instance = this;
-        DontDestroyOnLoad(gameObject);
+        // NOTE: No DontDestroyOnLoad here anymore.
     }
+
+    void OnDestroy()
+    {
+        // Clear static reference if this was the active instance.
+        if (Instance == this) Instance = null;
+    }
+
+    // Also clear the static reference when domain reload happens (entering Play Mode)
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetStaticRefOnDomainReload() => Instance = null;
 
     // ---- Query API ----
     public IReadOnlyList<ItemSO> Delivered => delivered;
@@ -50,13 +66,11 @@ public class GameState : MonoBehaviour
     {
         if (item == null || requiredItems == null || requiredItems.Length == 0) return false;
 
-        // Must be one of the required items and not already submitted
         bool isRequired = Array.Exists(requiredItems, it => it == item);
         if (!isRequired) return false;
-        if (delivered.Contains(item)) return false; // reject duplicates
+        if (delivered.Contains(item)) return false;
 
         delivered.Add(item);
-
         if (IsRecipeComplete) rewardAvailable = true;
 
         OnChanged?.Invoke();
@@ -75,5 +89,11 @@ public class GameState : MonoBehaviour
         delivered.Clear();
         rewardAvailable = false;
         OnChanged?.Invoke();
+    }
+
+    // ----------------- Per-run reset -----------------
+    public void ResetForNewRun()
+    {
+        ResetRecipe();
     }
 }
