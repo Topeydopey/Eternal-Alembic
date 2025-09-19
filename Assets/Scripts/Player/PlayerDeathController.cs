@@ -11,8 +11,8 @@ public class PlayerDeathController : MonoBehaviour
 
     [Tooltip("OPTION A: If you use a single trigger and an Int parameter to choose a variant, set them here.")]
     [SerializeField] private string deathTriggerName = "Die";    // common trigger when using the int param route
-    [SerializeField] private string deathVariantIntParam = "";    // e.g., "DeathIndex" (leave empty to ignore)
-    [SerializeField, Min(0)] private int deathVariantCount = 0;   // number of variants if using the int param
+    [SerializeField] private string deathVariantIntParam = "";   // e.g., "DeathIndex" (leave empty to ignore)
+    [SerializeField, Min(0)] private int deathVariantCount = 0;  // number of variants if using the int param
 
     [Tooltip("OPTION B: If you prefer separate triggers per variant, list them here. If this has entries, it overrides the int-param route.")]
     [SerializeField] private string[] deathTriggerOptions;
@@ -28,6 +28,14 @@ public class PlayerDeathController : MonoBehaviour
     [Header("Control Lock")]
     [Tooltip("Movement/input scripts to disable during death (in addition to locking via your movement).")]
     [SerializeField] private MonoBehaviour[] disableOnDeath;
+
+    [Header("Animator Idle Reset (for respawn/menu)")]
+    [Tooltip("If set, this trigger will be fired by ForceIdleNow() to return to idle.")]
+    [SerializeField] private string idleTriggerName = "";
+    [Tooltip("If no idle trigger is provided, ForceIdleNow() will Play() this state by name.")]
+    [SerializeField] private string idleStateName = "Idle";
+    [Tooltip("Reset all triggers when forcing idle (helps avoid stuck transitions).")]
+    [SerializeField] private bool resetAllTriggersOnForceIdle = true;
 
     [Header("Events")]
     public UnityEvent onDeathStarted;
@@ -62,12 +70,13 @@ public class PlayerDeathController : MonoBehaviour
             return;
         }
 
-        // ---- Choose a random variant ----
+        // ---- Choose and fire a variant ----
         if (deathTriggerOptions != null && deathTriggerOptions.Length > 0)
         {
             // OPTION B: different triggers per variant
             int i = Random.Range(0, deathTriggerOptions.Length);
             var trig = deathTriggerOptions[i];
+
             if (!string.IsNullOrEmpty(trig))
             {
                 animator.ResetTrigger(trig);
@@ -153,5 +162,32 @@ public class PlayerDeathController : MonoBehaviour
     {
         if (d > 0f) yield return new WaitForSeconds(d);
         onDeathFinished?.Invoke();
+    }
+
+    /// <summary>Immediately force the controller back to Idle (used by respawn/menu flows).</summary>
+    public void ForceIdleNow()
+    {
+        IsDying = false;
+
+        if (!animator) return;
+
+        if (resetAllTriggersOnForceIdle)
+        {
+            foreach (var p in animator.parameters)
+                if (p.type == AnimatorControllerParameterType.Trigger)
+                    animator.ResetTrigger(p.name);
+        }
+
+        if (!string.IsNullOrEmpty(deathTriggerName))
+            animator.ResetTrigger(deathTriggerName);
+
+        if (!string.IsNullOrEmpty(idleTriggerName))
+        {
+            animator.SetTrigger(idleTriggerName);
+        }
+        else if (!string.IsNullOrEmpty(idleStateName))
+        {
+            animator.Play(idleStateName, 0, 0f);
+        }
     }
 }

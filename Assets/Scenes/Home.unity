@@ -4202,7 +4202,7 @@ MonoBehaviour:
   hintHold: 1.25
   hintFadeOut: 0.25
   requireProximity: 1
-  interactRadius: 1.8
+  interactRadius: 1.9
   proximityOrigin: {fileID: 0}
   disableCollidersOnConsume: 1
   collidersToDisableOnConsume: []
@@ -6762,7 +6762,7 @@ MonoBehaviour:
   stateName: 
   audioSource: {fileID: 0}
   particles: {fileID: 0}
-  delay: 4
+  delay: 3
   onlyOnce: 1
   onIntro:
     m_PersistentCalls:
@@ -12526,7 +12526,7 @@ Transform:
   m_GameObject: {fileID: 1280345532}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.1, y: -6.98, z: 0}
+  m_LocalPosition: {x: 4.1, y: -7.08, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -13320,6 +13320,7 @@ GameObject:
   - component: {fileID: 1494772022}
   - component: {fileID: 1494772023}
   - component: {fileID: 1494772024}
+  - component: {fileID: 1494772026}
   - component: {fileID: 1494772025}
   m_Layer: 0
   m_Name: Player
@@ -13587,11 +13588,14 @@ MonoBehaviour:
   deathVariantIntParam: DeathIndex
   deathVariantCount: 4
   deathTriggerOptions: []
-  deathStateTag: Death
+  deathStateTag: 
   waitTimeoutSeconds: 3
-  stateEndExtraWait: 1
+  stateEndExtraWait: 0.1
   disableOnDeath:
   - {fileID: 1494772016}
+  idleTriggerName: Idle
+  idleStateName: 
+  resetAllTriggersOnForceIdle: 1
   onDeathStarted:
     m_PersistentCalls:
       m_Calls: []
@@ -13620,6 +13624,28 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1494772026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1494772013}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07fe137e7bf800440b3f16d4c11df8ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DeathFadeDriver
+  death: {fileID: 1494772024}
+  delayBeforeFadeOut: 3
+  fadeOutOnDeathStart: 2
+  holdBlackBeforeRespawn: 4
+  fadeInAfterRespawn: 0.6
+  respawn: 3
+  sceneNameToLoad: Main Menu
+  spawnPoint: {fileID: 1824570352}
+  reEnableAfter:
+  - {fileID: 1494772016}
 --- !u!1 &1505986245
 GameObject:
   m_ObjectHideFlags: 0
@@ -14233,7 +14259,7 @@ MonoBehaviour:
   hintHold: 1.25
   hintFadeOut: 0.25
   requireProximity: 1
-  interactRadius: 1.8
+  interactRadius: 1.9
   proximityOrigin: {fileID: 0}
   disableCollidersOnConsume: 1
   collidersToDisableOnConsume: []
@@ -14657,7 +14683,7 @@ MonoBehaviour:
   hintHold: 1.25
   hintFadeOut: 0.25
   requireProximity: 1
-  interactRadius: 1.8
+  interactRadius: 1.9
   proximityOrigin: {fileID: 0}
   disableCollidersOnConsume: 1
   collidersToDisableOnConsume: []
@@ -17062,7 +17088,7 @@ Transform:
   m_GameObject: {fileID: 1805459645}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.35, y: -7.244, z: 0}
+  m_LocalPosition: {x: 3.35, y: -7.3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -17223,6 +17249,37 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1824570351
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1824570352}
+  m_Layer: 0
+  m_Name: Spawn Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1824570352
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1824570351}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -3.91, y: -5.36, z: 0}
+  m_LocalScale: {x: 0.94, y: 0.94, z: 0.94}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1836196322
 GameObject:
   m_ObjectHideFlags: 0
@@ -17422,7 +17479,7 @@ Transform:
   m_GameObject: {fileID: 1842051458}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.6, y: -6.76, z: 0}
+  m_LocalPosition: {x: 2.6, y: -6.89, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -17600,7 +17657,7 @@ Transform:
   m_GameObject: {fileID: 1905181057}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.84, y: -7.18, z: 0}
+  m_LocalPosition: {x: -2.84, y: -7.23, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -18777,6 +18834,7 @@ SceneRoots:
   - {fileID: 619394802}
   - {fileID: 1687408981}
   - {fileID: 167544015}
+  - {fileID: 1824570352}
   - {fileID: 1494772015}
   - {fileID: 1040181924}
   - {fileID: 1926678873}
