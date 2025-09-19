@@ -5,13 +5,22 @@ using UnityEngine.EventSystems;
 [DisallowMultipleComponent]
 public class DropSlotAlembic : MonoBehaviour, IDropHandler
 {
-    [Tooltip("Tag accepted by this slot. Use 'Runoff' for mouth or 'Result' for take zone.")]
+    [Header("Acceptance")]
+    [Tooltip("Primary/role tag for this slot. Keep this as 'Runoff' for mouth or 'Result' for take zone.\nUsed by game logic to know which slot was used.")]
     public string acceptsTag = "Runoff";
 
+    [Tooltip("If set, this slot will accept ANY of these tags on drop.\nLeave empty to fall back to only `acceptsTag`.")]
+    public string[] acceptsTags = new string[0];
+
+    [Header("Refs")]
     [SerializeField] private PhilosophersAlembicMinigame alembicMinigame; // assign in Inspector (optional)
+
+    private CanvasGroup cachedCg;
 
     void Awake()
     {
+        cachedCg = GetComponent<CanvasGroup>();
+
         if (!alembicMinigame)
             alembicMinigame = GetComponentInParent<PhilosophersAlembicMinigame>(true);
 
@@ -24,12 +33,11 @@ public class DropSlotAlembic : MonoBehaviour, IDropHandler
 
     public void Enable(bool on)
     {
-        var cg = GetComponent<CanvasGroup>();
-        if (cg)
+        if (cachedCg || TryGetComponent(out cachedCg))
         {
-            cg.alpha = on ? 1f : 0.4f;
-            cg.interactable = on;
-            cg.blocksRaycasts = on;
+            cachedCg.alpha = on ? 1f : 0.4f;
+            cachedCg.interactable = on;
+            cachedCg.blocksRaycasts = on;
         }
         else
         {
@@ -42,9 +50,12 @@ public class DropSlotAlembic : MonoBehaviour, IDropHandler
         var dragged = eventData.pointerDrag;
         if (!dragged) return;
 
-        if (!dragged.CompareTag(acceptsTag))
+        if (!Accepts(dragged))
         {
-            Debug.Log($"[DropSlotAlembic:{name}] Rejected '{dragged.tag}', expects '{acceptsTag}'.");
+            var expect = (acceptsTags != null && acceptsTags.Length > 0)
+                ? $"one of [{string.Join(", ", acceptsTags)}]"
+                : $"'{acceptsTag}'";
+            Debug.Log($"[DropSlotAlembic:{name}] Rejected '{dragged.tag}', expects {expect}.");
             return;
         }
 
@@ -55,7 +66,25 @@ public class DropSlotAlembic : MonoBehaviour, IDropHandler
             return;
         }
 
-        // Call the uniquely named handler to avoid overload ambiguity
+        // Pass through (minigame uses `slot.acceptsTag` to know if it's the mouth or the take zone)
         mg.HandleDropAlembic(this, dragged);
+    }
+
+    private bool Accepts(GameObject go)
+    {
+        // If a multi-tag list is provided, use it.
+        if (acceptsTags != null && acceptsTags.Length > 0)
+        {
+            for (int i = 0; i < acceptsTags.Length; i++)
+            {
+                var tag = acceptsTags[i];
+                if (!string.IsNullOrEmpty(tag) && go.CompareTag(tag))
+                    return true;
+            }
+            return false;
+        }
+
+        // Fallback: single role tag
+        return go.CompareTag(acceptsTag);
     }
 }

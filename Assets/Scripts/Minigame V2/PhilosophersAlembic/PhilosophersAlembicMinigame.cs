@@ -2,7 +2,8 @@
 // Unity 6.2 • Universal 2D • Input System
 // Single Animator on the Alembic drives BOTH boil (IsBoiling) and pour (Pour) by Phase.
 // 5 phases supported (configurable collect phase). Beaker spawns via optional RectTransform anchors.
-// Now includes "once only" persistence + success events.
+// Includes "once only" persistence + success events.
+// UPDATED: allow taking the beaker at ANY phase (same result item), and keep the Take Zone always visible.
 
 using System;
 using System.Collections;
@@ -74,11 +75,18 @@ public class PhilosophersAlembicMinigame : MonoBehaviour
     [SerializeField] private float[] phaseFillTimes = new float[] { 2.5f, 2.0f, 1.6f, 1.6f, 1.6f };
 
     [Header("Collection Settings")]
-    [Tooltip("Which phase produces the final collectible beaker for the take zone?")]
+    [Tooltip("Which phase produces the final collectible beaker for the take zone? (used for tagging/UX; not required to finish anymore)")]
     [SerializeField] private Phase collectOnPhase = Phase.Red; // change to Phase.Purple if you want the 5th to be final
 
     [Header("Result (final turn-in)")]
     [SerializeField] private ItemSO resultItem;
+
+    // NEW: Early-take feature
+    [Header("Early Take Settings")]
+    [SerializeField] private bool allowAnyPhaseTake = true;
+
+    [Tooltip("If true, the Take Zone is always visible & interactive (not gated by phase).")]
+    [SerializeField] private bool alwaysShowTakeZone = true;
 
     [Header("Events")]
     public UnityEvent onClosed;
@@ -207,29 +215,38 @@ public class PhilosophersAlembicMinigame : MonoBehaviour
     {
         if (!slot || !droppedGO) return;
 
-        // Final collection
-        if (slot.acceptsTag == "Result" && droppedGO.CompareTag("Result") && CurrentPhase.Equals(collectOnPhase))
+        // ------- Final collection (now allowed at ANY phase if allowAnyPhaseTake is true) -------
+        if (slot.acceptsTag == "Result")
         {
-            var drag = droppedGO.GetComponent<DraggableItem>();
-            if (drag) drag.Consume();
+            bool isResultTagged = droppedGO.CompareTag("Result");
+            bool isRunoffTagged = droppedGO.CompareTag("Runoff");
 
-            if (EquipmentInventory.Instance && resultItem &&
-                EquipmentInventory.Instance.TryEquipToFirstAvailable(resultItem))
-            {
-                // ✅ SUCCESS: mark once-only + raise events
-                if (onceOnly) WorkstationOnce.MarkUsed(stationId);
-                onSuccess?.Invoke();
-                onSuccessUnity?.Invoke();
+            // Accept either a 'Result' or 'Runoff' beaker when early take is allowed.
+            bool canAcceptAtThisPhase = isResultTagged || (allowAnyPhaseTake && isRunoffTagged);
 
-                state = State.Completed;
-                owningRoot?.SetActive(false);
-                onClosed?.Invoke();
-            }
-            else
+            if (canAcceptAtThisPhase)
             {
-                Debug.Log("[Alembic] Inventory full; could not equip result.");
+                var drag = droppedGO.GetComponent<DraggableItem>();
+                if (drag) drag.Consume();
+
+                if (EquipmentInventory.Instance && resultItem &&
+                    EquipmentInventory.Instance.TryEquipToFirstAvailable(resultItem))
+                {
+                    // ✅ SUCCESS: mark once-only + raise events, regardless of phase
+                    if (onceOnly) WorkstationOnce.MarkUsed(stationId);
+                    onSuccess?.Invoke();
+                    onSuccessUnity?.Invoke();
+
+                    state = State.Completed;
+                    owningRoot?.SetActive(false);
+                    onClosed?.Invoke();
+                }
+                else
+                {
+                    Debug.Log("[Alembic] Inventory full; could not equip result.");
+                }
+                return;
             }
-            return;
         }
 
         // Pour back in (pre-collect phases)
@@ -389,11 +406,25 @@ public class PhilosophersAlembicMinigame : MonoBehaviour
         beakerInstance.gameObject.tag = tagName;
     }
 
+    // UPDATED: Take Zone can now be always on (and mouth is always enabled too).
     private void ApplyPhaseTargets()
     {
-        bool atCollect = CurrentPhase.Equals(collectOnPhase);
-        if (mouthDropSlot) mouthDropSlot.Enable(!atCollect);
-        if (takeZoneDropSlot) takeZoneDropSlot.Enable(atCollect);
+        // Mouth drop (for pouring) stays enabled so the loop still works if players want to continue phases
+        if (mouthDropSlot) mouthDropSlot.Enable(true);
+
+        if (takeZoneDropSlot)
+        {
+            if (alwaysShowTakeZone)
+            {
+                takeZoneDropSlot.Enable(true);
+            }
+            else
+            {
+                // Legacy gating by phase if you ever need it again
+                bool atCollect = CurrentPhase.Equals(collectOnPhase);
+                takeZoneDropSlot.Enable(atCollect);
+            }
+        }
     }
 
     private void SetPhase(Phase p)
