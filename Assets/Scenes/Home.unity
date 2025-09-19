@@ -7202,7 +7202,7 @@ MonoBehaviour:
   quitButton: {fileID: 1751528022}
   pauseWhileOpen: 1
   creditsSceneName: Ending
-  closeKey: 27
+  toggleKey: 27
   rayCamera: {fileID: 519420031}
   interactableLayers:
     serializedVersion: 2
@@ -10791,7 +10791,7 @@ MonoBehaviour:
   quitButton: {fileID: 902581852}
   pauseWhileOpen: 1
   creditsSceneName: Ending
-  closeKey: 27
+  toggleKey: 27
   rayCamera: {fileID: 519420031}
   interactableLayers:
     serializedVersion: 2
