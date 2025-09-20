@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(CanvasGroup))]
@@ -10,8 +11,8 @@ public class ScreenFader : MonoBehaviour
     public static ScreenFader Instance { get; private set; }
 
     [Header("Canvas")]
-    [SerializeField] private RenderMode renderMode = RenderMode.ScreenSpaceOverlay; // <- set here
-    [SerializeField] private Camera uiCamera;  // only used if renderMode == ScreenSpaceCamera
+    [SerializeField] private RenderMode renderMode = RenderMode.ScreenSpaceOverlay;
+    [SerializeField] private Camera uiCamera;  // if ScreenSpaceCamera
     [SerializeField] private int sortingOrder = 50000;
 
     [Header("Look")]
@@ -19,10 +20,19 @@ public class ScreenFader : MonoBehaviour
     [SerializeField] private float defaultDuration = 0.6f;
     [SerializeField] private bool dontDestroyOnLoad = true;
 
+    [Header("Safety")]
+    [Tooltip("When true, the fader resets to transparent whenever a new scene loads, unless CarryNextSceneFade is true.")]
+    [SerializeField] private bool autoClearOnSceneLoaded = true;
+
+    public static bool CarryNextSceneFade = false;   // opt-out for one scene load (set by code doing a deliberate cross-scene fade)
+
     private Canvas canvas;
     private CanvasGroup cg;
     private Image image;
     private Coroutine fadeCo;
+
+    public float CurrentAlpha => cg ? cg.alpha : 0f;
+    public bool IsFading => fadeCo != null;
 
     void Awake()
     {
@@ -55,6 +65,32 @@ public class ScreenFader : MonoBehaviour
         if (dontDestroyOnLoad) DontDestroyOnLoad(gameObject);
     }
 
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // Reset alpha unless a cross-scene fade is explicitly being carried
+        if (!autoClearOnSceneLoaded) return;
+
+        if (CarryNextSceneFade)
+        {
+            // Use the carried black once, then clear the flag so subsequent loads auto-clear
+            CarryNextSceneFade = false;
+            return;
+        }
+
+        // Safety clear
+        SetAlpha(0f);
+    }
+
     public static ScreenFader CreateDefault()
     {
         if (Instance) return Instance;
@@ -85,7 +121,7 @@ public class ScreenFader : MonoBehaviour
         float t = 0f;
         while (t < dur)
         {
-            t += Time.unscaledDeltaTime;
+            t += Time.unscaledDeltaTime;   // unaffected by timescale
             SetAlpha(Mathf.Lerp(from, to, t / dur));
             yield return null;
         }

@@ -1,8 +1,7 @@
-// Assets/Scripts/Utility/DeathFadeDriver.cs
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using TMPro;   // <-- NEW
+using TMPro;
 
 [DisallowMultipleComponent]
 public class DeathFadeDriver : MonoBehaviour
@@ -10,13 +9,9 @@ public class DeathFadeDriver : MonoBehaviour
     [SerializeField] private PlayerDeathController death;
 
     [Header("Fade Timing")]
-    [Tooltip("Wait this long (seconds) after death starts before beginning the fade out.")]
     [SerializeField] private float delayBeforeFadeOut = 0f;
-    [Tooltip("Seconds to fade to black once death starts (after the delay).")]
     [SerializeField] private float fadeOutOnDeathStart = 0.6f;
-    [Tooltip("How long to hold on black before the load/respawn action (minimum).")]
     [SerializeField] private float holdBlackBeforeRespawn = 0.25f;
-    [Tooltip("Seconds to fade back in after the load/respawn action.")]
     [SerializeField] private float fadeInAfterRespawn = 0.6f;
 
     public enum RespawnMode
@@ -32,18 +27,14 @@ public class DeathFadeDriver : MonoBehaviour
     [Tooltip("Used only when RespawnMode = LoadSceneByName. Example: 'MainMenu'")]
     [SerializeField] private string sceneNameToLoad = "MainMenu";
     [SerializeField] private Transform spawnPoint;
-    [Tooltip("Scripts on the player that should be re-enabled after respawn/teleport/reload. Not used for LoadSceneByName.")]
     [SerializeField] private MonoBehaviour[] reEnableAfter;
 
-    // ---------------- NEW: Death Quote overlay ----------------
+    // ---------------- Death Quote overlay ----------------
     [Header("Death Quote (optional)")]
     [SerializeField] private bool showDeathQuote = true;
-    [Tooltip("CanvasGroup on the DeathQuoteOverlay UI.")]
     [SerializeField] private CanvasGroup quoteCanvasGroup;
-    [Tooltip("TMP text that displays the line.")]
     [SerializeField] private TMP_Text quoteText;
 
-    [Tooltip("Lines to pick from. If empty, feature is skipped even if enabled.")]
     [TextArea(2, 3)]
     [SerializeField]
     private string[] deathLines = new string[]
@@ -55,15 +46,10 @@ public class DeathFadeDriver : MonoBehaviour
     };
 
     [Header("Quote Timing")]
-    [Tooltip("Start showing the quote this long after we finish fading to black.")]
     [SerializeField] private float textDelayAfterBlack = 0.0f;
-    [Tooltip("Seconds to fade the quote in.")]
     [SerializeField] private float textFadeIn = 0.25f;
-    [Tooltip("How long the quote stays fully visible.")]
     [SerializeField] private float textHold = 1.25f;
-    [Tooltip("Seconds to fade the quote out (before respawn).")]
     [SerializeField] private float textFadeOut = 0.25f;
-    [Tooltip("Pick a random line when true; otherwise use index 0.")]
     [SerializeField] private bool randomizeQuote = true;
 
     private bool quoteSequenceDone = true;
@@ -73,7 +59,6 @@ public class DeathFadeDriver : MonoBehaviour
     {
         if (!death) death = GetComponent<PlayerDeathController>();
 
-        // Ensure quote overlay starts hidden if assigned
         if (quoteCanvasGroup)
         {
             quoteCanvasGroup.alpha = 0f;
@@ -99,10 +84,10 @@ public class DeathFadeDriver : MonoBehaviour
 
     private void OnDeathStarted()
     {
-        // Kick the fade to black
+        // Begin fade to black
         StartCoroutine(FadeOutAfterDelay());
 
-        // Kick the quote sequence (it will internally wait for black timing)
+        // Begin quote (optional)
         if (showDeathQuote && quoteCanvasGroup && quoteText && deathLines != null && deathLines.Length > 0)
         {
             if (quoteRoutine != null) StopCoroutine(quoteRoutine);
@@ -130,25 +115,41 @@ public class DeathFadeDriver : MonoBehaviour
 
     private IEnumerator RespawnAndFadeIn()
     {
-        // Wait at least the configured black-hold AND until the quote has finished (if enabled)
+        // Wait for minimum black time and (if enabled) until the quote completes.
         float t = 0f;
         while (t < holdBlackBeforeRespawn || (showDeathQuote && !quoteSequenceDone))
         {
-            t += Time.unscaledDeltaTime; // be resilient to timescale changes
+            t += Time.unscaledDeltaTime; // resilient to Time.timeScale changes
             yield return null;
         }
 
-        PlayerDeathController targetDeath = death;
+        // Hide quote UI before we leave this scene or fade back in
+        if (quoteCanvasGroup) quoteCanvasGroup.alpha = 0f;
 
+        // Branch by mode
         switch (respawn)
         {
             case RespawnMode.ReloadScene:
                 {
+                    // Make sure a fader exists and arrange a cross-scene fade-in.
+                    EnsureCrossSceneFadeIn(fadeInAfterRespawn);
+
                     var op = SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().buildIndex);
                     while (!op.isDone) yield return null;
-                    yield return null; // settle a frame
-                    targetDeath = Object.FindFirstObjectByType<PlayerDeathController>();
-                    break;
+                    // No more code after this point is guaranteed to run (this object is destroyed on load).
+                    yield break;
+                }
+
+            case RespawnMode.LoadSceneByName:
+                {
+                    EnsureCrossSceneFadeIn(fadeInAfterRespawn);
+
+                    if (!string.IsNullOrWhiteSpace(sceneNameToLoad))
+                    {
+                        var op = SceneManager.LoadSceneAsync(sceneNameToLoad);
+                        while (!op.isDone) yield return null;
+                    }
+                    yield break;
                 }
 
             case RespawnMode.TeleportToSpawnPoint:
@@ -158,39 +159,24 @@ public class DeathFadeDriver : MonoBehaviour
                         transform.position = spawnPoint.position;
                         transform.rotation = spawnPoint.rotation;
                     }
-                    break;
-                }
 
-            case RespawnMode.LoadSceneByName:
-                {
-                    if (!string.IsNullOrWhiteSpace(sceneNameToLoad))
-                    {
-                        var op = SceneManager.LoadSceneAsync(sceneNameToLoad);
-                        while (!op.isDone) yield return null;
-                        yield return null;
-                    }
-                    targetDeath = null; // different scene; don't touch old components
-                    break;
+                    // Return the player's animator to idle and re-enable scripts (same-scene only)
+                    if (death) death.ForceIdleNow();
+
+                    if (reEnableAfter != null)
+                        foreach (var mb in reEnableAfter) if (mb) mb.enabled = true;
+
+                    ScreenFader.Instance?.FadeIn(fadeInAfterRespawn);
+                    yield break;
                 }
 
             case RespawnMode.None:
             default:
-                // Just continue to fade in below.
-                break;
+                {
+                    ScreenFader.Instance?.FadeIn(fadeInAfterRespawn);
+                    yield break;
+                }
         }
-
-        if (respawn == RespawnMode.ReloadScene || respawn == RespawnMode.TeleportToSpawnPoint)
-        {
-            if (targetDeath) targetDeath.ForceIdleNow();
-
-            if (reEnableAfter != null)
-                foreach (var mb in reEnableAfter) if (mb) mb.enabled = true;
-        }
-
-        // Safety: ensure quote overlay is hidden before fade-in
-        if (quoteCanvasGroup) quoteCanvasGroup.alpha = 0f;
-
-        ScreenFader.Instance?.FadeIn(fadeInAfterRespawn);
     }
 
     // ---------------- helpers ----------------
@@ -204,7 +190,7 @@ public class DeathFadeDriver : MonoBehaviour
             randomizeQuote ? Random.Range(0, deathLines.Length) : 0,
             0, deathLines.Length - 1)];
 
-        // Wait for full black moment: (delayBeforeFadeOut + fadeOutOnDeathStart) + optional extra delay
+        // Wait for full black time + optional extra delay
         float waitToBlack = Mathf.Max(0f, delayBeforeFadeOut + fadeOutOnDeathStart + textDelayAfterBlack);
         float t = 0f;
         while (t < waitToBlack)
@@ -215,7 +201,7 @@ public class DeathFadeDriver : MonoBehaviour
 
         // Fade in text
         quoteText.text = line;
-        yield return FadeCanvasGroup(quoteCanvasGroup, from: 0f, to: 1f, duration: textFadeIn);
+        yield return FadeCanvasGroup(quoteCanvasGroup, 0f, 1f, textFadeIn);
 
         // Hold
         t = 0f;
@@ -226,7 +212,7 @@ public class DeathFadeDriver : MonoBehaviour
         }
 
         // Fade out text
-        yield return FadeCanvasGroup(quoteCanvasGroup, from: 1f, to: 0f, duration: textFadeOut);
+        yield return FadeCanvasGroup(quoteCanvasGroup, 1f, 0f, textFadeOut);
 
         // Clear
         quoteText.text = string.Empty;
@@ -235,10 +221,7 @@ public class DeathFadeDriver : MonoBehaviour
 
     private static IEnumerator FadeCanvasGroup(CanvasGroup cg, float from, float to, float duration)
     {
-        if (!cg)
-        {
-            yield break;
-        }
+        if (!cg) yield break;
 
         cg.alpha = from;
         float t = 0f;
@@ -250,5 +233,41 @@ public class DeathFadeDriver : MonoBehaviour
             yield return null;
         }
         cg.alpha = to;
+    }
+
+    /// <summary>
+    /// Ensures there's a ScreenFader, and spawns a tiny helper that will call FadeIn in the *next* scene.
+    /// </summary>
+    private static void EnsureCrossSceneFadeIn(float fadeInDuration)
+    {
+        ScreenFader.CreateDefault(); // ensure exists now (and persists)
+
+        var go = new GameObject("CrossSceneFadeCarrier");
+        var carrier = go.AddComponent<CrossSceneFadeCarrier>();
+        carrier.fadeInDuration = fadeInDuration;
+        DontDestroyOnLoad(go);
+    }
+
+    private sealed class CrossSceneFadeCarrier : MonoBehaviour
+    {
+        [HideInInspector] public float fadeInDuration = 0.6f;
+
+        private void OnEnable()
+        {
+            SceneManager.sceneLoaded += OnLoaded;
+        }
+
+        private void OnDisable()
+        {
+            SceneManager.sceneLoaded -= OnLoaded;
+        }
+
+        private void OnLoaded(Scene s, LoadSceneMode m)
+        {
+            // Fade the carried black away in the new scene
+            ScreenFader.CreateDefault(); // if new scene didn't have one yet
+            ScreenFader.Instance?.FadeIn(fadeInDuration);
+            Destroy(gameObject); // one-shot
+        }
     }
 }

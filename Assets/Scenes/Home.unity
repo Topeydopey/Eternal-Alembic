@@ -4312,8 +4312,8 @@ MonoBehaviour:
   hintHold: 1.25
   hintFadeOut: 0.25
   requireProximity: 1
-  interactRadius: 1.9
-  proximityOrigin: {fileID: 0}
+  interactRadius: 2
+  proximityOrigin: {fileID: 343248566}
   disableCollidersOnConsume: 0
   collidersToDisableOnConsume: []
   behavioursToDisableOnConsume: []
@@ -5677,15 +5677,15 @@ RectTransform:
   m_GameObject: {fileID: 509745942}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.15, y: 3.49, z: 1.31}
+  m_LocalScale: {x: 2.15, y: 4.25, z: 1.31}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1145382900}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -129, y: 135}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: -129, y: 113}
+  m_SizeDelta: {x: 100, y: 95.0508}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &509745945
 MonoBehaviour:
@@ -6241,6 +6241,7 @@ MonoBehaviour:
   acceptsTag: Result
   acceptsTags:
   - Runoff
+  - Result
   alembicMinigame: {fileID: 1145382901}
 --- !u!1 &597506699
 GameObject:
@@ -12002,7 +12003,6 @@ RectTransform:
   - {fileID: 1114203102}
   - {fileID: 585921362}
   - {fileID: 2105385037}
-  - {fileID: 1393377692}
   - {fileID: 509745943}
   m_Father: {fileID: 565103358}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -12030,7 +12030,7 @@ MonoBehaviour:
   autoCloseIfAlreadyUsed: 1
   mouthDropSlot: {fileID: 509745947}
   takeZoneDropSlot: {fileID: 585921365}
-  alembicLiquidImage: {fileID: 1393377690}
+  alembicLiquidImage: {fileID: 0}
   alembicAnimator: {fileID: 2042008224}
   alembicPhaseParam: Phase
   alembicBoilBoolParam: IsBoiling
@@ -12047,11 +12047,11 @@ MonoBehaviour:
   triggerPourAnimation: 1
   defaultPourSeconds: 2
   pourSecondsPerPhase:
-  - 2
-  - 2
-  - 2
-  - 2
-  - 2
+  - 1.6
+  - 1.6
+  - 1.6
+  - 1.6
+  - 1.6
   blackCol: {r: 0.1, g: 0.1, b: 0.1, a: 1}
   whiteCol: {r: 0.93, g: 0.93, b: 0.93, a: 1}
   goldCol: {r: 0.95, g: 0.76, b: 0.31, a: 1}
@@ -12531,8 +12531,8 @@ MonoBehaviour:
   receivedTemplate: You received {0}!
   droppedTemplate: '{0} was dropped nearby.'
   requireProximity: 1
-  interactRadius: 1.8
-  proximityOrigin: {fileID: 0}
+  interactRadius: 2
+  proximityOrigin: {fileID: 1205165332}
   randomizeHuePerSession: 1
   startValue: 0.25
   endValue: 0.85
@@ -13640,81 +13640,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1348929033}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1393377689
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1393377692}
-  - component: {fileID: 1393377691}
-  - component: {fileID: 1393377690}
-  m_Layer: 5
-  m_Name: Alembic Liquid
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!114 &1393377690
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1393377689}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 4481662406329106651, guid: 9abcdf4d8d7b8ed498cf9e8676de7e73, type: 3}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!222 &1393377691
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1393377689}
-  m_CullTransparentMesh: 1
---- !u!224 &1393377692
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1393377689}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1145382900}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -166, y: 85}
-  m_SizeDelta: {x: 100, y: 100}
-  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1437937884
 GameObject:
   m_ObjectHideFlags: 0
@@ -14910,8 +14835,8 @@ MonoBehaviour:
   hintHold: 1.25
   hintFadeOut: 0.25
   requireProximity: 1
-  interactRadius: 1.9
-  proximityOrigin: {fileID: 0}
+  interactRadius: 2
+  proximityOrigin: {fileID: 1563182581}
   disableCollidersOnConsume: 0
   collidersToDisableOnConsume: []
   behavioursToDisableOnConsume: []
@@ -15334,7 +15259,7 @@ MonoBehaviour:
   hintHold: 1.25
   hintFadeOut: 0.25
   requireProximity: 1
-  interactRadius: 1.9
+  interactRadius: 2
   proximityOrigin: {fileID: 0}
   disableCollidersOnConsume: 0
   collidersToDisableOnConsume: []
@@ -15843,6 +15768,7 @@ MonoBehaviour:
   color: {r: 0, g: 0, b: 0, a: 1}
   defaultDuration: 4
   dontDestroyOnLoad: 1
+  autoClearOnSceneLoaded: 1
 --- !u!225 &1687408980
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -18933,7 +18859,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.0000076293945, y: 65}
+  m_AnchoredPosition: {x: -0.0000076293945, y: 32}
   m_SizeDelta: {x: 1317.7549, y: 868.6542}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2042008222
@@ -19248,7 +19174,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -129, y: -181}
+  m_AnchoredPosition: {x: -129, y: -218}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2105385038
