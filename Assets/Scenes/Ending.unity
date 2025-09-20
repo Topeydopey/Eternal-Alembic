@@ -1170,6 +1170,7 @@ GameObject:
   - component: {fileID: 952399791}
   - component: {fileID: 952399790}
   - component: {fileID: 952399789}
+  - component: {fileID: 952399793}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1260,6 +1261,36 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &952399793
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 952399788}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ae991aa6c39c1b40a16d0f392b5736b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AmbientMusicFader
+  startOnEnable: 1
+  startAfterSceneIntro: 1
+  delayBeforeStart: 0
+  useUnscaledTime: 1
+  targetVolume: 0.8
+  fadeInSeconds: 2
+  crossfadeSeconds: 1.5
+  ambientClip: {fileID: 8300000, guid: b82b19dcf79e9174a957af9cce49f209, type: 3}
+  ambientLoop: 1
+  playlist: []
+  loopPlaylist: 1
+  shufflePlaylist: 0
+  intervalBetweenTracks: 0
+  randomEachAdvance: 0
+  avoidImmediateRepeatRandom: 1
+  persistAcrossScenes: 0
+  outputMixerGroup: {fileID: 0}
+  rolloffMode: 1
 --- !u!1 &1096901739
 GameObject:
   m_ObjectHideFlags: 0

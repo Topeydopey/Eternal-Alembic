@@ -2,8 +2,10 @@
 // Unity 6.2 • Universal 2D • Input System
 // Spawns your prefab for the result token (preserves highlight scripts), with optional UI overrides.
 // Supports "once only" stations with PlayerPrefs persistence and a success event.
+// + Audio: slither loop, eat, complete, take
 
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -56,16 +58,75 @@ public class SnakeWorldMinigame : MonoBehaviour
     [Tooltip("-1 = use SnakePhysicsController value")]
     public int seedsToWinOverride = -1;
 
+    // ---------------------- AUDIO ----------------------
+    [Header("Audio Sources")]
+    [Tooltip("2D audio for snake world SFX (slither/eat/complete). Auto-added if empty.")]
+    [SerializeField] private AudioSource snakeAudio;
+    [Tooltip("2D audio for UI token SFX (take). Auto-added if empty.")]
+    [SerializeField] private AudioSource uiAudio;
+
+    [Header("SFX • Slither (ambient loop)")]
+    [SerializeField] private bool enableSlitherLoop = true;
+    [SerializeField] private AudioClip[] slitherClips;
+    [SerializeField] private Vector2 slitherIntervalSeconds = new Vector2(1.8f, 3.0f);
+    [SerializeField] private Vector2 slitherPitchRange = new Vector2(0.98f, 1.03f);
+    [SerializeField] private Vector2 slitherVolumeRange = new Vector2(0.75f, 0.95f);
+
+    [Header("SFX • Eat seed")]
+    [SerializeField] private AudioClip[] eatClips;
+    [SerializeField] private Vector2 eatPitchRange = new Vector2(0.96f, 1.04f);
+    [SerializeField] private Vector2 eatVolumeRange = new Vector2(0.9f, 1.0f);
+
+    [Header("SFX • Complete (snake → result)")]
+    [SerializeField] private AudioClip[] completeClips;
+    [SerializeField] private Vector2 completePitchRange = new Vector2(0.98f, 1.02f);
+    [SerializeField] private Vector2 completeVolumeRange = new Vector2(0.95f, 1.0f);
+
+    [Header("SFX • Take (pick result token)")]
+    [SerializeField] private AudioClip[] takeClips;
+    [SerializeField] private Vector2 takePitchRange = new Vector2(0.98f, 1.02f);
+    [SerializeField] private Vector2 takeVolumeRange = new Vector2(0.9f, 1.0f);
+
+    [Header("Audio Options")]
+    [Tooltip("Avoid repeating the same clip back-to-back in each category.")]
+    [SerializeField] private bool avoidImmediateRepeat = true;
+
+    private enum SfxCategory { Slither, Eat, Complete, Take }
+    private int _lastSlither = -1, _lastEat = -1, _lastComplete = -1, _lastTake = -1;
+
     [Header("Debug")]
     public bool verbose = false;
 
     private GameObject spawnedToken;
+
+    // state for slither loop
+    private Coroutine slitherCo;
+    private bool sessionActive;
+    private bool completed;
 
     void Awake()
     {
         if (!owningCanvas) owningCanvas = GetComponentInParent<Canvas>(true);
         if (!owningRoot && owningCanvas) owningRoot = owningCanvas.gameObject;
         if (!resultTokenSpawnParent && owningCanvas) resultTokenSpawnParent = owningCanvas.transform;
+
+        snakeAudio = EnsureAudioSource(snakeAudio, "SnakeAudio2D");
+        uiAudio = EnsureAudioSource(uiAudio, "UIAudio2D");
+    }
+
+    private AudioSource EnsureAudioSource(AudioSource src, string childName)
+    {
+        if (src) return src;
+        var t = transform.Find(childName);
+        if (t && t.TryGetComponent(out AudioSource found)) return found;
+
+        var go = new GameObject(childName);
+        go.transform.SetParent(transform, false);
+        var a = go.AddComponent<AudioSource>();
+        a.playOnAwake = false;
+        a.loop = false;
+        a.spatialBlend = 0f; // 2D
+        return a;
     }
 
     void OnEnable()
@@ -86,6 +147,7 @@ public class SnakeWorldMinigame : MonoBehaviour
     void OnDisable()
     {
         if (snakeHead) snakeHead.OnCompleted -= OnCompleted;
+        StopSlitherLoop();
     }
 
     public void BeginSession()
@@ -116,6 +178,10 @@ public class SnakeWorldMinigame : MonoBehaviour
 
         // Cleanup any previous token
         if (spawnedToken) { Destroy(spawnedToken); spawnedToken = null; }
+
+        completed = false;
+        sessionActive = true;
+        StartSlitherLoop();
     }
 
     private void OnCompleted()
@@ -135,8 +201,14 @@ public class SnakeWorldMinigame : MonoBehaviour
         if (snakeRoot) snakeRoot.SetActive(false);
         else snakeHead.gameObject.SetActive(false);
 
+        // AUDIO: completion sting
+        PlayRandomOneShotCategory(snakeAudio, completeClips, completeVolumeRange, completePitchRange, SfxCategory.Complete);
+
         // 3) spawn UI token
         SpawnResultToken();
+
+        completed = true;
+        StopSlitherLoop();
     }
 
     private void SpawnResultToken()
@@ -272,6 +344,9 @@ public class SnakeWorldMinigame : MonoBehaviour
 
     public void HandleResultDrop(GameObject token)
     {
+        // UI take sound
+        PlayRandomOneShotCategory(uiAudio, takeClips, takeVolumeRange, takePitchRange, SfxCategory.Take);
+
         // consume UI token
         var di = token.GetComponent<DraggableItem>();
         if (di) di.Consume(); else token.SetActive(false);
@@ -296,6 +371,9 @@ public class SnakeWorldMinigame : MonoBehaviour
     {
         onClosed?.Invoke();
 
+        StopSlitherLoop();
+        sessionActive = false;
+
         if (disableInsteadOfDestroy)
         {
             if (owningRoot) owningRoot.SetActive(false);
@@ -311,6 +389,98 @@ public class SnakeWorldMinigame : MonoBehaviour
     }
 
     public void CancelAndClose() => CloseUI();
+
+    // ------------------- PUBLIC HOOKS -------------------
+    /// <summary>Call this when the snake eats a seed (from SnakePhysicsController or DropSurface).</summary>
+    public void NotifySnakeAte()
+    {
+        if (!sessionActive || completed) return;
+        PlayRandomOneShotCategory(snakeAudio, eatClips, eatVolumeRange, eatPitchRange, SfxCategory.Eat);
+    }
+
+    // ------------------- SLITHER LOOP -------------------
+    private void StartSlitherLoop()
+    {
+        if (!enableSlitherLoop) return;
+        if (slitherCo != null) StopCoroutine(slitherCo);
+        slitherCo = StartCoroutine(CoSlither());
+    }
+
+    private void StopSlitherLoop()
+    {
+        if (slitherCo != null)
+        {
+            StopCoroutine(slitherCo);
+            slitherCo = null;
+        }
+    }
+
+    private IEnumerator CoSlither()
+    {
+        while (sessionActive && !completed && isActiveAndEnabled)
+        {
+            // wait random interval
+            float delay = UnityEngine.Random.Range(
+                Mathf.Max(0.02f, slitherIntervalSeconds.x),
+                Mathf.Max(slitherIntervalSeconds.x, slitherIntervalSeconds.y));
+            yield return new WaitForSeconds(delay);
+
+            // play a random slither
+            PlayRandomOneShotCategory(snakeAudio, slitherClips, slitherVolumeRange, slitherPitchRange, SfxCategory.Slither);
+        }
+    }
+
+    // ------------------- AUDIO CORE -------------------
+    private void PlayRandomOneShotCategory(AudioSource src, AudioClip[] clips, Vector2 volRange, Vector2 pitchRange, SfxCategory cat)
+    {
+        if (!src || clips == null || clips.Length == 0) return;
+
+        int last = GetLastIndex(cat);
+        int idx = PickIndex(clips.Length, last, avoidImmediateRepeat);
+        SetLastIndex(cat, idx);
+
+        var clip = clips[idx];
+        if (!clip) return;
+
+        float vol = Mathf.Clamp01(UnityEngine.Random.Range(volRange.x, volRange.y));
+        float pitch = Mathf.Clamp(UnityEngine.Random.Range(pitchRange.x, pitchRange.y), 0.01f, 3f);
+
+        float oldPitch = src.pitch;
+        src.pitch = pitch;
+        src.PlayOneShot(clip, vol);
+        src.pitch = oldPitch;
+    }
+
+    private int GetLastIndex(SfxCategory cat) => cat switch
+    {
+        SfxCategory.Slither => _lastSlither,
+        SfxCategory.Eat => _lastEat,
+        SfxCategory.Complete => _lastComplete,
+        SfxCategory.Take => _lastTake,
+        _ => -1
+    };
+
+    private void SetLastIndex(SfxCategory cat, int idx)
+    {
+        switch (cat)
+        {
+            case SfxCategory.Slither: _lastSlither = idx; break;
+            case SfxCategory.Eat: _lastEat = idx; break;
+            case SfxCategory.Complete: _lastComplete = idx; break;
+            case SfxCategory.Take: _lastTake = idx; break;
+        }
+    }
+
+    private int PickIndex(int length, int last, bool avoidRepeat)
+    {
+        if (length <= 0) return 0;
+        if (!avoidRepeat || length == 1 || last < 0) return UnityEngine.Random.Range(0, length);
+
+        int idx;
+        do { idx = UnityEngine.Random.Range(0, length); }
+        while (idx == last && length > 1);
+        return idx;
+    }
 }
 
 // Optional initializer contract your highlight/selection script can implement

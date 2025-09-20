@@ -1,3 +1,4 @@
+// Assets/Scripts/Minigame V2/Cauldron.cs
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -44,16 +45,38 @@ public class Cauldron : MonoBehaviour
     [Range(0f, 1f)] public float endValue = 0.85f;
     [Range(0f, 1f)] public float saturation = 0.85f;
 
+    // ---------------- AUDIO ----------------
+    [Header("Audio (optional)")]
+    [Tooltip("2D AudioSource for cauldron SFX. If left empty, the script will spawn temporary one-shot sources.")]
+    [SerializeField] private AudioSource sfxAudio;
+
+    [Tooltip("Plays when an item is successfully deposited.")]
+    [SerializeField] private AudioClip depositSfx;
+    [Range(0f, 1f)][SerializeField] private float depositVolume = 1f;
+
+    [Tooltip("Plays once when the recipe becomes ready to collect (first time RewardAvailable turns true).")]
+    [SerializeField] private AudioClip rewardReadySfx;
+    [Range(0f, 1f)][SerializeField] private float rewardReadyVolume = 1f;
+
     private float hue;
+    private bool rewardAvailablePrev;
 
     void OnEnable()
     {
         hue = randomizeHuePerSession ? Random.value : 0.33f;
 
         var gs = GameState.Instance;
-        if (gs) gs.OnChanged += HandleStateChanged;
-
-        UpdateLiquidVisual(gs ? gs.Progress01 : 0f);
+        if (gs)
+        {
+            gs.OnChanged += HandleStateChanged;
+            rewardAvailablePrev = gs.RewardAvailable;  // capture initial state so we only chime on transition
+            UpdateLiquidVisual(gs.Progress01);
+        }
+        else
+        {
+            rewardAvailablePrev = false;
+            UpdateLiquidVisual(0f);
+        }
     }
 
     void OnDisable()
@@ -65,7 +88,14 @@ public class Cauldron : MonoBehaviour
     private void HandleStateChanged()
     {
         var gs = GameState.Instance;
-        UpdateLiquidVisual(gs ? gs.Progress01 : 0f);
+        float progress = gs ? gs.Progress01 : 0f;
+        UpdateLiquidVisual(progress);
+
+        // Reward-ready chime on first transition to available
+        bool nowAvail = gs && gs.RewardAvailable;
+        if (nowAvail && !rewardAvailablePrev)
+            PlayOneShotSafe(rewardReadySfx, rewardReadyVolume);
+        rewardAvailablePrev = nowAvail;
     }
 
     private void UpdateLiquidVisual(float progress01)
@@ -101,12 +131,15 @@ public class Cauldron : MonoBehaviour
         var item = hand.item;
         if (gs.SubmitItem(item))
         {
+            // Success: consume, visuals, and DEPOSIT SFX
             eq.Unequip(eq.activeHand);
+
             if (bubbles) bubbles.Play();
+            PlayOneShotSafe(depositSfx, depositVolume);
         }
         else
         {
-            // wrong item feedback here if desired
+            // wrong item feedback hook (optional)
         }
     }
 
@@ -155,4 +188,27 @@ public class Cauldron : MonoBehaviour
         Gizmos.DrawWireSphere(o, interactRadius);
     }
 #endif
+
+    // ---------------- Audio helper ----------------
+    private void PlayOneShotSafe(AudioClip clip, float volume)
+    {
+        if (!clip) return;
+
+        if (sfxAudio)
+        {
+            sfxAudio.PlayOneShot(clip, Mathf.Clamp01(volume));
+            return;
+        }
+
+        // Detached temp 2D one-shot so it isn’t silenced by hierarchy disables
+        var go = new GameObject("CauldronOneShot2D");
+        var a = go.AddComponent<AudioSource>();
+        a.playOnAwake = false;
+        a.loop = false;
+        a.spatialBlend = 0f;   // 2D
+        a.volume = Mathf.Clamp01(volume);
+        a.clip = clip;
+        a.Play();
+        Destroy(go, Mathf.Max(0.02f, clip.length));
+    }
 }

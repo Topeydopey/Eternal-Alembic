@@ -472,6 +472,7 @@ GameObject:
   - component: {fileID: 189569652}
   - component: {fileID: 189569651}
   - component: {fileID: 189569653}
+  - component: {fileID: 189569654}
   m_Layer: 0
   m_Name: Game Manager
   m_TagString: Untagged
@@ -531,6 +532,36 @@ MonoBehaviour:
   onPressed:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &189569654
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 189569650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ae991aa6c39c1b40a16d0f392b5736b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AmbientMusicFader
+  startOnEnable: 1
+  startAfterSceneIntro: 1
+  delayBeforeStart: 0
+  useUnscaledTime: 1
+  targetVolume: 0.8
+  fadeInSeconds: 2
+  crossfadeSeconds: 1.5
+  ambientClip: {fileID: 8300000, guid: e6eb934cf53552d42ab351650d2997ef, type: 3}
+  ambientLoop: 1
+  playlist: []
+  loopPlaylist: 1
+  shufflePlaylist: 0
+  intervalBetweenTracks: 0
+  randomEachAdvance: 0
+  avoidImmediateRepeatRandom: 1
+  persistAcrossScenes: 0
+  outputMixerGroup: {fileID: 0}
+  rolloffMode: 1
 --- !u!1 &304061578
 GameObject:
   m_ObjectHideFlags: 11

@@ -22,19 +22,12 @@ public class MortarPestleMinigame : MonoBehaviour
     public GameObject plantPot;
 
     [Header("Plant (Remnant)")]
-    [Tooltip("Prefab used when spawning a NEW plant token.")]
     public GameObject deadPlantPrefab;
-    [Tooltip("If assigned AND reuseScenePlantInstance = true, this disabled scene object will be activated instead of instantiating a clone.")]
     public GameObject deadPlantSceneInstance;
-    [Tooltip("Parent to hold the plant token UI.")]
     public Transform plantSpawnParent;
-    [Tooltip("Optional anchor to place the plant token. Must share the same parent space as the spawned token.")]
     public RectTransform plantSpawnAnchor;
-    [Tooltip("Fallback anchored position if no anchor is given.")]
     public Vector2 plantSpawnAnchoredPos = Vector2.zero;
-    [Tooltip("If true and a scene instance is assigned, we will activate/reuse it. Otherwise we always instantiate the prefab.")]
     public bool reuseScenePlantInstance = true;
-    [Tooltip("Tag name expected by your DropSlot on the mortar. Must exist in Project Tags.")]
     public string plantTag = "Plant";
 
     [Tooltip("Clickable mortar+pestle root; a separate MortarClickable is attached to it.")]
@@ -71,19 +64,11 @@ public class MortarPestleMinigame : MonoBehaviour
     // -------- Pot unified sequence (potion pour + tree grow in one clip) --------
     [Header("Pot Sequence (single animation clip)")]
     [SerializeField] private Animator potAnimator;
-    [Tooltip("Trigger on the pot animator that runs the entire sequence (pour + growth).")]
     [SerializeField] private string potFullSequenceTrigger = "FullPourAndGrow";
-    [Tooltip("Fallback duration if we can’t read the current clip length.")]
     [SerializeField] private float potFullSequenceSeconds = 1.2f;
-
-    [Tooltip("Optional Animator state TAG on the pot's full sequence state. If set, we'll wait until this state finishes.")]
     [SerializeField] private string potFullStateTag = "FullPourAndGrow";
-    [Tooltip("Safety timeout in case the animator never reaches the tagged state or never finishes.")]
     [SerializeField, Min(0.25f)] private float potSequenceWaitTimeout = 3f;
-    [Tooltip("Small extra delay after the state completes before we spawn the plant.")]
     [SerializeField, Min(0f)] private float potSequenceEndExtraWait = 0.05f;
-
-    // Set by an Animation Event at the end of the pot's sequence (optional)
     private bool potSequenceDoneFlag = false;
 
     [Header("Mortar Animation")]
@@ -98,8 +83,40 @@ public class MortarPestleMinigame : MonoBehaviour
     [SerializeField] private bool disableMortarHoverAfterResult = true;
     [SerializeField] private bool disableMortarRaycastAfterResult = true;
 
-    // State
-    private bool busy;               // blocks re-entrant sequences
+    // ===================== AUDIO =====================
+    [Header("Audio Sources")]
+    [SerializeField] private AudioSource potAudio;    // pour + tree
+    [SerializeField] private AudioSource mortarAudio; // grinding
+    [SerializeField] private AudioSource uiAudio;     // take
+
+    [Header("SFX: Potion → Pot")]
+    [SerializeField] private AudioClip[] pourClips;
+    [SerializeField] private Vector2 pourPitchRange = new Vector2(0.98f, 1.03f);
+    [SerializeField] private Vector2 pourVolumeRange = new Vector2(0.9f, 1.0f);
+
+    [SerializeField] private AudioClip[] treeClips;
+    [SerializeField] private float treeSfxDelay = 0.18f;
+    [SerializeField] private Vector2 treePitchRange = new Vector2(0.98f, 1.03f);
+    [SerializeField] private Vector2 treeVolumeRange = new Vector2(0.9f, 1.0f);
+
+    [Header("SFX: Mortar Grind")]
+    [SerializeField] private AudioClip[] grindClips;
+    [SerializeField] private Vector2 grindPitchRange = new Vector2(0.95f, 1.05f);
+    [SerializeField] private Vector2 grindVolumeRange = new Vector2(0.9f, 1.0f);
+
+    [Header("SFX: Take from TakeZone")]
+    [SerializeField] private AudioClip[] takeClips;
+    [SerializeField] private Vector2 takePitchRange = new Vector2(0.98f, 1.02f);
+    [SerializeField] private Vector2 takeVolumeRange = new Vector2(0.9f, 1.0f);
+
+    [Header("Audio Options")]
+    [SerializeField] private bool avoidImmediateRepeat = true;
+
+    private enum SfxCategory { Pour, Tree, Grind, Take }
+    private int _lastPour = -1, _lastTree = -1, _lastGrind = -1, _lastTake = -1;
+
+    // ----------------- State -----------------
+    private bool busy;
     private bool potionPoured;
     private bool plantSpawned;
     private bool mortarFilled;
@@ -107,7 +124,7 @@ public class MortarPestleMinigame : MonoBehaviour
     private bool resultReady;
 
     private GameObject spawnedResultToken;
-    private GameObject activePlantToken;     // <- track the actual plant instance we activated/spawned
+    private GameObject activePlantToken;
 
     void Awake()
     {
@@ -118,6 +135,25 @@ public class MortarPestleMinigame : MonoBehaviour
 
         mortarHighlighter = mortarImage ? mortarImage.GetComponent<UIHoverHighlighter>() : null;
         mortarClickable = mortarPestle ? mortarPestle.GetComponent<MortarClickable>() : null;
+
+        potAudio = EnsureAudioSource(potAudio, "PotAudio");
+        mortarAudio = EnsureAudioSource(mortarAudio, "MortarAudio");
+        uiAudio = EnsureAudioSource(uiAudio, "UIAudio");
+    }
+
+    private AudioSource EnsureAudioSource(AudioSource src, string childName)
+    {
+        if (src) return src;
+        var child = transform.Find(childName);
+        if (child && child.TryGetComponent<AudioSource>(out var found)) return found;
+
+        var go = new GameObject(childName);
+        go.transform.SetParent(transform, false);
+        var a = go.AddComponent<AudioSource>();
+        a.playOnAwake = false;
+        a.loop = false;
+        a.spatialBlend = 0f; // 2D
+        return a;
     }
 
     void OnDestroy()
@@ -199,7 +235,6 @@ public class MortarPestleMinigame : MonoBehaviour
             }
         }
 
-        // Ensure the scene instance stays disabled until we need it
         if (deadPlantSceneInstance && reuseScenePlantInstance)
             deadPlantSceneInstance.SetActive(false);
     }
@@ -240,7 +275,7 @@ public class MortarPestleMinigame : MonoBehaviour
     {
         busy = true;
 
-        // Immediately hide/consume the potion token — the pot animation will visually show the bottle emptying.
+        // Hide/consume potion token — pot anim shows bottle emptying.
         ConsumeUIItem(potionToken);
 
         if (potAnimator && !string.IsNullOrEmpty(potFullSequenceTrigger))
@@ -253,6 +288,11 @@ public class MortarPestleMinigame : MonoBehaviour
             // Let Animator update at least once
             yield return null;
 
+            // AUDIO: pour now, tree after small delay
+            PlayRandomOneShotCategory(potAudio, pourClips, pourVolumeRange, pourPitchRange, SfxCategory.Pour);
+            if (treeClips != null && treeClips.Length > 0 && treeSfxDelay >= 0f)
+                StartCoroutine(PlayDelayed(potAudio, treeClips, treeVolumeRange, treePitchRange, SfxCategory.Tree, treeSfxDelay));
+
             float t = 0f;
             bool started = false;
 
@@ -261,8 +301,7 @@ public class MortarPestleMinigame : MonoBehaviour
                 if (!potAnimator) break;
 
                 var st = potAnimator.GetCurrentAnimatorStateInfo(0);
-                bool inTarget =
-                    string.IsNullOrEmpty(potFullStateTag) || st.IsTag(potFullStateTag);
+                bool inTarget = string.IsNullOrEmpty(potFullStateTag) || st.IsTag(potFullStateTag);
 
                 if (inTarget)
                 {
@@ -283,12 +322,17 @@ public class MortarPestleMinigame : MonoBehaviour
         }
         else
         {
+            // No animator: still do SFX timing
+            PlayRandomOneShotCategory(potAudio, pourClips, pourVolumeRange, pourPitchRange, SfxCategory.Pour);
+            if (treeClips != null && treeClips.Length > 0 && treeSfxDelay >= 0f)
+                StartCoroutine(PlayDelayed(potAudio, treeClips, treeVolumeRange, treePitchRange, SfxCategory.Tree, treeSfxDelay));
+
             if (potFullSequenceSeconds > 0f)
                 yield return new WaitForSeconds(potFullSequenceSeconds);
         }
 
         potionPoured = true;
-        SpawnDeadPlant();   // <- activates or instantiates + positions + makes draggable
+        SpawnDeadPlant();
 
         potSequenceDoneFlag = false;
         busy = false;
@@ -314,12 +358,17 @@ public class MortarPestleMinigame : MonoBehaviour
         {
             mortarAnimator.ResetTrigger(mortarGrindTrigger);
             mortarAnimator.SetTrigger(mortarGrindTrigger);
+
+            // AUDIO: grind start
+            PlayRandomOneShotCategory(mortarAudio, grindClips, grindVolumeRange, grindPitchRange, SfxCategory.Grind);
+
             yield return null;
             var stm = mortarAnimator.GetCurrentAnimatorStateInfo(0);
             waitMortar = stm.length > 0.05f ? stm.length : mortarGrindAnimSeconds;
         }
         else
         {
+            PlayRandomOneShotCategory(mortarAudio, grindClips, grindVolumeRange, grindPitchRange, SfxCategory.Grind);
             waitMortar = mortarGrindAnimSeconds;
         }
 
@@ -349,9 +398,17 @@ public class MortarPestleMinigame : MonoBehaviour
         {
             mortarAnimator.ResetTrigger(mortarGrindTrigger);
             mortarAnimator.SetTrigger(mortarGrindTrigger);
+
+            // AUDIO
+            PlayRandomOneShotCategory(mortarAudio, grindClips, grindVolumeRange, grindPitchRange, SfxCategory.Grind);
+
             yield return null;
             var st = mortarAnimator.GetCurrentAnimatorStateInfo(0);
             if (st.length > 0.05f) wait = st.length;
+        }
+        else
+        {
+            PlayRandomOneShotCategory(mortarAudio, grindClips, grindVolumeRange, grindPitchRange, SfxCategory.Grind);
         }
 
         if (grindDuration > 0f) wait += grindDuration;
@@ -379,8 +436,6 @@ public class MortarPestleMinigame : MonoBehaviour
         if (reuseScenePlantInstance && deadPlantSceneInstance)
         {
             plant = deadPlantSceneInstance;
-
-            // ensure parent if provided
             if (parent && plant.transform.parent != parent)
                 plant.transform.SetParent(parent, worldPositionStays: false);
         }
@@ -394,7 +449,6 @@ public class MortarPestleMinigame : MonoBehaviour
             plant = Instantiate(deadPlantPrefab, parent);
         }
 
-        // Ensure UI components exist & are visible
         var rt = plant.GetComponent<RectTransform>() ?? plant.AddComponent<RectTransform>();
         var img = plant.GetComponent<Image>();
         if (!img) Debug.LogWarning("[MortarPestle] Spawned plant has no Image; add one for UI visibility.");
@@ -402,7 +456,6 @@ public class MortarPestleMinigame : MonoBehaviour
         var cg = plant.GetComponent<CanvasGroup>() ?? plant.AddComponent<CanvasGroup>();
         cg.alpha = 1f; cg.blocksRaycasts = true; cg.interactable = true;
 
-        // Position in UI
         if (plantSpawnAnchor && plantSpawnAnchor.parent == (parent as RectTransform))
         {
             rt.anchorMin = rt.anchorMax = new Vector2(0.5f, 0.5f);
@@ -416,7 +469,6 @@ public class MortarPestleMinigame : MonoBehaviour
             rt.anchoredPosition = plantSpawnAnchoredPos;
         }
 
-        // Ensure draggable + correct tag
         if (!plant.GetComponent<DraggableItem>()) plant.AddComponent<DraggableItem>();
         TrySetTag(plant, plantTag);
 
@@ -425,16 +477,12 @@ public class MortarPestleMinigame : MonoBehaviour
 
         activePlantToken = plant;
         plantSpawned = true;
-        // Debug.Log("[MortarPestle] Plant spawned/activated.");
     }
 
     private void TrySetTag(GameObject go, string tagName)
     {
         if (!go || string.IsNullOrEmpty(tagName)) return;
-        try
-        {
-            go.tag = tagName; // Will throw if tag isn't defined in Project Settings > Tags and Layers
-        }
+        try { go.tag = tagName; }
         catch (UnityException)
         {
             Debug.LogWarning($"[MortarPestle] Tag '{tagName}' is not defined. Please add it in Tags & Layers. Using '{go.tag}' instead.");
@@ -497,6 +545,9 @@ public class MortarPestleMinigame : MonoBehaviour
 
     private void OnResultTaken(GameObject tokenGO)
     {
+        // AUDIO
+        PlayRandomOneShotCategory(uiAudio, takeClips, takeVolumeRange, takePitchRange, SfxCategory.Take);
+
         ConsumeUIItem(tokenGO);
 
         var eq = EquipmentInventory.Instance;
@@ -514,13 +565,13 @@ public class MortarPestleMinigame : MonoBehaviour
     private void ConsumeUIItem(GameObject go)
     {
         var drag = go.GetComponent<DraggableItem>();
-        if (drag) { drag.Consume(); }
+        if (drag) { drag.Consume(); }  // <- FIX: just call Consume()
         else { go.SetActive(false); }
 
         if (go == growthPotion && growthPotion) growthPotion.SetActive(false);
     }
 
-    // -------- Animation Events --------
+    // -------- Animation Events (optional) --------
     public void AE_PourFinished_SpawnPlant()
     {
         if (!plantSpawned) SpawnDeadPlant();
@@ -529,6 +580,16 @@ public class MortarPestleMinigame : MonoBehaviour
     public void AE_PotFullSequence_Done()
     {
         potSequenceDoneFlag = true;
+    }
+
+    public void AE_PlayTreeSfx()
+    {
+        PlayRandomOneShotCategory(potAudio, treeClips, treeVolumeRange, treePitchRange, SfxCategory.Tree);
+    }
+
+    public void AE_PlayGrindSfx()
+    {
+        PlayRandomOneShotCategory(mortarAudio, grindClips, grindVolumeRange, grindPitchRange, SfxCategory.Grind);
     }
 
     public void AE_GrindFinished_SpawnResult()
@@ -576,5 +637,64 @@ public class MortarPestleMinigame : MonoBehaviour
         SetMortarInteractive(true);
 
         if (spawnedResultToken) { Destroy(spawnedResultToken); spawnedResultToken = null; }
+    }
+
+    // ===================== AUDIO HELPERS =====================
+
+    private IEnumerator PlayDelayed(AudioSource src, AudioClip[] clips, Vector2 volRange, Vector2 pitchRange, SfxCategory cat, float delay)
+    {
+        if (delay > 0f) yield return new WaitForSeconds(delay);
+        PlayRandomOneShotCategory(src, clips, volRange, pitchRange, cat);
+    }
+
+    private void PlayRandomOneShotCategory(AudioSource src, AudioClip[] clips, Vector2 volRange, Vector2 pitchRange, SfxCategory cat)
+    {
+        if (!src || clips == null || clips.Length == 0) return;
+
+        int last = GetLastIndex(cat);
+        int idx = PickIndex(clips.Length, last, avoidImmediateRepeat);
+        SetLastIndex(cat, idx);
+
+        var clip = clips[idx];
+        if (!clip) return;
+
+        float vol = Mathf.Clamp01(UnityEngine.Random.Range(volRange.x, volRange.y));
+        float pitch = Mathf.Clamp(UnityEngine.Random.Range(pitchRange.x, pitchRange.y), 0.01f, 3f);
+
+        float oldPitch = src.pitch;
+        src.pitch = pitch;
+        src.PlayOneShot(clip, vol);
+        src.pitch = oldPitch;
+    }
+
+    private int GetLastIndex(SfxCategory cat) => cat switch
+    {
+        SfxCategory.Pour => _lastPour,
+        SfxCategory.Tree => _lastTree,
+        SfxCategory.Grind => _lastGrind,
+        SfxCategory.Take => _lastTake,
+        _ => -1
+    };
+
+    private void SetLastIndex(SfxCategory cat, int idx)
+    {
+        switch (cat)
+        {
+            case SfxCategory.Pour: _lastPour = idx; break;
+            case SfxCategory.Tree: _lastTree = idx; break;
+            case SfxCategory.Grind: _lastGrind = idx; break;
+            case SfxCategory.Take: _lastTake = idx; break;
+        }
+    }
+
+    private int PickIndex(int length, int last, bool avoidRepeat)
+    {
+        if (length <= 0) return 0;
+        if (!avoidRepeat || length == 1 || last < 0) return UnityEngine.Random.Range(0, length);
+
+        int idx;
+        do { idx = UnityEngine.Random.Range(0, length); }
+        while (idx == last && length > 1);
+        return idx;
     }
 }

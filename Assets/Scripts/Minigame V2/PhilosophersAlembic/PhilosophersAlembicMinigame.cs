@@ -4,6 +4,7 @@
 // 5 phases supported (configurable collect phase). Beaker spawns via optional RectTransform anchors.
 // Includes "once only" persistence + success events.
 // UPDATED: allow taking the beaker at ANY phase (same result item), and keep the Take Zone always visible.
+// UPDATED: adds audio for furnace-click, boiling loop, pour one-shot, and take one-shot.
 
 using System;
 using System.Collections;
@@ -13,7 +14,6 @@ using UnityEngine.UI;
 
 public class PhilosophersAlembicMinigame : MonoBehaviour
 {
-    // Add 5th phase. Rename "Purple" to whatever matches your art (e.g., "Green" or "Quintessence").
     public enum Phase { Black = 0, White = 1, Gold = 2, Red = 3, Purple = 4 }
     private enum State { Idle, Filling, FullAwaitingPour, Pouring, Completed }
 
@@ -22,10 +22,8 @@ public class PhilosophersAlembicMinigame : MonoBehaviour
     public GameObject owningRoot;
 
     [Header("Once Only")]
-    [Tooltip("Unique ID for this station (e.g., 'alembic_station_A'). Required if Once Only is on.")]
     [SerializeField] private string stationId = "alembic_station";
     [SerializeField] private bool onceOnly = false;
-    [Tooltip("If already used and onceOnly is on, immediately close when opened.")]
     [SerializeField] private bool autoCloseIfAlreadyUsed = true;
 
     [Header("Drop Slots")]
@@ -36,7 +34,6 @@ public class PhilosophersAlembicMinigame : MonoBehaviour
     [SerializeField] private Image alembicLiquidImage;
 
     [Header("Alembic Animator (combined)")]
-    [Tooltip("Animator on the main alembic art — controls boil & pour.")]
     [SerializeField] private Animator alembicAnimator;
     [SerializeField] private string alembicPhaseParam = "Phase";        // int (0..N-1)
     [SerializeField] private string alembicBoilBoolParam = "IsBoiling"; // bool
@@ -44,53 +41,68 @@ public class PhilosophersAlembicMinigame : MonoBehaviour
     [SerializeField, Min(0.05f)] private float alembicPourFallbackSeconds = 0.6f;
 
     [Header("Beaker (Runoff Glass Container)")]
-    [Tooltip("Prefab with: RectTransform + CanvasGroup + Image + DraggableItem + RunoffBeakerSprites")]
     [SerializeField] private RunoffBeakerSprites beakerPrefab;
     [SerializeField] private Transform beakerSpawnParent; // default: owningCanvas
-
-    [Tooltip("OPTIONAL: anchor refs for precise spawn/dock. Place them under the SAME parent as the beaker (beakerSpawnParent).")]
-    [SerializeField] private RectTransform beakerSpawnAnchorRef; // overrides spawn position if assigned
-    [SerializeField] private RectTransform beakerDockAnchorRef;  // overrides dock position if assigned
-
-    [SerializeField] private Vector2 beakerDockAnchoredPos = new Vector2(140, -40);  // used if no anchorRef
-    [SerializeField] private Vector2 beakerSpawnAnchoredPos = new Vector2(140, -40); // used if no anchorRef
+    [SerializeField] private RectTransform beakerSpawnAnchorRef;
+    [SerializeField] private RectTransform beakerDockAnchorRef;
+    [SerializeField] private Vector2 beakerDockAnchoredPos = new Vector2(140, -40);
+    [SerializeField] private Vector2 beakerSpawnAnchoredPos = new Vector2(140, -40);
     [SerializeField] private bool hideBeakerUntilFull = true;
 
     [Header("Pour Timing")]
-    [SerializeField] private bool useHardPourTimer = true;     // set true to ignore animation event
-    [SerializeField] private bool triggerPourAnimation = true; // still fire the animator trigger for visuals
+    [SerializeField] private bool useHardPourTimer = true;
+    [SerializeField] private bool triggerPourAnimation = true;
     [SerializeField, Min(0.05f)] private float defaultPourSeconds = 0.6f;
-    [SerializeField]
-    private float[] pourSecondsPerPhase =      // size 5 if you’re using 5 phases
-        new float[] { 0.6f, 0.6f, 0.6f, 0.6f, 0.6f };
+    [SerializeField] private float[] pourSecondsPerPhase = new float[] { 0.6f, 0.6f, 0.6f, 0.6f, 0.6f };
 
     [Header("Phase Colors (size should match number of enum entries)")]
     [SerializeField] private Color blackCol = new Color(0.10f, 0.10f, 0.10f);
     [SerializeField] private Color whiteCol = new Color(0.93f, 0.93f, 0.93f);
     [SerializeField] private Color goldCol = new Color(0.95f, 0.76f, 0.31f);
     [SerializeField] private Color redCol = new Color(0.89f, 0.27f, 0.23f);
-    [SerializeField] private Color purpleCol = new Color(0.58f, 0.33f, 0.74f); // NEW phase color
+    [SerializeField] private Color purpleCol = new Color(0.58f, 0.33f, 0.74f);
 
     [Header("Per-Phase Fill Time (sec) — size should be 5 now")]
     [SerializeField] private float[] phaseFillTimes = new float[] { 2.5f, 2.0f, 1.6f, 1.6f, 1.6f };
 
     [Header("Collection Settings")]
-    [Tooltip("Which phase produces the final collectible beaker for the take zone? (used for tagging/UX; not required to finish anymore)")]
-    [SerializeField] private Phase collectOnPhase = Phase.Red; // change to Phase.Purple if you want the 5th to be final
+    [SerializeField] private Phase collectOnPhase = Phase.Red;
 
     [Header("Result (final turn-in)")]
     [SerializeField] private ItemSO resultItem;
 
-    // NEW: Early-take feature
+    // Early-take feature
     [Header("Early Take Settings")]
     [SerializeField] private bool allowAnyPhaseTake = true;
-
-    [Tooltip("If true, the Take Zone is always visible & interactive (not gated by phase).")]
     [SerializeField] private bool alwaysShowTakeZone = true;
+
+    // ---------- AUDIO ----------
+    [Header("Audio Sources")]
+    [Tooltip("2D world SFX for the alembic (click/pour). If null, created automatically.")]
+    [SerializeField] private AudioSource worldAudio;
+    [Tooltip("Separate looping source for boiling. If null, created automatically.")]
+    [SerializeField] private AudioSource boilLoopAudio;
+    [Tooltip("UI/Take SFX. Assign to a 'safe' object that doesn't get disabled on close. If null, a temp one is created.")]
+    [SerializeField] private AudioSource uiAudio;
+
+    [Header("SFX Clips")]
+    [Tooltip("Plays once when the furnace is clicked and a fill actually begins.")]
+    [SerializeField] private AudioClip furnaceClickSfx;
+    [Tooltip("Loop clip while filling/boiling (should be loopable).")]
+    [SerializeField] private AudioClip boilingLoopSfx;
+    [Tooltip("Plays once when pouring back into the alembic.")]
+    [SerializeField] private AudioClip pourSfx;
+    [Tooltip("Plays once when turning in the beaker (any phase).")]
+    [SerializeField] private AudioClip takeSfx;
+
+    [Header("SFX Levels")]
+    [Range(0f, 1f)] public float furnaceClickVolume = 1f;
+    [Range(0f, 1f)] public float boilingVolume = 0.9f;
+    [Range(0f, 1f)] public float pourVolume = 1f;
+    [Range(0f, 1f)] public float takeVolume = 1f;
 
     [Header("Events")]
     public UnityEvent onClosed;
-    [Tooltip("Invoked only on SUCCESS (when result is actually awarded).")]
     public UnityEvent onSuccessUnity;
     public event Action onSuccess;
 
@@ -116,13 +128,31 @@ public class PhilosophersAlembicMinigame : MonoBehaviour
                 if (s && s.acceptsTag == "Result") { takeZoneDropSlot = s; break; }
         }
 
+        // Ensure audio sources exist
+        worldAudio = EnsureAudio(worldAudio, "AlembicWorldAudio2D", loop: false);
+        boilLoopAudio = EnsureAudio(boilLoopAudio, "AlembicBoilLoop2D", loop: true);
+        uiAudio = uiAudio ? uiAudio : null; // optional: user may assign a safe, persistent source
+
         SetPhase(Phase.Black);
         ApplyPhaseTargets();
     }
 
+    private AudioSource EnsureAudio(AudioSource src, string childName, bool loop)
+    {
+        if (src) return src;
+        var t = transform.Find(childName);
+        if (t && t.TryGetComponent(out AudioSource found)) { found.loop = loop; found.playOnAwake = false; found.spatialBlend = 0f; return found; }
+        var go = new GameObject(childName);
+        go.transform.SetParent(transform, false);
+        var a = go.AddComponent<AudioSource>();
+        a.playOnAwake = false;
+        a.loop = loop;
+        a.spatialBlend = 0f; // 2D
+        return a;
+    }
+
     public void BeginSession()
     {
-        // 🔒 Guard once-only right when station opens
         if (onceOnly && WorkstationOnce.IsUsed(stationId))
         {
             if (autoCloseIfAlreadyUsed)
@@ -134,6 +164,7 @@ public class PhilosophersAlembicMinigame : MonoBehaviour
         }
 
         StopAllCoroutines();
+        StopBoilLoop();
         DestroyBeakerIfAny();
 
         SetPhase(Phase.Black);
@@ -152,12 +183,15 @@ public class PhilosophersAlembicMinigame : MonoBehaviour
             return;
         }
 
-        // If already at collect phase + beaker is ready, don't reboil
+        // If already at collect phase + beaker ready, don't reboil
         if (CurrentPhase.Equals(collectOnPhase) && beakerInstance && beakerInstance.gameObject.activeSelf && state == State.FullAwaitingPour)
         {
             Debug.Log("[Alembic] Collect-phase beaker ready; pour/turn-in instead of boiling.");
             return;
         }
+
+        // SFX: click (only when a fill actually starts)
+        PlayOneShotSafe(worldAudio, furnaceClickSfx, furnaceClickVolume);
 
         StartFillCycle();
     }
@@ -173,6 +207,9 @@ public class PhilosophersAlembicMinigame : MonoBehaviour
         state = State.Filling;
         BurnerOn = true;
         SetAlembicBoil(true);
+
+        // SFX: start boiling loop
+        StartBoilLoop();
 
         // Prepare beaker (hidden until full if requested)
         PrepareBeakerForPhase(spawnIfMissing: true, visibleNow: !hideBeakerUntilFull);
@@ -198,12 +235,15 @@ public class PhilosophersAlembicMinigame : MonoBehaviour
             TagBeaker("Runoff");
         }
 
-        // Place and **show** it now
+        // Place and show
         PlaceBeakerAtSpawn();
         ShowBeakerForPlayer();
 
         BurnerOn = false;
         SetAlembicBoil(false);
+
+        // SFX: stop boiling loop
+        StopBoilLoop();
 
         ApplyPhaseTargets();
         state = State.FullAwaitingPour;
@@ -215,24 +255,24 @@ public class PhilosophersAlembicMinigame : MonoBehaviour
     {
         if (!slot || !droppedGO) return;
 
-        // ------- Final collection (now allowed at ANY phase if allowAnyPhaseTake is true) -------
+        // ------- Final collection (allowed at ANY phase if allowAnyPhaseTake) -------
         if (slot.acceptsTag == "Result")
         {
             bool isResultTagged = droppedGO.CompareTag("Result");
             bool isRunoffTagged = droppedGO.CompareTag("Runoff");
-
-            // Accept either a 'Result' or 'Runoff' beaker when early take is allowed.
             bool canAcceptAtThisPhase = isResultTagged || (allowAnyPhaseTake && isRunoffTagged);
 
             if (canAcceptAtThisPhase)
             {
+                // SFX: take (play via safe UI source if available)
+                PlayTakeSfx();
+
                 var drag = droppedGO.GetComponent<DraggableItem>();
                 if (drag) drag.Consume();
 
                 if (EquipmentInventory.Instance && resultItem &&
                     EquipmentInventory.Instance.TryEquipToFirstAvailable(resultItem))
                 {
-                    // ✅ SUCCESS: mark once-only + raise events, regardless of phase
                     if (onceOnly) WorkstationOnce.MarkUsed(stationId);
                     onSuccess?.Invoke();
                     onSuccessUnity?.Invoke();
@@ -265,10 +305,17 @@ public class PhilosophersAlembicMinigame : MonoBehaviour
         state = State.Pouring;
         BurnerOn = false;
         SetAlembicBoil(false);
+
+        // Ensure boil loop is off during pour
+        StopBoilLoop();
+
         if (fillingCo != null) { StopCoroutine(fillingCo); fillingCo = null; }
 
-        // Hide UI beaker while the pixel-art pour plays on the Alembic animator
+        // Hide UI beaker while alembic pour anim plays
         if (rb) rb.gameObject.SetActive(false);
+
+        // SFX: pour one-shot
+        PlayOneShotSafe(worldAudio, pourSfx, pourVolume);
 
         yield return PlayAlembicPourAndWait();
 
@@ -312,17 +359,13 @@ public class PhilosophersAlembicMinigame : MonoBehaviour
 
         if (!beakerInstance) return;
 
-        // Set visuals for current phase (does NOT change position or active state)
         beakerInstance.SetVisualPhase((int)CurrentPhase, GetPhaseColor(CurrentPhase));
 
-        // Initial placement (spawn or dock), but **do not force-active** here.
         if (visibleNow) PlaceBeakerAtSpawn();
         else PlaceBeakerAtDock();
 
-        // Respect the "hide until full" flag here:
         beakerInstance.gameObject.SetActive(visibleNow);
 
-        // Pre-tag (updated again when full)
         TagBeaker(CurrentPhase.Equals(collectOnPhase) ? "Result" : "Runoff");
     }
 
@@ -358,14 +401,9 @@ public class PhilosophersAlembicMinigame : MonoBehaviour
 
     private Vector2 ResolveAnchoredPos(RectTransform refRt, Vector2 fallback)
     {
-        // For simplicity/robustness: assume refRt (if set) shares the SAME parent as the beaker.
-        // If not, we'll just use the fallback.
         if (!refRt) return fallback;
-
         var parent = beakerSpawnParent as RectTransform;
         if (parent && refRt.parent == parent) return refRt.anchoredPosition;
-
-        // Different hierarchy? Use fallback to avoid mismatched spaces.
         return fallback;
     }
 
@@ -373,11 +411,9 @@ public class PhilosophersAlembicMinigame : MonoBehaviour
     {
         if (!beakerInstance) return;
 
-        // turn it on
         if (!beakerInstance.gameObject.activeSelf)
             beakerInstance.gameObject.SetActive(true);
 
-        // make sure it’s clickable / on top
         var cg = beakerInstance.GetComponent<CanvasGroup>();
         if (cg) { cg.alpha = 1f; cg.interactable = true; cg.blocksRaycasts = true; }
 
@@ -388,7 +424,7 @@ public class PhilosophersAlembicMinigame : MonoBehaviour
     {
         if (!beakerInstance) return;
         PlaceBeakerAtDock();
-        beakerInstance.gameObject.SetActive(!hideBeakerUntilFull); // hides when the box is checked
+        beakerInstance.gameObject.SetActive(!hideBeakerUntilFull);
     }
 
     private void DestroyBeakerIfAny()
@@ -406,24 +442,14 @@ public class PhilosophersAlembicMinigame : MonoBehaviour
         beakerInstance.gameObject.tag = tagName;
     }
 
-    // UPDATED: Take Zone can now be always on (and mouth is always enabled too).
     private void ApplyPhaseTargets()
     {
-        // Mouth drop (for pouring) stays enabled so the loop still works if players want to continue phases
         if (mouthDropSlot) mouthDropSlot.Enable(true);
 
         if (takeZoneDropSlot)
         {
-            if (alwaysShowTakeZone)
-            {
-                takeZoneDropSlot.Enable(true);
-            }
-            else
-            {
-                // Legacy gating by phase if you ever need it again
-                bool atCollect = CurrentPhase.Equals(collectOnPhase);
-                takeZoneDropSlot.Enable(atCollect);
-            }
+            if (alwaysShowTakeZone) takeZoneDropSlot.Enable(true);
+            else takeZoneDropSlot.Enable(CurrentPhase.Equals(collectOnPhase));
         }
     }
 
@@ -432,7 +458,7 @@ public class PhilosophersAlembicMinigame : MonoBehaviour
         CurrentPhase = p;
         UpdateAlembicColor();
         if (beakerInstance) beakerInstance.SetVisualPhase((int)p, GetPhaseColor(p));
-        UpdateAlembicAnimatorPhase(); // push phase int
+        UpdateAlembicAnimatorPhase();
     }
 
     private void UpdateAlembicAnimatorPhase()
@@ -484,46 +510,33 @@ public class PhilosophersAlembicMinigame : MonoBehaviour
     private void SetAlembicBoil(bool on)
     {
         if (!alembicAnimator || string.IsNullOrEmpty(alembicBoilBoolParam)) return;
-        UpdateAlembicAnimatorPhase(); // choose correct Boil_* by current phase
+        UpdateAlembicAnimatorPhase();
         alembicAnimator.SetBool(alembicBoilBoolParam, on);
     }
 
-    // --- Pour animation on the SAME alembic animator ---
     private IEnumerator PlayAlembicPourAndWait()
     {
-        // Optionally still play the visual animation
         if (alembicAnimator && triggerPourAnimation && !string.IsNullOrEmpty(alembicPourTrigger))
         {
-            UpdateAlembicAnimatorPhase();               // make sure Phase is set
+            UpdateAlembicAnimatorPhase();
             alembicAnimator.ResetTrigger(alembicPourTrigger);
             alembicAnimator.SetTrigger(alembicPourTrigger);
         }
 
         if (useHardPourTimer)
         {
-            // Pure timer path: ignore animation events
             float wait = GetPourTime(CurrentPhase);
             float t = 0f;
-            while (t < wait)
-            {
-                t += Time.deltaTime;
-                yield return null;
-            }
+            while (t < wait) { t += Time.deltaTime; yield return null; }
         }
         else
         {
-            // Event-or-fallback path (original behavior)
             alembicPourDoneFlag = false;
             float t = 0f, maxWait = Mathf.Max(0.05f, alembicPourFallbackSeconds);
-            while (!alembicPourDoneFlag && t < maxWait)
-            {
-                t += Time.deltaTime;
-                yield return null;
-            }
+            while (!alembicPourDoneFlag && t < maxWait) { t += Time.deltaTime; yield return null; }
         }
     }
 
-    /// <summary>Animation Event: call this at the END of each Pour_* clip on the Alembic animator.</summary>
     public void AlembicOnPourAnimComplete() => alembicPourDoneFlag = true;
 
     // Bridge (generic signature)
@@ -534,5 +547,57 @@ public class PhilosophersAlembicMinigame : MonoBehaviour
             HandleDropAlembic(alembicSlot, droppedGO);
         else
             Debug.LogWarning("[Alembic] HandleDrop called with a non-Alembic DropSlot.");
+    }
+
+    // ---------- Audio helpers ----------
+    private void StartBoilLoop()
+    {
+        if (!boilLoopAudio) return;
+        if (boilingLoopSfx)
+        {
+            boilLoopAudio.clip = boilingLoopSfx;
+            boilLoopAudio.volume = boilingVolume;
+            boilLoopAudio.loop = true;
+            if (!boilLoopAudio.isPlaying) boilLoopAudio.Play();
+        }
+    }
+
+    private void StopBoilLoop()
+    {
+        if (!boilLoopAudio) return;
+        if (boilLoopAudio.isPlaying) boilLoopAudio.Stop();
+        boilLoopAudio.clip = null;
+    }
+
+    private void PlayTakeSfx()
+    {
+        // Prefer a user-assigned safe UI source (doesn't get disabled on close), else fall back to world/temporary
+        if (uiAudio && takeSfx) { uiAudio.PlayOneShot(takeSfx, takeVolume); return; }
+        PlayOneShotSafe(worldAudio, takeSfx, takeVolume);
+    }
+
+    private void PlayOneShotSafe(AudioSource src, AudioClip clip, float vol = 1f, float pitch = 1f)
+    {
+        if (!clip) return;
+
+        if (src)
+        {
+            float prev = src.pitch;
+            src.pitch = Mathf.Clamp(pitch, 0.01f, 3f);
+            src.PlayOneShot(clip, Mathf.Clamp01(vol));
+            src.pitch = prev;
+        }
+        else
+        {
+            // detached temp source (won't get cut off if hierarchy closes)
+            var go = new GameObject("AlembicOneShot2D");
+            var a = go.AddComponent<AudioSource>();
+            a.playOnAwake = false; a.loop = false; a.spatialBlend = 0f;
+            a.pitch = Mathf.Clamp(pitch, 0.01f, 3f);
+            a.volume = Mathf.Clamp01(vol);
+            a.clip = clip;
+            a.Play();
+            Destroy(go, Mathf.Max(0.02f, clip.length / Mathf.Max(0.01f, a.pitch)));
+        }
     }
 }
