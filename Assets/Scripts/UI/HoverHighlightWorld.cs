@@ -10,6 +10,8 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Collider2D))]
 public class WorldSpriteHighlighter2D : MonoBehaviour
 {
+    public enum ColliderSyncMode { Off, OnceOnAwake, Continuous }
+
     [Header("Sprites")]
     [Tooltip("Base sprite; if null, uses the SpriteRenderer's current sprite.")]
     [SerializeField] private Sprite normalSprite;
@@ -33,9 +35,9 @@ public class WorldSpriteHighlighter2D : MonoBehaviour
     [Tooltip("Add to base sorting order for overlay so it renders on top.")]
     public int overlayOrderOffset = 1;
 
-    [Header("Collider Sync (optional)")]
-    [Tooltip("If true and there is a BoxCollider2D, auto-size it to match the SpriteRenderer (supports Tiled/Sliced).")]
-    public bool autoSyncBoxCollider = true;
+    [Header("Collider Sync")]
+    [Tooltip("Off = never resize collider; OnceOnAwake = do it once; Continuous = keep syncing.")]
+    [SerializeField] private ColliderSyncMode colliderSync = ColliderSyncMode.Off;
 
     private SpriteRenderer _baseSr;
     private SpriteRenderer _overlaySr;
@@ -70,7 +72,8 @@ public class WorldSpriteHighlighter2D : MonoBehaviour
         _currentAlpha = 0f;
         _targetAlpha = 0f;
 
-        TrySyncBoxCollider();
+        if (colliderSync != ColliderSyncMode.Off)
+            TrySyncBoxCollider(); // do it once at Awake for OnceOnAwake/Continuous
     }
 
     void Update()
@@ -82,7 +85,8 @@ public class WorldSpriteHighlighter2D : MonoBehaviour
         if (BaseRendererChanged())
         {
             MirrorSpriteRendererSettings();
-            TrySyncBoxCollider();
+            if (colliderSync == ColliderSyncMode.Continuous)
+                TrySyncBoxCollider();
         }
 
         // 1) Mouse world point
@@ -137,8 +141,22 @@ public class WorldSpriteHighlighter2D : MonoBehaviour
         if (baseSprite) { normalSprite = baseSprite; if (_baseSr) _baseSr.sprite = baseSprite; }
         if (highlight) { highlightSprite = highlight; if (_overlaySr) _overlaySr.sprite = highlight; }
         MirrorSpriteRendererSettings();
-        TrySyncBoxCollider();
+
+        if (colliderSync == ColliderSyncMode.Continuous)
+            TrySyncBoxCollider();
     }
+
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        if (!_baseSr) _baseSr = GetComponent<SpriteRenderer>();
+        if (!_overlaySr) return;
+        MirrorSpriteRendererSettings();
+
+        if (colliderSync == ColliderSyncMode.Continuous)
+            TrySyncBoxCollider();
+    }
+#endif
 
     // ---------- internals ----------
 
@@ -180,25 +198,42 @@ public class WorldSpriteHighlighter2D : MonoBehaviour
         return false;
     }
 
+    /// <summary>
+    /// Resize BoxCollider2D to match the visible rect of the SpriteRenderer,
+    /// honoring sprite pivot for BOTH Simple and Tiled/Sliced draw modes.
+    /// </summary>
     private void TrySyncBoxCollider()
     {
-        if (!autoSyncBoxCollider) return;
-
         var box = GetComponent<BoxCollider2D>();
         if (!box) return;
+        if (!_baseSr || !_baseSr.sprite) return;
+
+        // Pivot in 0..1 space on the source sprite
+        var spr = _baseSr.sprite;
+        Vector2 pivot01 = new Vector2(
+            spr.pivot.x / spr.rect.width,
+            spr.pivot.y / spr.rect.height
+        );
 
         if (_baseSr.drawMode != SpriteDrawMode.Simple)
         {
-            // Tiled / Sliced: size is explicit in renderer space
-            box.size = _baseSr.size;
-            box.offset = Vector2.zero; // SR pivots are in the mesh; table likely centered
+            // Tiled / Sliced: use the SpriteRenderer.size and offset by pivot
+            Vector2 size = _baseSr.size;
+            Vector2 center = (new Vector2(0.5f, 0.5f) - pivot01) * size;
+
+            box.size = size;
+            box.offset = center;
         }
-        else if (_baseSr.sprite)
+        else
         {
-            // Simple: use sprite bounds in local space
-            var b = _baseSr.sprite.bounds; // local units
+            // Simple: sprite local bounds already account for pivot
+            var b = spr.bounds; // local space
             box.size = b.size;
             box.offset = b.center;
         }
+
+        // If we only sync once, switch the mode to Off after doing it here
+        if (colliderSync == ColliderSyncMode.OnceOnAwake)
+            colliderSync = ColliderSyncMode.Off;
     }
 }

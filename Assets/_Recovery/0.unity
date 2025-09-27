@@ -4323,7 +4323,7 @@ MonoBehaviour:
   usePerPhaseHighlight: 1
   maxHighlightAlpha: 1
   fadeDuration: 0.15
-  hoverPopScale: 1
+  hoverPopScale: 1.05
   useOverlay: 1
   recalcBaseScaleOnPointerEnter: 1
 --- !u!1 &279736962
@@ -13120,8 +13120,6 @@ GameObject:
   - component: {fileID: 1205165332}
   - component: {fileID: 1205165331}
   - component: {fileID: 1205165333}
-  - component: {fileID: 1205165335}
-  - component: {fileID: 1205165334}
   m_Layer: 6
   m_Name: Cauldron
   m_TagString: Untagged
@@ -13221,15 +13219,12 @@ MonoBehaviour:
   finalPotionItem: {fileID: 11400000, guid: cbb271dcb3dc11d4292f51311ecb8b93, type: 2}
   allowWorldDropIfFull: 1
   requireEmptyHandToCollect: 0
+  showHintOnCollect: 1
   hintTarget: {fileID: 1494772015}
   hintLocalOffset: {x: 0, y: 1.6, z: 0}
   hintFadeIn: 0.12
   hintHold: 1.25
   hintFadeOut: 0.25
-  hintCooldownSeconds: 0.75
-  needIngredientsText: You need to add more ingredients.
-  wrongIngredientText: "That doesn\u2019t seem like the right ingredient."
-  readyText: The Elixir of Life is ready in the cauldron!
   receivedTemplate: You received {0}!
   droppedTemplate: '{0} was dropped nearby.'
   requireProximity: 1
@@ -13244,66 +13239,6 @@ MonoBehaviour:
   depositVolume: 1
   rewardReadySfx: {fileID: 8300000, guid: 98e5a26b1c5f4144eb01a80b19c2601d, type: 3}
   rewardReadyVolume: 1
-  showHintOnCollect: 1
---- !u!114 &1205165334
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1205165330}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0391c54417e96194b887449e284cb29d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::WorldSpriteHighlighter2D
-  normalSprite: {fileID: -5734888567148846429, guid: 547b1cf8cabbea742974abc3edcea922, type: 3}
-  highlightSprite: {fileID: 21300000, guid: bf187883059865249a9ea1aefbdd895f, type: 3}
-  maxHighlightAlpha: 1
-  fadeSpeed: 10
-  worldCamera: {fileID: 519420031}
-  blockWhenPointerOverUI: 0
-  hoverMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  overlayOrderOffset: 1
-  colliderSync: 0
---- !u!58 &1205165335
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1205165330}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: -0.13473868}
-  m_Radius: 0.77361083
 --- !u!1 &1213780057
 GameObject:
   m_ObjectHideFlags: 0
@@ -18363,7 +18298,7 @@ MonoBehaviour:
   usePerPhaseHighlight: 1
   maxHighlightAlpha: 1
   fadeDuration: 0.15
-  hoverPopScale: 1
+  hoverPopScale: 1.05
   useOverlay: 1
   recalcBaseScaleOnPointerEnter: 1
 --- !u!1 &1751528020

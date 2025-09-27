@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+[DisallowMultipleComponent]
 public class Cauldron : MonoBehaviour
 {
     [Header("Visuals (any or none)")]
@@ -14,13 +15,20 @@ public class Cauldron : MonoBehaviour
     public bool allowWorldDropIfFull = true;
     public bool requireEmptyHandToCollect = false;
 
-    [Header("Floating Hint on Collect")]
-    [SerializeField] private bool showHintOnCollect = true;
-    [SerializeField] private Transform hintTarget;
+    [Header("Floating Hint Target")]
+    [SerializeField] private Transform hintTarget; // if null, will try EquipmentInventory.Instance.transform
     [SerializeField] private Vector3 hintLocalOffset = new Vector3(0f, 1.6f, 0f);
+
+    [Header("Hint Timing")]
     [SerializeField] private float hintFadeIn = 0.12f;
     [SerializeField] private float hintHold = 1.25f;
     [SerializeField] private float hintFadeOut = 0.25f;
+    [SerializeField, Min(0f)] private float hintCooldownSeconds = 0.75f; // anti-spam
+
+    [Header("Hint Text")]
+    [SerializeField] private string needIngredientsText = "You need to add the ingredients first.";
+    [SerializeField] private string wrongIngredientText = "That doesn’t seem like the right ingredient.";
+    [SerializeField] private string readyText = "The Elixir of Life is ready in the cauldron!";
     [SerializeField] private string receivedTemplate = "You received {0}!";
     [SerializeField] private string droppedTemplate = "{0} was dropped nearby.";
 
@@ -58,8 +66,12 @@ public class Cauldron : MonoBehaviour
     [SerializeField] private AudioClip rewardReadySfx;
     [Range(0f, 1f)][SerializeField] private float rewardReadyVolume = 1f;
 
+    [Header("Collect Hint Toggle")]
+    [SerializeField] private bool showHintOnCollect = true;
+
     private float hue;
     private bool rewardAvailablePrev;
+    private float lastHintTime = -999f;
 
     void OnEnable()
     {
@@ -69,8 +81,11 @@ public class Cauldron : MonoBehaviour
         if (gs)
         {
             gs.OnChanged += HandleStateChanged;
-            rewardAvailablePrev = gs.RewardAvailable;  // capture initial state so we only chime on transition
+            rewardAvailablePrev = gs.RewardAvailable;  // capture initial state so we only chime/show on transition
             UpdateLiquidVisual(gs.Progress01);
+
+            // If you want to also show the “ready” hint immediately when loading into a scene where it’s already ready:
+            // if (gs.RewardAvailable) ShowHint(readyText);
         }
         else
         {
@@ -91,10 +106,13 @@ public class Cauldron : MonoBehaviour
         float progress = gs ? gs.Progress01 : 0f;
         UpdateLiquidVisual(progress);
 
-        // Reward-ready chime on first transition to available
+        // Reward-ready: play SFX and show hint exactly on transition false -> true
         bool nowAvail = gs && gs.RewardAvailable;
         if (nowAvail && !rewardAvailablePrev)
+        {
             PlayOneShotSafe(rewardReadySfx, rewardReadyVolume);
+            ShowHint(readyText);
+        }
         rewardAvailablePrev = nowAvail;
     }
 
@@ -113,7 +131,7 @@ public class Cauldron : MonoBehaviour
         }
     }
 
-    // Interactor calls this after proximity was checked
+    /// <summary>Interactor calls this after proximity check.</summary>
     public void TryDepositFromActiveHand()
     {
         var eq = EquipmentInventory.Instance;
@@ -122,16 +140,24 @@ public class Cauldron : MonoBehaviour
 
         var hand = eq.Get(eq.activeHand);
 
+        // Empty hand → try to collect if ready, otherwise tell the player what’s missing.
         if (hand == null || hand.IsEmpty)
         {
+            if (!gs.RewardAvailable)
+            {
+                ShowHint(needIngredientsText); // <-- NEW: guidance when not ready
+                return;
+            }
+
             TryCollectReward();
             return;
         }
 
+        // Has an item → try to submit to the recipe
         var item = hand.item;
         if (gs.SubmitItem(item))
         {
-            // Success: consume, visuals, and DEPOSIT SFX
+            // Success: consume, visuals, and SFX
             eq.Unequip(eq.activeHand);
 
             if (bubbles) bubbles.Play();
@@ -139,7 +165,8 @@ public class Cauldron : MonoBehaviour
         }
         else
         {
-            // wrong item feedback hook (optional)
+            // NEW: wrong item feedback
+            ShowHint(wrongIngredientText);
         }
     }
 
@@ -172,8 +199,7 @@ public class Cauldron : MonoBehaviour
             string nameText = finalPotionItem ? finalPotionItem.displayName : "the Elixir of Life";
             string msg = dropped ? string.Format(droppedTemplate, nameText)
                                  : string.Format(receivedTemplate, nameText);
-            var target = hintTarget ? hintTarget
-                                    : (EquipmentInventory.Instance ? EquipmentInventory.Instance.transform : null);
+            var target = ResolveHintTarget();
             if (target)
                 FloatingWorldHint.Show(target, msg, hintLocalOffset, hintFadeIn, hintHold, hintFadeOut);
         }
@@ -189,7 +215,28 @@ public class Cauldron : MonoBehaviour
     }
 #endif
 
-    // ---------------- Audio helper ----------------
+    // ---------------- Hints & Audio helpers ----------------
+    private void ShowHint(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text)) return;
+
+        // Simple anti-spam: throttle hints
+        if (Time.unscaledTime - lastHintTime < hintCooldownSeconds) return;
+        lastHintTime = Time.unscaledTime;
+
+        var target = ResolveHintTarget();
+        if (target)
+            FloatingWorldHint.Show(target, text, hintLocalOffset, hintFadeIn, hintHold, hintFadeOut);
+    }
+
+    private Transform ResolveHintTarget()
+    {
+        if (hintTarget) return hintTarget;
+        var eq = EquipmentInventory.Instance;
+        if (eq) return eq.transform;       // near the player
+        return transform;                  // fallback: near the cauldron
+    }
+
     private void PlayOneShotSafe(AudioClip clip, float volume)
     {
         if (!clip) return;
